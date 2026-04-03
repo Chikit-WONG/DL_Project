@@ -4,3 +4,4 @@ training_images/
 EEG_CHANNELS.jsonl
 *.pt
 implementation_plan.md
+experiment_plan.md
