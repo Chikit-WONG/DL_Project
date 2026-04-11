@@ -1,7 +1,17 @@
-*.zip
-test_images/
-training_images/
-EEG_CHANNELS.jsonl
+# *.zip
+# test_images/
+# training_images/
+# EEG_CHANNELS.jsonl
+# *.pt
+# implementation_plan.md
+# experiment_plan.md
+plan/
+old_code/
+image-eeg-data/
+temp/
+external/
+checkpoints/
+clip_cache/
+__pycache__/
 *.pt
-implementation_plan.md
-experiment_plan.md
+*.log
