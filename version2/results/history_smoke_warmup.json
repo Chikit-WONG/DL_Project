@@ -1,0 +1,13 @@
+{
+  "history": [
+    {
+      "epoch": 0,
+      "stage": "warmup",
+      "loss": 2.190567374229431,
+      "top1": 0.0625,
+      "top5": 0.3125
+    }
+  ],
+  "best_top1": 0.0625,
+  "tag": "smoke_warmup"
+}

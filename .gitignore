@@ -9,9 +9,10 @@ plan/
 old_code/
 image-eeg-data/
 temp/
-external/
+references/
 checkpoints/
 clip_cache/
 __pycache__/
 *.pt
 *.log
+logs/
