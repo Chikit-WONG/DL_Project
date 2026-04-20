@@ -1,0 +1,9 @@
+paths:
+  data_root: /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/image-eeg-data/converted_for_cogcappro
+  weights_root: /hpc2hdd/home/ckwong627/workdir/models
+  runs_root: /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/version4_CCP/runs
+  sdxl_root: /hpc2hdd/home/ckwong627/workdir/models/sdxl-turbo
+  ip_adapter_root: /hpc2hdd/home/ckwong627/workdir/models/IP-Adapter
+  clip_weights_rel:
+    ViT-H-14: CLIP-ViT-H-14-laion2B-s32B-b79K/open_clip_pytorch_model.bin
+    ViT-L-14: CLIP-ViT-L-14-laion2B-s32B-b82K/open_clip_pytorch_model.bin

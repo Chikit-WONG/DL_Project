@@ -5,7 +5,9 @@
 # *.pt
 # implementation_plan.md
 # experiment_plan.md
-plan/
+# plan/*
+# !plan/
+# !plan/*.md
 old_code/
 image-eeg-data/
 temp/

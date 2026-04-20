@@ -1,0 +1,75 @@
+name: BCI
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+
+dependencies:
+  # Python version
+  - python=3.12
+
+  # Core tools
+  - pip
+  - ipykernel
+  - ipython
+  - jupyter
+  - jupyterlab
+
+  # Scientific computing (conda)
+  - numpy=1.26.4
+  - pandas=2.3.3
+  - matplotlib=3.10.7
+  - scikit-learn=1.6.1
+  - scipy=1.15.3
+  - seaborn=0.13.2
+  - h5py=3.13.0
+
+  # System utilities
+  - pillow
+  - pyyaml
+  - tqdm=4.67.1
+  - ffmpeg
+
+  # PyTorch (CUDA 12.4)
+  - pytorch=2.5.0
+  - torchvision=0.20.0
+  - torchaudio=2.5.0
+  - pytorch-cuda=12.4
+
+  # Pip dependencies
+  - pip:
+      # Hugging Face Ecosystem
+      - transformers==4.36.0
+      - diffusers==0.30.0
+      - accelerate==1.5.2
+      - huggingface-hub==0.30.2
+
+      # EEG Processing
+      - braindecode==0.8.1
+      - mne==1.9.0
+
+      # CLIP and Vision
+      - git+https://github.com/openai/CLIP.git
+      - open-clip-torch
+
+      # Image Generation
+      - dalle2-pytorch==1.15.6
+      - pytorch-msssim==1.0.0
+
+      # Deep Learning Utilities
+      - einops==0.8.1
+      - info-nce-pytorch==0.1.0
+      - reformer-pytorch==1.4.4
+
+      # Logging and Tracking
+      - wandb==0.19.10
+
+      # Image Processing
+      - imageio==2.37.0
+      - kornia==0.8.0
+
+      # Utilities
+      - ftfy==6.3.1
+      - regex==2024.11.6
+      - clip-retrieval

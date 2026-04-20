@@ -1,0 +1,233 @@
+{
+  "runs": [
+    {
+      "run_dir": "/hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/references/repository/CognitionCapturerPro/runs/full_v2/intra-subject_cogcappro_EEGProjectLayer_multimodal_cogcap_list_ViT-H-14/sub-01_seed0",
+      "metrics": {
+        "retrieval_test_loss_image": 2.873450517654419,
+        "retrieval_test_loss_text": 4.084996223449707,
+        "retrieval_test_loss_depth": 2.6244165897369385,
+        "retrieval_test_loss_edge": 3.148214340209961,
+        "retrieval_test_loss_fusion": 3.2567131519317627,
+        "retrieval_test_total_loss_epoch": 15.98779010772705,
+        "retrieval_test_top1_acc_image": 0.26499998569488525,
+        "retrieval_test_top5_acc_image": 0.6000000238418579,
+        "retrieval_mAP_image": 0.4105667471885681,
+        "retrieval_similarity_image": 0.11566068232059479,
+        "retrieval_test_top1_acc_text": 0.11999999731779099,
+        "retrieval_test_top5_acc_text": 0.3199999928474426,
+        "retrieval_mAP_text": 0.23516950011253357,
+        "retrieval_similarity_text": 0.07420634478330612,
+        "retrieval_test_top1_acc_depth": 0.32499998807907104,
+        "retrieval_test_top5_acc_depth": 0.6700000166893005,
+        "retrieval_mAP_depth": 0.47228190302848816,
+        "retrieval_similarity_depth": 0.11966180801391602,
+        "retrieval_test_top1_acc_edge": 0.2199999988079071,
+        "retrieval_test_top5_acc_edge": 0.574999988079071,
+        "retrieval_mAP_edge": 0.37041541934013367,
+        "retrieval_similarity_edge": 0.12676355242729187,
+        "retrieval_test_top1_acc_fusion": 0.3149999976158142,
+        "retrieval_test_top5_acc_fusion": 0.6449999809265137,
+        "retrieval_mAP_fusion": 0.4684055745601654,
+        "retrieval_similarity_fusion": 4.55092191696167,
+        "retrieval_test_any_modality_top1_acc": 0.6100000143051147,
+        "retrieval_test_any_modality_top5_acc": 0.8799999952316284,
+        "reconstruction_eval_pixcorr": 0.09460770053078754,
+        "reconstruction_eval_ssim": 0.22540642637926273,
+        "reconstruction_eval_alex2": 0.47914572864321603,
+        "reconstruction_eval_alex5": 0.49067839195979895,
+        "reconstruction_eval_inception": 0.4928391959798995,
+        "reconstruction_eval_clip": 0.5168844221105527,
+        "reconstruction_eval_effnet": 0.983842431614838,
+        "reconstruction_eval_swav": 0.7592669652883898,
+        "reconstruction_matched_images": 200.0
+      }
+    }
+  ],
+  "aggregate": {
+    "reconstruction_eval_alex2": {
+      "mean": 0.47914572864321603,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_alex5": {
+      "mean": 0.49067839195979895,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_clip": {
+      "mean": 0.5168844221105527,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_effnet": {
+      "mean": 0.983842431614838,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_inception": {
+      "mean": 0.4928391959798995,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_pixcorr": {
+      "mean": 0.09460770053078754,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_ssim": {
+      "mean": 0.22540642637926273,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_swav": {
+      "mean": 0.7592669652883898,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_matched_images": {
+      "mean": 200.0,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_mAP_depth": {
+      "mean": 0.47228190302848816,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_mAP_edge": {
+      "mean": 0.37041541934013367,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_mAP_fusion": {
+      "mean": 0.4684055745601654,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_mAP_image": {
+      "mean": 0.4105667471885681,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_mAP_text": {
+      "mean": 0.23516950011253357,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_similarity_depth": {
+      "mean": 0.11966180801391602,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_similarity_edge": {
+      "mean": 0.12676355242729187,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_similarity_fusion": {
+      "mean": 4.55092191696167,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_similarity_image": {
+      "mean": 0.11566068232059479,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_similarity_text": {
+      "mean": 0.07420634478330612,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_any_modality_top1_acc": {
+      "mean": 0.6100000143051147,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_any_modality_top5_acc": {
+      "mean": 0.8799999952316284,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_loss_depth": {
+      "mean": 2.6244165897369385,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_loss_edge": {
+      "mean": 3.148214340209961,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_loss_fusion": {
+      "mean": 3.2567131519317627,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_loss_image": {
+      "mean": 2.873450517654419,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_loss_text": {
+      "mean": 4.084996223449707,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top1_acc_depth": {
+      "mean": 0.32499998807907104,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top1_acc_edge": {
+      "mean": 0.2199999988079071,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top1_acc_fusion": {
+      "mean": 0.3149999976158142,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top1_acc_image": {
+      "mean": 0.26499998569488525,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top1_acc_text": {
+      "mean": 0.11999999731779099,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top5_acc_depth": {
+      "mean": 0.6700000166893005,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top5_acc_edge": {
+      "mean": 0.574999988079071,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top5_acc_fusion": {
+      "mean": 0.6449999809265137,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top5_acc_image": {
+      "mean": 0.6000000238418579,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top5_acc_text": {
+      "mean": 0.3199999928474426,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_total_loss_epoch": {
+      "mean": 15.98779010772705,
+      "std": 0.0,
+      "n": 1
+    }
+  }
+}

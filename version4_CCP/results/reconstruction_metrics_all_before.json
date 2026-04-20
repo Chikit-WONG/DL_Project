@@ -1,0 +1,13 @@
+{
+  "eval_pixcorr": 0.130429927700746,
+  "eval_ssim": 0.31584103341471254,
+  "eval_alex2": 0.6626130653266332,
+  "eval_alex5": 0.6975879396984924,
+  "eval_inception": 0.597035175879397,
+  "eval_clip": 0.7072613065326634,
+  "eval_effnet": 0.9481617177524251,
+  "eval_swav": 0.6888550935503263,
+  "matched_images": 200,
+  "clip_model_name": "ViT-H-14",
+  "clip_pretrained": "/hpc2hdd/home/ckwong627/workdir/models/CLIP-ViT-H-14-laion2B-s32B-b79K/open_clip_pytorch_model.bin"
+}

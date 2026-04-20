@@ -1,0 +1,6 @@
+{
+    "data_path": "/hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/image-eeg-data",
+    "img_directory_training": "/hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/image-eeg-data/training_images",
+    "img_directory_test": "/hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/image-eeg-data/test_images",
+    "features_path": "/hpc2hdd/home/ckwong627/workdir/models"
+}

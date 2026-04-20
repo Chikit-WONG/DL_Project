@@ -1,0 +1,55 @@
+# ── Deep Learning ───────────────────────────────────────────────────────────
+torch==2.5.0
+torchvision==0.20.0
+torchaudio==2.5.0
+
+# ── Diffusion / IP-Adapter ──────────────────────────────────────────────────
+# NOTE: validated with diffusers 0.37.1 on the cluster.
+# ip_adapter_image_embeds must be raw [N, 1024] embeddings;
+# the UNet's ImageProjection handles 1024→4×768 internally.
+diffusers==0.30.0
+accelerate==1.5.2
+
+# ── Hugging Face ────────────────────────────────────────────────────────────
+transformers==4.36.0
+huggingface-hub==0.30.2
+
+# ── CLIP ────────────────────────────────────────────────────────────────────
+open-clip-torch
+
+# ── Image Generation ────────────────────────────────────────────────────────
+dalle2-pytorch==1.15.6
+pytorch-msssim==1.0.0
+
+# ── EEG Processing ──────────────────────────────────────────────────────────
+braindecode==0.8.1
+mne==1.9.0
+
+# ── Data & Numerics ─────────────────────────────────────────────────────────
+numpy==1.26.4
+pandas==2.3.3
+scipy==1.15.3
+scikit-learn==1.6.1
+h5py==3.13.0
+
+# ── Visualization ───────────────────────────────────────────────────────────
+matplotlib==3.10.7
+seaborn==0.13.2
+tqdm==4.67.1
+
+# ── Deep Learning Utilities ─────────────────────────────────────────────────
+einops==0.8.1
+info-nce-pytorch==0.1.0
+reformer-pytorch==1.4.4
+
+# ── Image Processing ────────────────────────────────────────────────────────
+Pillow
+imageio==2.37.0
+kornia==0.8.0
+
+# ── Text Utilities ──────────────────────────────────────────────────────────
+ftfy==6.3.1
+regex==2024.11.6
+
+# ── Optional: experiment tracking ───────────────────────────────────────────
+# wandb==0.19.10
