@@ -1,0 +1,469 @@
+2026-04-17 14:57:03,113 - INFO - running
+2026-04-17 14:57:03,163 - INFO - 🖥️ 可用GPU数量: 1
+2026-04-17 14:57:03,163 - INFO - 📁 数据目录: image-eeg-data
+2026-04-17 14:57:03,163 - INFO - 🧠 OpenCLIP 图像编码: ViT-H-14 (laion2b_s32b_b79k)
+2026-04-17 14:57:03,176 - INFO - 🚀 正在预计算训练集 OpenCLIP ViT-H/14 image embedding...
+2026-04-17 14:57:11,136 - INFO - Loaded train.pt → keys: ['eeg', 'label', 'img', 'text', 'session', 'ch_names', 'times']
+2026-04-17 14:57:13,922 - INFO - 对齐后样本数=16540 (split=train, avg_trials=True)
+2026-04-17 14:57:13,922 - INFO - DEBUG: 前3个 img_refs: ['aardvark_01b.jpg', 'aardvark_02s.jpg', 'aardvark_03s.jpg']
+2026-04-17 14:57:13,922 - INFO - ✅ 图片根目录: /hpc2hdd/home/dsaa2012_009/reproduce/image-eeg-data/train_images/train_images
+2026-04-17 14:57:15,125 - INFO - ✅ 找到 16540 张图片
+2026-04-17 14:57:15,126 - INFO - Parsing model identifier. Schema: None, Identifier: ViT-H-14
+2026-04-17 14:57:15,126 - INFO - Loaded built-in ViT-H-14 model config.
+2026-04-17 14:57:15,463 - INFO - HTTP Request: HEAD https://huggingface.co/laion/CLIP-ViT-H-14-laion2B-s32B-b79K/resolve/main/open_clip_model.safetensors "HTTP/1.1 302 Found"
+2026-04-17 14:57:15,465 - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-04-17 14:57:15,467 - INFO - Instantiating model architecture: CLIP
+2026-04-17 14:57:21,971 - INFO - Loading full pretrained weights from: /hpc2hdd/home/dsaa2012_009/.cache/huggingface/hub/models--laion--CLIP-ViT-H-14-laion2B-s32B-b79K/snapshots/1c2b8495b28150b8a4922ee1c8edee224c284c0c/open_clip_model.safetensors
+2026-04-17 14:57:31,602 - INFO - Final image preprocessing configuration set: {'size': (224, 224), 'mode': 'RGB', 'mean': (0.48145466, 0.4578275, 0.40821073), 'std': (0.26862954, 0.26130258, 0.27577711), 'interpolation': 'bicubic', 'resize_mode': 'shortest', 'fill_color': 0}
+2026-04-17 14:57:31,602 - INFO - Model ViT-H-14 creation process complete.
+2026-04-17 15:04:22,150 - INFO - 已处理 16000/16540
+2026-04-17 15:04:35,914 - INFO - 已处理 16540/16540
+2026-04-17 15:04:36,042 - INFO - 
+🎉 成功！保存到: image-eeg-data/train_clip_openclip_vith14_1024.pt | 形状: torch.Size([16540, 1024]) | 特征: open_clip_encode_image
+2026-04-17 15:04:36,141 - INFO - 🚀 正在预计算测试集 OpenCLIP ViT-H/14 image embedding...
+2026-04-17 15:04:37,132 - INFO - Loaded test.pt → keys: ['eeg', 'label', 'img', 'text', 'session', 'ch_names', 'times']
+2026-04-17 15:04:37,609 - INFO - 对齐后样本数=200 (split=test, avg_trials=True)
+2026-04-17 15:04:37,609 - INFO - DEBUG: 前3个 img_refs: ['aircraft_carrier_06s.jpg', 'antelope_01b.jpg', 'backscratcher_01b.jpg']
+2026-04-17 15:04:37,609 - INFO - ✅ 图片根目录: /hpc2hdd/home/dsaa2012_009/reproduce/image-eeg-data/test_images/test_images
+2026-04-17 15:04:37,741 - INFO - ✅ 找到 200 张图片
+2026-04-17 15:04:37,742 - INFO - Parsing model identifier. Schema: None, Identifier: ViT-H-14
+2026-04-17 15:04:37,742 - INFO - Loaded built-in ViT-H-14 model config.
+2026-04-17 15:04:39,078 - INFO - HTTP Request: HEAD https://huggingface.co/laion/CLIP-ViT-H-14-laion2B-s32B-b79K/resolve/main/open_clip_model.safetensors "HTTP/1.1 302 Found"
+2026-04-17 15:04:39,082 - INFO - Instantiating model architecture: CLIP
+2026-04-17 15:04:45,477 - INFO - Loading full pretrained weights from: /hpc2hdd/home/dsaa2012_009/.cache/huggingface/hub/models--laion--CLIP-ViT-H-14-laion2B-s32B-b79K/snapshots/1c2b8495b28150b8a4922ee1c8edee224c284c0c/open_clip_model.safetensors
+2026-04-17 15:04:46,928 - INFO - Final image preprocessing configuration set: {'size': (224, 224), 'mode': 'RGB', 'mean': (0.48145466, 0.4578275, 0.40821073), 'std': (0.26862954, 0.26130258, 0.27577711), 'interpolation': 'bicubic', 'resize_mode': 'shortest', 'fill_color': 0}
+2026-04-17 15:04:46,928 - INFO - Model ViT-H-14 creation process complete.
+2026-04-17 15:04:52,438 - INFO - 已处理 200/200
+2026-04-17 15:04:52,444 - INFO - 
+🎉 成功！保存到: image-eeg-data/test_clip_openclip_vith14_1024.pt | 形状: torch.Size([200, 1024]) | 特征: open_clip_encode_image
+2026-04-17 15:05:02,118 - INFO - EEGProjectDataset split=train -> avg_trials=True (训练/测试均对试次取平均)
+2026-04-17 15:05:16,678 - INFO - --- EEG 数据加载完成 ---
+2026-04-17 15:05:16,678 - INFO - EEG 形状: torch.Size([16540, 63, 250])
+2026-04-17 15:05:16,678 - INFO - CLIP 形状: torch.Size([16540, 1024])
+2026-04-17 15:05:16,678 - INFO - CLIP 特征类型: open_clip_encode_image
+2026-04-17 15:05:16,678 - INFO - CLIP 模型: open_clip:ViT-H-14:laion2b_s32b_b79k
+2026-04-17 15:05:17,617 - INFO - EEGProjectDataset split=test -> avg_trials=True (训练/测试均对试次取平均)
+2026-04-17 15:05:17,797 - INFO - --- EEG 数据加载完成 ---
+2026-04-17 15:05:17,798 - INFO - EEG 形状: torch.Size([200, 63, 250])
+2026-04-17 15:05:17,798 - INFO - CLIP 形状: torch.Size([200, 1024])
+2026-04-17 15:05:17,798 - INFO - CLIP 特征类型: open_clip_encode_image
+2026-04-17 15:05:17,798 - INFO - CLIP 模型: open_clip:ViT-H-14:laion2b_s32b_b79k
+2026-04-17 15:05:17,798 - INFO - Train dataset size: 16540
+2026-04-17 15:05:17,798 - INFO - Test dataset size: 200
+2026-04-17 15:05:17,799 - INFO - ✅ Batch size: 1024
+2026-04-17 15:05:17,799 - INFO - ✅ Num workers: 0
+2026-04-17 15:05:17,809 - INFO - 🔢 CLIP 特征维度 (OpenCLIP encode_image): 1024
+2026-04-17 15:05:17,809 - INFO - 
+============================================================
+2026-04-17 15:05:17,809 - INFO - 开始训练 ATM_S 模型
+2026-04-17 15:05:17,809 - INFO - ============================================================
+2026-04-17 15:05:17,810 - INFO - 开始训练，设备: cuda, Epochs: 40, LR: 0.0003
+2026-04-17 15:05:22,807 - INFO - EEG embeds count: 1
+2026-04-17 15:05:22,807 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:22,808 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:22,808 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:22,810 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:22,810 - INFO - EEG -> Image | Top-1: 0.00% | Top-5: 3.00%
+2026-04-17 15:05:22,810 - INFO - Image -> EEG | Top-1: 0.50% | Top-5: 8.00%
+2026-04-17 15:05:22,810 - INFO - Epoch [1/40], Loss: 6.8598, LR: 0.000300 | Top1: 0.00% | Top5: 3.00%
+2026-04-17 15:05:22,820 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:24,667 - INFO - EEG embeds count: 1
+2026-04-17 15:05:24,667 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:24,667 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:24,667 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:24,669 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:24,669 - INFO - EEG -> Image | Top-1: 1.00% | Top-5: 6.00%
+2026-04-17 15:05:24,669 - INFO - Image -> EEG | Top-1: 1.50% | Top-5: 7.50%
+2026-04-17 15:05:24,669 - INFO - Epoch [2/40], Loss: 6.6101, LR: 0.000298 | Top1: 1.00% | Top5: 6.00%
+2026-04-17 15:05:24,677 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:26,570 - INFO - EEG embeds count: 1
+2026-04-17 15:05:26,570 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:26,570 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:26,570 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:26,572 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:26,572 - INFO - EEG -> Image | Top-1: 3.00% | Top-5: 16.50%
+2026-04-17 15:05:26,572 - INFO - Image -> EEG | Top-1: 4.00% | Top-5: 17.00%
+2026-04-17 15:05:26,573 - INFO - Epoch [3/40], Loss: 6.2203, LR: 0.000296 | Top1: 3.00% | Top5: 16.50%
+2026-04-17 15:05:26,579 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:28,442 - INFO - EEG embeds count: 1
+2026-04-17 15:05:28,443 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:28,443 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:28,443 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:28,445 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:28,445 - INFO - EEG -> Image | Top-1: 7.00% | Top-5: 21.50%
+2026-04-17 15:05:28,445 - INFO - Image -> EEG | Top-1: 10.50% | Top-5: 31.00%
+2026-04-17 15:05:28,445 - INFO - Epoch [4/40], Loss: 5.8782, LR: 0.000293 | Top1: 7.00% | Top5: 21.50%
+2026-04-17 15:05:28,452 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:30,319 - INFO - EEG embeds count: 1
+2026-04-17 15:05:30,320 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:30,320 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:30,320 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:30,322 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:30,322 - INFO - EEG -> Image | Top-1: 8.00% | Top-5: 23.50%
+2026-04-17 15:05:30,322 - INFO - Image -> EEG | Top-1: 14.00% | Top-5: 39.50%
+2026-04-17 15:05:30,322 - INFO - Epoch [5/40], Loss: 5.6330, LR: 0.000289 | Top1: 8.00% | Top5: 23.50%
+2026-04-17 15:05:30,550 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:32,560 - INFO - EEG embeds count: 1
+2026-04-17 15:05:32,561 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:32,561 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:32,561 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:32,563 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:32,563 - INFO - EEG -> Image | Top-1: 12.50% | Top-5: 33.50%
+2026-04-17 15:05:32,563 - INFO - Image -> EEG | Top-1: 14.00% | Top-5: 46.00%
+2026-04-17 15:05:32,563 - INFO - Epoch [6/40], Loss: 5.4466, LR: 0.000284 | Top1: 12.50% | Top5: 33.50%
+2026-04-17 15:05:32,572 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:34,425 - INFO - EEG embeds count: 1
+2026-04-17 15:05:34,425 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:34,425 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:34,425 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:34,427 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:34,427 - INFO - EEG -> Image | Top-1: 15.00% | Top-5: 38.50%
+2026-04-17 15:05:34,427 - INFO - Image -> EEG | Top-1: 16.00% | Top-5: 44.50%
+2026-04-17 15:05:34,428 - INFO - Epoch [7/40], Loss: 5.2998, LR: 0.000278 | Top1: 15.00% | Top5: 38.50%
+2026-04-17 15:05:34,436 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:36,340 - INFO - EEG embeds count: 1
+2026-04-17 15:05:36,340 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:36,340 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:36,340 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:36,342 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:36,342 - INFO - EEG -> Image | Top-1: 13.00% | Top-5: 40.50%
+2026-04-17 15:05:36,342 - INFO - Image -> EEG | Top-1: 18.50% | Top-5: 47.50%
+2026-04-17 15:05:36,342 - INFO - Epoch [8/40], Loss: 5.1818, LR: 0.000271 | Top1: 13.00% | Top5: 40.50%
+2026-04-17 15:05:36,349 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:38,202 - INFO - EEG embeds count: 1
+2026-04-17 15:05:38,202 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:38,202 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:38,202 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:38,204 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:38,204 - INFO - EEG -> Image | Top-1: 10.50% | Top-5: 44.50%
+2026-04-17 15:05:38,204 - INFO - Image -> EEG | Top-1: 19.00% | Top-5: 55.00%
+2026-04-17 15:05:38,204 - INFO - Epoch [9/40], Loss: 5.0755, LR: 0.000264 | Top1: 10.50% | Top5: 44.50%
+2026-04-17 15:05:38,211 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:40,070 - INFO - EEG embeds count: 1
+2026-04-17 15:05:40,070 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:40,071 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:40,071 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:40,072 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:40,073 - INFO - EEG -> Image | Top-1: 16.50% | Top-5: 38.00%
+2026-04-17 15:05:40,073 - INFO - Image -> EEG | Top-1: 20.00% | Top-5: 57.00%
+2026-04-17 15:05:40,073 - INFO - Epoch [10/40], Loss: 4.9813, LR: 0.000256 | Top1: 16.50% | Top5: 38.00%
+2026-04-17 15:05:40,080 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:42,058 - INFO - EEG embeds count: 1
+2026-04-17 15:05:42,058 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:42,059 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:42,059 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:42,061 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:42,061 - INFO - EEG -> Image | Top-1: 14.50% | Top-5: 42.00%
+2026-04-17 15:05:42,061 - INFO - Image -> EEG | Top-1: 22.50% | Top-5: 58.50%
+2026-04-17 15:05:42,061 - INFO - Epoch [11/40], Loss: 4.8955, LR: 0.000247 | Top1: 14.50% | Top5: 42.00%
+2026-04-17 15:05:42,067 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:43,926 - INFO - EEG embeds count: 1
+2026-04-17 15:05:43,926 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:43,926 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:43,926 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:43,928 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:43,928 - INFO - EEG -> Image | Top-1: 17.00% | Top-5: 47.00%
+2026-04-17 15:05:43,928 - INFO - Image -> EEG | Top-1: 24.00% | Top-5: 60.00%
+2026-04-17 15:05:43,928 - INFO - Epoch [12/40], Loss: 4.8169, LR: 0.000238 | Top1: 17.00% | Top5: 47.00%
+2026-04-17 15:05:43,935 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:45,788 - INFO - EEG embeds count: 1
+2026-04-17 15:05:45,788 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:45,789 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:45,789 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:45,791 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:45,791 - INFO - EEG -> Image | Top-1: 18.00% | Top-5: 48.50%
+2026-04-17 15:05:45,791 - INFO - Image -> EEG | Top-1: 27.50% | Top-5: 58.50%
+2026-04-17 15:05:45,791 - INFO - Epoch [13/40], Loss: 4.7491, LR: 0.000228 | Top1: 18.00% | Top5: 48.50%
+2026-04-17 15:05:45,798 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:47,648 - INFO - EEG embeds count: 1
+2026-04-17 15:05:47,648 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:47,648 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:47,648 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:47,650 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:47,650 - INFO - EEG -> Image | Top-1: 17.00% | Top-5: 46.50%
+2026-04-17 15:05:47,650 - INFO - Image -> EEG | Top-1: 25.00% | Top-5: 60.00%
+2026-04-17 15:05:47,650 - INFO - Epoch [14/40], Loss: 4.6862, LR: 0.000218 | Top1: 17.00% | Top5: 46.50%
+2026-04-17 15:05:47,658 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:49,514 - INFO - EEG embeds count: 1
+2026-04-17 15:05:49,515 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:49,515 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:49,515 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:49,517 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:49,517 - INFO - EEG -> Image | Top-1: 19.50% | Top-5: 55.50%
+2026-04-17 15:05:49,517 - INFO - Image -> EEG | Top-1: 27.00% | Top-5: 62.50%
+2026-04-17 15:05:49,517 - INFO - Epoch [15/40], Loss: 4.6251, LR: 0.000207 | Top1: 19.50% | Top5: 55.50%
+2026-04-17 15:05:49,524 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:51,487 - INFO - EEG embeds count: 1
+2026-04-17 15:05:51,488 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:51,488 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:51,488 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:51,490 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:51,490 - INFO - EEG -> Image | Top-1: 17.00% | Top-5: 49.50%
+2026-04-17 15:05:51,490 - INFO - Image -> EEG | Top-1: 29.00% | Top-5: 59.50%
+2026-04-17 15:05:51,490 - INFO - Epoch [16/40], Loss: 4.5695, LR: 0.000196 | Top1: 17.00% | Top5: 49.50%
+2026-04-17 15:05:51,496 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:53,347 - INFO - EEG embeds count: 1
+2026-04-17 15:05:53,347 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:53,347 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:53,347 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:53,349 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:53,349 - INFO - EEG -> Image | Top-1: 19.00% | Top-5: 48.50%
+2026-04-17 15:05:53,349 - INFO - Image -> EEG | Top-1: 26.50% | Top-5: 62.00%
+2026-04-17 15:05:53,350 - INFO - Epoch [17/40], Loss: 4.5161, LR: 0.000185 | Top1: 19.00% | Top5: 48.50%
+2026-04-17 15:05:53,356 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:55,206 - INFO - EEG embeds count: 1
+2026-04-17 15:05:55,206 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:55,206 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:55,206 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:55,208 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:55,209 - INFO - EEG -> Image | Top-1: 14.50% | Top-5: 49.00%
+2026-04-17 15:05:55,209 - INFO - Image -> EEG | Top-1: 28.00% | Top-5: 61.50%
+2026-04-17 15:05:55,209 - INFO - Epoch [18/40], Loss: 4.4719, LR: 0.000173 | Top1: 14.50% | Top5: 49.00%
+2026-04-17 15:05:55,216 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:57,070 - INFO - EEG embeds count: 1
+2026-04-17 15:05:57,070 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:57,070 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:57,070 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:57,072 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:57,072 - INFO - EEG -> Image | Top-1: 19.00% | Top-5: 54.50%
+2026-04-17 15:05:57,072 - INFO - Image -> EEG | Top-1: 29.50% | Top-5: 62.50%
+2026-04-17 15:05:57,072 - INFO - Epoch [19/40], Loss: 4.4262, LR: 0.000162 | Top1: 19.00% | Top5: 54.50%
+2026-04-17 15:05:57,079 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:05:58,934 - INFO - EEG embeds count: 1
+2026-04-17 15:05:58,935 - INFO - CLIP embeds count: 1
+2026-04-17 15:05:58,935 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:58,935 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:05:58,937 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:05:58,937 - INFO - EEG -> Image | Top-1: 20.00% | Top-5: 54.50%
+2026-04-17 15:05:58,937 - INFO - Image -> EEG | Top-1: 31.00% | Top-5: 60.00%
+2026-04-17 15:05:58,937 - INFO - Epoch [20/40], Loss: 4.3853, LR: 0.000150 | Top1: 20.00% | Top5: 54.50%
+2026-04-17 15:05:58,944 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:00,919 - INFO - EEG embeds count: 1
+2026-04-17 15:06:00,919 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:00,919 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:00,919 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:00,921 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:00,921 - INFO - EEG -> Image | Top-1: 16.00% | Top-5: 48.00%
+2026-04-17 15:06:00,921 - INFO - Image -> EEG | Top-1: 28.00% | Top-5: 60.50%
+2026-04-17 15:06:00,921 - INFO - Epoch [21/40], Loss: 4.3471, LR: 0.000138 | Top1: 16.00% | Top5: 48.00%
+2026-04-17 15:06:00,929 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:02,782 - INFO - EEG embeds count: 1
+2026-04-17 15:06:02,782 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:02,782 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:02,782 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:02,784 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:02,785 - INFO - EEG -> Image | Top-1: 18.00% | Top-5: 46.50%
+2026-04-17 15:06:02,785 - INFO - Image -> EEG | Top-1: 28.50% | Top-5: 62.50%
+2026-04-17 15:06:02,785 - INFO - Epoch [22/40], Loss: 4.3156, LR: 0.000127 | Top1: 18.00% | Top5: 46.50%
+2026-04-17 15:06:02,791 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:04,644 - INFO - EEG embeds count: 1
+2026-04-17 15:06:04,644 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:04,644 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:04,644 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:04,646 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:04,646 - INFO - EEG -> Image | Top-1: 19.50% | Top-5: 47.50%
+2026-04-17 15:06:04,646 - INFO - Image -> EEG | Top-1: 32.50% | Top-5: 63.50%
+2026-04-17 15:06:04,646 - INFO - Epoch [23/40], Loss: 4.2764, LR: 0.000115 | Top1: 19.50% | Top5: 47.50%
+2026-04-17 15:06:04,653 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:06,513 - INFO - EEG embeds count: 1
+2026-04-17 15:06:06,513 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:06,513 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:06,513 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:06,515 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:06,515 - INFO - EEG -> Image | Top-1: 19.00% | Top-5: 48.00%
+2026-04-17 15:06:06,515 - INFO - Image -> EEG | Top-1: 30.00% | Top-5: 61.50%
+2026-04-17 15:06:06,515 - INFO - Epoch [24/40], Loss: 4.2539, LR: 0.000104 | Top1: 19.00% | Top5: 48.00%
+2026-04-17 15:06:06,523 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:08,384 - INFO - EEG embeds count: 1
+2026-04-17 15:06:08,384 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:08,384 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:08,384 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:08,386 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:08,386 - INFO - EEG -> Image | Top-1: 19.50% | Top-5: 50.50%
+2026-04-17 15:06:08,386 - INFO - Image -> EEG | Top-1: 32.00% | Top-5: 61.00%
+2026-04-17 15:06:08,386 - INFO - Epoch [25/40], Loss: 4.2254, LR: 0.000093 | Top1: 19.50% | Top5: 50.50%
+2026-04-17 15:06:08,393 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:10,346 - INFO - EEG embeds count: 1
+2026-04-17 15:06:10,346 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:10,347 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:10,347 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:10,349 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:10,349 - INFO - EEG -> Image | Top-1: 23.00% | Top-5: 50.50%
+2026-04-17 15:06:10,349 - INFO - Image -> EEG | Top-1: 32.00% | Top-5: 63.50%
+2026-04-17 15:06:10,349 - INFO - Epoch [26/40], Loss: 4.2033, LR: 0.000082 | Top1: 23.00% | Top5: 50.50%
+2026-04-17 15:06:10,356 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:12,205 - INFO - EEG embeds count: 1
+2026-04-17 15:06:12,205 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:12,205 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:12,205 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:12,207 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:12,208 - INFO - EEG -> Image | Top-1: 22.50% | Top-5: 52.50%
+2026-04-17 15:06:12,208 - INFO - Image -> EEG | Top-1: 30.50% | Top-5: 62.00%
+2026-04-17 15:06:12,208 - INFO - Epoch [27/40], Loss: 4.1769, LR: 0.000072 | Top1: 22.50% | Top5: 52.50%
+2026-04-17 15:06:12,215 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:14,077 - INFO - EEG embeds count: 1
+2026-04-17 15:06:14,077 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:14,077 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:14,077 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:14,079 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:14,079 - INFO - EEG -> Image | Top-1: 21.00% | Top-5: 50.50%
+2026-04-17 15:06:14,079 - INFO - Image -> EEG | Top-1: 31.50% | Top-5: 63.00%
+2026-04-17 15:06:14,079 - INFO - Epoch [28/40], Loss: 4.1573, LR: 0.000062 | Top1: 21.00% | Top5: 50.50%
+2026-04-17 15:06:14,086 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:15,941 - INFO - EEG embeds count: 1
+2026-04-17 15:06:15,942 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:15,942 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:15,942 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:15,944 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:15,944 - INFO - EEG -> Image | Top-1: 21.00% | Top-5: 49.50%
+2026-04-17 15:06:15,944 - INFO - Image -> EEG | Top-1: 32.00% | Top-5: 63.00%
+2026-04-17 15:06:15,944 - INFO - Epoch [29/40], Loss: 4.1437, LR: 0.000053 | Top1: 21.00% | Top5: 49.50%
+2026-04-17 15:06:15,953 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:17,829 - INFO - EEG embeds count: 1
+2026-04-17 15:06:17,829 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:17,830 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:17,830 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:17,831 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:17,832 - INFO - EEG -> Image | Top-1: 21.00% | Top-5: 52.50%
+2026-04-17 15:06:17,832 - INFO - Image -> EEG | Top-1: 31.00% | Top-5: 62.00%
+2026-04-17 15:06:17,832 - INFO - Epoch [30/40], Loss: 4.1340, LR: 0.000044 | Top1: 21.00% | Top5: 52.50%
+2026-04-17 15:06:17,838 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:19,819 - INFO - EEG embeds count: 1
+2026-04-17 15:06:19,819 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:19,819 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:19,819 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:19,821 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:19,822 - INFO - EEG -> Image | Top-1: 23.50% | Top-5: 50.50%
+2026-04-17 15:06:19,822 - INFO - Image -> EEG | Top-1: 34.00% | Top-5: 63.50%
+2026-04-17 15:06:19,822 - INFO - Epoch [31/40], Loss: 4.1129, LR: 0.000036 | Top1: 23.50% | Top5: 50.50%
+2026-04-17 15:06:19,828 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:21,684 - INFO - EEG embeds count: 1
+2026-04-17 15:06:21,684 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:21,684 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:21,684 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:21,686 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:21,686 - INFO - EEG -> Image | Top-1: 22.50% | Top-5: 52.50%
+2026-04-17 15:06:21,686 - INFO - Image -> EEG | Top-1: 32.00% | Top-5: 63.00%
+2026-04-17 15:06:21,686 - INFO - Epoch [32/40], Loss: 4.1074, LR: 0.000029 | Top1: 22.50% | Top5: 52.50%
+2026-04-17 15:06:21,694 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:23,554 - INFO - EEG embeds count: 1
+2026-04-17 15:06:23,554 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:23,554 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:23,554 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:23,556 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:23,556 - INFO - EEG -> Image | Top-1: 23.50% | Top-5: 56.00%
+2026-04-17 15:06:23,556 - INFO - Image -> EEG | Top-1: 31.50% | Top-5: 62.50%
+2026-04-17 15:06:23,556 - INFO - Epoch [33/40], Loss: 4.0906, LR: 0.000022 | Top1: 23.50% | Top5: 56.00%
+2026-04-17 15:06:23,563 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:25,419 - INFO - EEG embeds count: 1
+2026-04-17 15:06:25,419 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:25,419 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:25,419 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:25,421 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:25,421 - INFO - EEG -> Image | Top-1: 23.50% | Top-5: 49.50%
+2026-04-17 15:06:25,421 - INFO - Image -> EEG | Top-1: 31.50% | Top-5: 63.00%
+2026-04-17 15:06:25,421 - INFO - Epoch [34/40], Loss: 4.0843, LR: 0.000016 | Top1: 23.50% | Top5: 49.50%
+2026-04-17 15:06:25,429 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:27,287 - INFO - EEG embeds count: 1
+2026-04-17 15:06:27,288 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:27,288 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:27,288 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:27,290 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:27,290 - INFO - EEG -> Image | Top-1: 21.50% | Top-5: 53.00%
+2026-04-17 15:06:27,290 - INFO - Image -> EEG | Top-1: 32.50% | Top-5: 63.00%
+2026-04-17 15:06:27,290 - INFO - Epoch [35/40], Loss: 4.0771, LR: 0.000011 | Top1: 21.50% | Top5: 53.00%
+2026-04-17 15:06:27,297 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:29,252 - INFO - EEG embeds count: 1
+2026-04-17 15:06:29,252 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:29,252 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:29,252 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:29,254 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:29,254 - INFO - EEG -> Image | Top-1: 23.00% | Top-5: 51.50%
+2026-04-17 15:06:29,254 - INFO - Image -> EEG | Top-1: 32.50% | Top-5: 62.50%
+2026-04-17 15:06:29,254 - INFO - Epoch [36/40], Loss: 4.0769, LR: 0.000007 | Top1: 23.00% | Top5: 51.50%
+2026-04-17 15:06:29,261 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:31,149 - INFO - EEG embeds count: 1
+2026-04-17 15:06:31,149 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:31,149 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:31,149 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:31,151 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:31,151 - INFO - EEG -> Image | Top-1: 23.00% | Top-5: 52.50%
+2026-04-17 15:06:31,151 - INFO - Image -> EEG | Top-1: 32.50% | Top-5: 63.00%
+2026-04-17 15:06:31,151 - INFO - Epoch [37/40], Loss: 4.0723, LR: 0.000004 | Top1: 23.00% | Top5: 52.50%
+2026-04-17 15:06:31,159 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:33,031 - INFO - EEG embeds count: 1
+2026-04-17 15:06:33,031 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:33,032 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:33,032 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:33,033 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:33,034 - INFO - EEG -> Image | Top-1: 23.00% | Top-5: 50.50%
+2026-04-17 15:06:33,034 - INFO - Image -> EEG | Top-1: 32.50% | Top-5: 63.00%
+2026-04-17 15:06:33,034 - INFO - Epoch [38/40], Loss: 4.0699, LR: 0.000002 | Top1: 23.00% | Top5: 50.50%
+2026-04-17 15:06:33,042 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:34,951 - INFO - EEG embeds count: 1
+2026-04-17 15:06:34,952 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:34,952 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:34,952 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:34,954 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:34,954 - INFO - EEG -> Image | Top-1: 23.50% | Top-5: 50.50%
+2026-04-17 15:06:34,954 - INFO - Image -> EEG | Top-1: 32.50% | Top-5: 63.00%
+2026-04-17 15:06:34,954 - INFO - Epoch [39/40], Loss: 4.0734, LR: 0.000000 | Top1: 23.50% | Top5: 50.50%
+2026-04-17 15:06:36,824 - INFO - EEG embeds count: 1
+2026-04-17 15:06:36,824 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:36,824 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:36,824 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:36,826 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:36,827 - INFO - EEG -> Image | Top-1: 23.50% | Top-5: 51.00%
+2026-04-17 15:06:36,827 - INFO - Image -> EEG | Top-1: 32.50% | Top-5: 63.00%
+2026-04-17 15:06:36,827 - INFO - Epoch [40/40], Loss: 4.0663, LR: 0.000000 | Top1: 23.50% | Top5: 51.00%
+2026-04-17 15:06:36,834 - INFO - 💾 已更新最佳 checkpoint: ../artifacts/atm_s_retrieval_best.pt
+2026-04-17 15:06:36,835 - INFO - 📈 最后一轮训练记录: {'epoch': 40, 'loss': 4.066335369558895, 'lr': 0.0, 'eeg_to_image_top1': 23.499999940395355, 'eeg_to_image_top5': 50.999999046325684, 'image_to_eeg_top1': 32.499998807907104, 'image_to_eeg_top5': 62.99999952316284}
+2026-04-17 15:06:36,845 - INFO - EEG embeds count: 1
+2026-04-17 15:06:36,845 - INFO - CLIP embeds count: 1
+2026-04-17 15:06:36,845 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:36,845 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-17 15:06:36,847 - INFO - 
+--- 评估结果 ---
+2026-04-17 15:06:36,847 - INFO - EEG -> Image | Top-1: 23.50% | Top-5: 51.00%
+2026-04-17 15:06:36,847 - INFO - Image -> EEG | Top-1: 32.50% | Top-5: 63.00%
+2026-04-17 15:06:36,847 - INFO - 最终检索指标: {'eeg_to_image_top1': 23.499999940395355, 'eeg_to_image_top5': 50.999999046325684, 'image_to_eeg_top1': 32.499998807907104, 'image_to_eeg_top5': 62.99999952316284}

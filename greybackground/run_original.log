@@ -1,0 +1,671 @@
+2026-04-23 12:39:15,955 - INFO - running
+2026-04-23 12:39:16,097 - INFO - 可用GPU数量: 1
+2026-04-23 12:39:16,097 - INFO - 数据目录: image-eeg-data
+2026-04-23 12:39:16,097 - INFO - OpenCLIP 图像编码: ViT-H-14 (laion2b_s32b_b79k)
+2026-04-23 12:39:16,099 - INFO - 训练集 CLIP 缓存已存在: image-eeg-data/train_clip_openclip_vith14_1024.pt
+2026-04-23 12:39:16,100 - INFO - 测试集 CLIP 缓存已存在: image-eeg-data/test_clip_openclip_vith14_1024.pt
+2026-04-23 12:39:28,916 - INFO - EEGProjectDataset split=train -> avg_trials=True (训练保留试次 / 测试试次平均)
+2026-04-23 12:39:44,128 - INFO - --- EEG 数据加载完成 ---
+2026-04-23 12:39:44,128 - INFO - EEG 形状: torch.Size([16540, 63, 250])
+2026-04-23 12:39:44,128 - INFO - CLIP 形状: torch.Size([16540, 1024])
+2026-04-23 12:39:44,128 - INFO - CLIP 特征类型: open_clip_encode_image
+2026-04-23 12:39:44,128 - INFO - CLIP 模型: open_clip:ViT-H-14:laion2b_s32b_b79k
+2026-04-23 12:39:45,789 - INFO - EEGProjectDataset split=test -> avg_trials=True (训练保留试次 / 测试试次平均)
+2026-04-23 12:39:46,022 - INFO - --- EEG 数据加载完成 ---
+2026-04-23 12:39:46,022 - INFO - EEG 形状: torch.Size([200, 63, 250])
+2026-04-23 12:39:46,023 - INFO - CLIP 形状: torch.Size([200, 1024])
+2026-04-23 12:39:46,023 - INFO - CLIP 特征类型: open_clip_encode_image
+2026-04-23 12:39:46,023 - INFO - CLIP 模型: open_clip:ViT-H-14:laion2b_s32b_b79k
+2026-04-23 12:39:46,024 - INFO - Train dataset size: 16540
+2026-04-23 12:39:46,024 - INFO - Test dataset size: 200
+2026-04-23 12:39:46,025 - INFO - Batch size: 16
+2026-04-23 12:39:46,025 - INFO - Num workers: 0
+2026-04-23 12:39:46,957 - INFO - CLIP 特征维度 (OpenCLIP encode_image): 1024
+2026-04-23 12:39:46,957 - INFO - 
+============================================================
+2026-04-23 12:39:46,957 - INFO - 开始训练 ATM_S 模型（10次重复实验）
+2026-04-23 12:39:46,958 - INFO - ============================================================
+2026-04-23 12:39:46,958 - INFO - 
+--- 第 1 次实验 ---
+2026-04-23 12:40:00,365 - INFO - 开始训练，设备: cuda, Epochs: 40, LR: 0.0003
+2026-04-23 12:40:00,365 - INFO - 梯度累积步数: 1, 混合精度: True
+2026-04-23 12:40:00,365 - INFO - 模型参数量: 总计 1,856,153, 可训练 1,856,153
+2026-04-23 12:40:00,366 - INFO - 初始显存: 已分配 0.01 GB, 已预留 0.02 GB
+2026-04-23 12:40:08,497 - INFO - 第一个 batch 后显存: 已分配 0.04 GB, 已预留 0.06 GB
+2026-04-23 12:40:16,490 - INFO - Epoch [1/40] Loss=2.2616 LR=0.000300 | EEG->Img Top-1=8.00% Top-5=24.00% | Img->EEG Top-1=13.00% Top-5=30.50%
+2026-04-23 12:40:16,609 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=8.00%, epoch=1): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:40:23,738 - INFO - Epoch [2/40] Loss=1.4892 LR=0.000298 | EEG->Img Top-1=12.00% Top-5=31.50% | Img->EEG Top-1=20.50% Top-5=53.00%
+2026-04-23 12:40:23,747 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=12.00%, epoch=2): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:40:30,793 - INFO - Epoch [3/40] Loss=1.1066 LR=0.000296 | EEG->Img Top-1=17.50% Top-5=45.00% | Img->EEG Top-1=28.50% Top-5=59.00%
+2026-04-23 12:40:30,801 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=17.50%, epoch=3): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:40:37,890 - INFO - Epoch [4/40] Loss=0.8163 LR=0.000293 | EEG->Img Top-1=18.00% Top-5=48.00% | Img->EEG Top-1=25.00% Top-5=61.00%
+2026-04-23 12:40:37,898 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=18.00%, epoch=4): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:40:45,120 - INFO - Epoch [5/40] Loss=0.5830 LR=0.000289 | EEG->Img Top-1=25.00% Top-5=55.00% | Img->EEG Top-1=34.00% Top-5=64.00%
+2026-04-23 12:40:45,127 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=25.00%, epoch=5): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:40:52,511 - INFO - Epoch [6/40] Loss=0.4031 LR=0.000284 | EEG->Img Top-1=14.00% Top-5=47.00% | Img->EEG Top-1=35.50% Top-5=67.00%
+2026-04-23 12:40:59,914 - INFO - Epoch [7/40] Loss=0.2748 LR=0.000278 | EEG->Img Top-1=21.00% Top-5=51.50% | Img->EEG Top-1=33.00% Top-5=63.50%
+2026-04-23 12:41:07,327 - INFO - Epoch [8/40] Loss=0.2170 LR=0.000271 | EEG->Img Top-1=23.00% Top-5=50.50% | Img->EEG Top-1=34.00% Top-5=62.50%
+2026-04-23 12:41:14,793 - INFO - Epoch [9/40] Loss=0.1685 LR=0.000264 | EEG->Img Top-1=21.00% Top-5=45.50% | Img->EEG Top-1=26.50% Top-5=55.50%
+2026-04-23 12:41:22,263 - INFO - Epoch [10/40] Loss=0.1375 LR=0.000256 | EEG->Img Top-1=19.00% Top-5=47.50% | Img->EEG Top-1=33.50% Top-5=60.00%
+2026-04-23 12:41:29,496 - INFO - Epoch [11/40] Loss=0.1230 LR=0.000247 | EEG->Img Top-1=16.50% Top-5=43.50% | Img->EEG Top-1=33.50% Top-5=57.50%
+2026-04-23 12:41:36,592 - INFO - Epoch [12/40] Loss=0.1063 LR=0.000238 | EEG->Img Top-1=22.00% Top-5=48.00% | Img->EEG Top-1=30.00% Top-5=59.00%
+2026-04-23 12:41:43,552 - INFO - Epoch [13/40] Loss=0.1017 LR=0.000228 | EEG->Img Top-1=20.00% Top-5=48.50% | Img->EEG Top-1=29.50% Top-5=58.00%
+2026-04-23 12:41:50,565 - INFO - Epoch [14/40] Loss=0.0890 LR=0.000218 | EEG->Img Top-1=21.50% Top-5=45.00% | Img->EEG Top-1=28.50% Top-5=55.00%
+2026-04-23 12:41:57,634 - INFO - Epoch [15/40] Loss=0.0737 LR=0.000207 | EEG->Img Top-1=23.00% Top-5=49.50% | Img->EEG Top-1=30.50% Top-5=55.50%
+2026-04-23 12:42:04,759 - INFO - Epoch [16/40] Loss=0.0672 LR=0.000196 | EEG->Img Top-1=24.00% Top-5=49.00% | Img->EEG Top-1=27.50% Top-5=55.00%
+2026-04-23 12:42:11,758 - INFO - Epoch [17/40] Loss=0.0594 LR=0.000185 | EEG->Img Top-1=19.00% Top-5=45.00% | Img->EEG Top-1=29.00% Top-5=57.00%
+2026-04-23 12:42:18,784 - INFO - Epoch [18/40] Loss=0.0515 LR=0.000173 | EEG->Img Top-1=20.00% Top-5=48.50% | Img->EEG Top-1=28.50% Top-5=59.50%
+2026-04-23 12:42:25,786 - INFO - Epoch [19/40] Loss=0.0441 LR=0.000162 | EEG->Img Top-1=19.00% Top-5=46.00% | Img->EEG Top-1=26.00% Top-5=55.00%
+2026-04-23 12:42:32,808 - INFO - Epoch [20/40] Loss=0.0397 LR=0.000150 | EEG->Img Top-1=19.00% Top-5=46.50% | Img->EEG Top-1=27.00% Top-5=54.00%
+2026-04-23 12:42:39,810 - INFO - Epoch [21/40] Loss=0.0340 LR=0.000138 | EEG->Img Top-1=17.00% Top-5=45.00% | Img->EEG Top-1=27.50% Top-5=52.00%
+2026-04-23 12:42:46,885 - INFO - Epoch [22/40] Loss=0.0292 LR=0.000127 | EEG->Img Top-1=18.50% Top-5=46.50% | Img->EEG Top-1=27.00% Top-5=54.00%
+2026-04-23 12:42:53,968 - INFO - Epoch [23/40] Loss=0.0244 LR=0.000115 | EEG->Img Top-1=21.50% Top-5=43.00% | Img->EEG Top-1=28.00% Top-5=50.00%
+2026-04-23 12:43:00,970 - INFO - Epoch [24/40] Loss=0.0221 LR=0.000104 | EEG->Img Top-1=16.00% Top-5=45.50% | Img->EEG Top-1=27.00% Top-5=48.50%
+2026-04-23 12:43:07,963 - INFO - Epoch [25/40] Loss=0.0170 LR=0.000093 | EEG->Img Top-1=23.50% Top-5=45.00% | Img->EEG Top-1=28.00% Top-5=54.00%
+2026-04-23 12:43:14,917 - INFO - Epoch [26/40] Loss=0.0156 LR=0.000082 | EEG->Img Top-1=22.00% Top-5=49.50% | Img->EEG Top-1=28.50% Top-5=53.00%
+2026-04-23 12:43:21,910 - INFO - Epoch [27/40] Loss=0.0157 LR=0.000072 | EEG->Img Top-1=21.00% Top-5=47.00% | Img->EEG Top-1=31.00% Top-5=51.50%
+2026-04-23 12:43:28,942 - INFO - Epoch [28/40] Loss=0.0132 LR=0.000062 | EEG->Img Top-1=17.50% Top-5=46.00% | Img->EEG Top-1=28.50% Top-5=50.50%
+2026-04-23 12:43:36,064 - INFO - Epoch [29/40] Loss=0.0109 LR=0.000053 | EEG->Img Top-1=20.00% Top-5=45.50% | Img->EEG Top-1=26.50% Top-5=51.50%
+2026-04-23 12:43:43,209 - INFO - Epoch [30/40] Loss=0.0095 LR=0.000044 | EEG->Img Top-1=18.00% Top-5=46.50% | Img->EEG Top-1=24.00% Top-5=47.00%
+2026-04-23 12:43:50,304 - INFO - Epoch [31/40] Loss=0.0092 LR=0.000036 | EEG->Img Top-1=17.50% Top-5=49.50% | Img->EEG Top-1=28.00% Top-5=50.00%
+2026-04-23 12:43:57,296 - INFO - Epoch [32/40] Loss=0.0081 LR=0.000029 | EEG->Img Top-1=17.50% Top-5=50.00% | Img->EEG Top-1=24.00% Top-5=52.50%
+2026-04-23 12:44:04,263 - INFO - Epoch [33/40] Loss=0.0069 LR=0.000022 | EEG->Img Top-1=19.50% Top-5=48.50% | Img->EEG Top-1=27.00% Top-5=52.50%
+2026-04-23 12:44:11,216 - INFO - Epoch [34/40] Loss=0.0073 LR=0.000016 | EEG->Img Top-1=19.00% Top-5=50.00% | Img->EEG Top-1=28.00% Top-5=50.00%
+2026-04-23 12:44:18,200 - INFO - Epoch [35/40] Loss=0.0057 LR=0.000011 | EEG->Img Top-1=18.00% Top-5=48.00% | Img->EEG Top-1=27.00% Top-5=53.00%
+2026-04-23 12:44:25,165 - INFO - Epoch [36/40] Loss=0.0055 LR=0.000007 | EEG->Img Top-1=18.50% Top-5=48.00% | Img->EEG Top-1=26.00% Top-5=48.00%
+2026-04-23 12:44:32,169 - INFO - Epoch [37/40] Loss=0.0054 LR=0.000004 | EEG->Img Top-1=19.50% Top-5=46.00% | Img->EEG Top-1=25.50% Top-5=48.00%
+2026-04-23 12:44:39,190 - INFO - Epoch [38/40] Loss=0.0056 LR=0.000002 | EEG->Img Top-1=18.00% Top-5=46.00% | Img->EEG Top-1=25.00% Top-5=48.00%
+2026-04-23 12:44:46,231 - INFO - Epoch [39/40] Loss=0.0053 LR=0.000000 | EEG->Img Top-1=19.50% Top-5=45.50% | Img->EEG Top-1=27.50% Top-5=44.50%
+2026-04-23 12:44:53,288 - INFO - Epoch [40/40] Loss=0.0050 LR=0.000000 | EEG->Img Top-1=16.00% Top-5=47.00% | Img->EEG Top-1=27.00% Top-5=47.50%
+2026-04-23 12:44:53,324 - INFO - 最后一轮训练记录: {'epoch': 40, 'loss': 0.005034210739298804, 'lr': 0.0, 'eeg_to_image_top1': 15.999999642372131, 'eeg_to_image_top5': 46.99999988079071, 'image_to_eeg_top1': 27.000001072883606, 'image_to_eeg_top5': 47.49999940395355}
+2026-04-23 12:44:53,478 - INFO - 已加载按 EEG->Image Top-1 最优的 checkpoint（epoch 5，Top-1=25.00%）用于最终评估。
+2026-04-23 12:44:53,506 - INFO - EEG embeds count: 13
+2026-04-23 12:44:53,506 - INFO - CLIP embeds count: 13
+2026-04-23 12:44:53,506 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-23 12:44:53,506 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-23 12:44:53,508 - INFO - 
+--- 评估结果 ---
+2026-04-23 12:44:53,508 - INFO - EEG -> Image | Top-1: 25.00% | Top-5: 55.00%
+2026-04-23 12:44:53,508 - INFO - Image -> EEG | Top-1: 34.00% | Top-5: 64.00%
+2026-04-23 12:44:53,508 - INFO - 最终检索指标: {'eeg_to_image_top1': 25.0, 'eeg_to_image_top5': 55.000001192092896, 'image_to_eeg_top1': 34.00000035762787, 'image_to_eeg_top5': 63.999998569488525}
+2026-04-23 12:44:53,508 - INFO - 
+--- 第 2 次实验 ---
+2026-04-23 12:44:53,520 - INFO - 开始训练，设备: cuda, Epochs: 40, LR: 0.0003
+2026-04-23 12:44:53,520 - INFO - 梯度累积步数: 1, 混合精度: True
+2026-04-23 12:44:53,520 - INFO - 模型参数量: 总计 1,856,153, 可训练 1,856,153
+2026-04-23 12:44:53,521 - INFO - 初始显存: 已分配 0.04 GB, 已预留 0.04 GB
+2026-04-23 12:44:53,533 - INFO - 第一个 batch 后显存: 已分配 0.05 GB, 已预留 0.07 GB
+2026-04-23 12:45:00,656 - INFO - Epoch [1/40] Loss=2.1693 LR=0.000300 | EEG->Img Top-1=8.00% Top-5=22.50% | Img->EEG Top-1=12.00% Top-5=35.50%
+2026-04-23 12:45:00,665 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=8.00%, epoch=1): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:45:07,698 - INFO - Epoch [2/40] Loss=1.4257 LR=0.000298 | EEG->Img Top-1=16.00% Top-5=37.00% | Img->EEG Top-1=22.50% Top-5=50.50%
+2026-04-23 12:45:07,705 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=16.00%, epoch=2): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:45:14,747 - INFO - Epoch [3/40] Loss=1.0789 LR=0.000296 | EEG->Img Top-1=15.00% Top-5=41.00% | Img->EEG Top-1=27.50% Top-5=59.00%
+2026-04-23 12:45:21,714 - INFO - Epoch [4/40] Loss=0.7913 LR=0.000293 | EEG->Img Top-1=22.50% Top-5=46.50% | Img->EEG Top-1=31.00% Top-5=67.50%
+2026-04-23 12:45:21,722 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=22.50%, epoch=4): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:45:28,710 - INFO - Epoch [5/40] Loss=0.5740 LR=0.000289 | EEG->Img Top-1=18.50% Top-5=53.00% | Img->EEG Top-1=37.00% Top-5=69.00%
+2026-04-23 12:45:35,707 - INFO - Epoch [6/40] Loss=0.3967 LR=0.000284 | EEG->Img Top-1=19.50% Top-5=43.00% | Img->EEG Top-1=31.00% Top-5=62.50%
+2026-04-23 12:45:42,707 - INFO - Epoch [7/40] Loss=0.2776 LR=0.000278 | EEG->Img Top-1=20.00% Top-5=47.50% | Img->EEG Top-1=31.00% Top-5=65.00%
+2026-04-23 12:45:49,738 - INFO - Epoch [8/40] Loss=0.2127 LR=0.000271 | EEG->Img Top-1=21.50% Top-5=52.00% | Img->EEG Top-1=34.00% Top-5=65.50%
+2026-04-23 12:45:56,854 - INFO - Epoch [9/40] Loss=0.1721 LR=0.000264 | EEG->Img Top-1=19.00% Top-5=51.50% | Img->EEG Top-1=34.00% Top-5=62.50%
+2026-04-23 12:46:03,949 - INFO - Epoch [10/40] Loss=0.1411 LR=0.000256 | EEG->Img Top-1=19.00% Top-5=45.50% | Img->EEG Top-1=28.00% Top-5=60.00%
+2026-04-23 12:46:11,086 - INFO - Epoch [11/40] Loss=0.1208 LR=0.000247 | EEG->Img Top-1=21.50% Top-5=53.00% | Img->EEG Top-1=29.50% Top-5=65.50%
+2026-04-23 12:46:18,274 - INFO - Epoch [12/40] Loss=0.1123 LR=0.000238 | EEG->Img Top-1=19.00% Top-5=44.50% | Img->EEG Top-1=27.00% Top-5=59.50%
+2026-04-23 12:46:25,423 - INFO - Epoch [13/40] Loss=0.0974 LR=0.000228 | EEG->Img Top-1=21.00% Top-5=46.50% | Img->EEG Top-1=32.50% Top-5=61.00%
+2026-04-23 12:46:32,566 - INFO - Epoch [14/40] Loss=0.0826 LR=0.000218 | EEG->Img Top-1=19.00% Top-5=44.50% | Img->EEG Top-1=25.00% Top-5=56.50%
+2026-04-23 12:46:39,719 - INFO - Epoch [15/40] Loss=0.0754 LR=0.000207 | EEG->Img Top-1=24.50% Top-5=54.00% | Img->EEG Top-1=30.50% Top-5=59.00%
+2026-04-23 12:46:39,727 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=24.50%, epoch=15): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:46:46,861 - INFO - Epoch [16/40] Loss=0.0664 LR=0.000196 | EEG->Img Top-1=20.50% Top-5=51.00% | Img->EEG Top-1=30.50% Top-5=60.50%
+2026-04-23 12:46:54,006 - INFO - Epoch [17/40] Loss=0.0621 LR=0.000185 | EEG->Img Top-1=19.50% Top-5=46.00% | Img->EEG Top-1=26.50% Top-5=60.00%
+2026-04-23 12:47:01,290 - INFO - Epoch [18/40] Loss=0.0522 LR=0.000173 | EEG->Img Top-1=22.00% Top-5=46.00% | Img->EEG Top-1=30.00% Top-5=62.50%
+2026-04-23 12:47:08,437 - INFO - Epoch [19/40] Loss=0.0454 LR=0.000162 | EEG->Img Top-1=23.50% Top-5=55.00% | Img->EEG Top-1=27.50% Top-5=62.50%
+2026-04-23 12:47:15,634 - INFO - Epoch [20/40] Loss=0.0396 LR=0.000150 | EEG->Img Top-1=23.50% Top-5=52.00% | Img->EEG Top-1=31.00% Top-5=63.00%
+2026-04-23 12:47:22,708 - INFO - Epoch [21/40] Loss=0.0343 LR=0.000138 | EEG->Img Top-1=21.00% Top-5=44.00% | Img->EEG Top-1=26.00% Top-5=56.00%
+2026-04-23 12:47:29,781 - INFO - Epoch [22/40] Loss=0.0293 LR=0.000127 | EEG->Img Top-1=18.00% Top-5=47.00% | Img->EEG Top-1=28.00% Top-5=57.50%
+2026-04-23 12:47:36,860 - INFO - Epoch [23/40] Loss=0.0233 LR=0.000115 | EEG->Img Top-1=22.50% Top-5=51.00% | Img->EEG Top-1=30.00% Top-5=59.00%
+2026-04-23 12:47:43,888 - INFO - Epoch [24/40] Loss=0.0235 LR=0.000104 | EEG->Img Top-1=19.50% Top-5=45.50% | Img->EEG Top-1=25.00% Top-5=53.50%
+2026-04-23 12:47:51,032 - INFO - Epoch [25/40] Loss=0.0186 LR=0.000093 | EEG->Img Top-1=22.00% Top-5=53.00% | Img->EEG Top-1=32.00% Top-5=62.00%
+2026-04-23 12:47:58,305 - INFO - Epoch [26/40] Loss=0.0167 LR=0.000082 | EEG->Img Top-1=22.00% Top-5=48.00% | Img->EEG Top-1=28.50% Top-5=55.00%
+2026-04-23 12:48:05,630 - INFO - Epoch [27/40] Loss=0.0152 LR=0.000072 | EEG->Img Top-1=17.00% Top-5=50.50% | Img->EEG Top-1=27.00% Top-5=60.50%
+2026-04-23 12:48:12,885 - INFO - Epoch [28/40] Loss=0.0133 LR=0.000062 | EEG->Img Top-1=20.00% Top-5=49.00% | Img->EEG Top-1=25.00% Top-5=57.00%
+2026-04-23 12:48:20,473 - INFO - Epoch [29/40] Loss=0.0123 LR=0.000053 | EEG->Img Top-1=22.00% Top-5=52.00% | Img->EEG Top-1=27.00% Top-5=60.00%
+2026-04-23 12:48:28,034 - INFO - Epoch [30/40] Loss=0.0110 LR=0.000044 | EEG->Img Top-1=20.50% Top-5=47.00% | Img->EEG Top-1=26.50% Top-5=58.50%
+2026-04-23 12:48:35,352 - INFO - Epoch [31/40] Loss=0.0091 LR=0.000036 | EEG->Img Top-1=21.00% Top-5=49.50% | Img->EEG Top-1=30.50% Top-5=55.50%
+2026-04-23 12:48:42,657 - INFO - Epoch [32/40] Loss=0.0079 LR=0.000029 | EEG->Img Top-1=23.00% Top-5=52.50% | Img->EEG Top-1=30.00% Top-5=59.50%
+2026-04-23 12:48:49,914 - INFO - Epoch [33/40] Loss=0.0078 LR=0.000022 | EEG->Img Top-1=21.00% Top-5=49.50% | Img->EEG Top-1=28.00% Top-5=59.50%
+2026-04-23 12:48:57,124 - INFO - Epoch [34/40] Loss=0.0072 LR=0.000016 | EEG->Img Top-1=23.50% Top-5=50.00% | Img->EEG Top-1=26.00% Top-5=59.00%
+2026-04-23 12:49:04,342 - INFO - Epoch [35/40] Loss=0.0067 LR=0.000011 | EEG->Img Top-1=19.00% Top-5=52.50% | Img->EEG Top-1=26.00% Top-5=57.00%
+2026-04-23 12:49:11,378 - INFO - Epoch [36/40] Loss=0.0058 LR=0.000007 | EEG->Img Top-1=19.00% Top-5=50.50% | Img->EEG Top-1=26.00% Top-5=57.00%
+2026-04-23 12:49:18,398 - INFO - Epoch [37/40] Loss=0.0059 LR=0.000004 | EEG->Img Top-1=18.50% Top-5=47.00% | Img->EEG Top-1=27.00% Top-5=57.50%
+2026-04-23 12:49:25,447 - INFO - Epoch [38/40] Loss=0.0043 LR=0.000002 | EEG->Img Top-1=19.50% Top-5=47.00% | Img->EEG Top-1=25.50% Top-5=56.00%
+2026-04-23 12:49:32,530 - INFO - Epoch [39/40] Loss=0.0049 LR=0.000000 | EEG->Img Top-1=20.50% Top-5=48.50% | Img->EEG Top-1=28.00% Top-5=57.50%
+2026-04-23 12:49:39,550 - INFO - Epoch [40/40] Loss=0.0054 LR=0.000000 | EEG->Img Top-1=21.50% Top-5=50.50% | Img->EEG Top-1=26.50% Top-5=59.50%
+2026-04-23 12:49:39,551 - INFO - 最后一轮训练记录: {'epoch': 40, 'loss': 0.005358999573429272, 'lr': 0.0, 'eeg_to_image_top1': 21.50000035762787, 'eeg_to_image_top5': 50.49999952316284, 'image_to_eeg_top1': 26.499998569488525, 'image_to_eeg_top5': 59.50000286102295}
+2026-04-23 12:49:39,636 - INFO - 已加载按 EEG->Image Top-1 最优的 checkpoint（epoch 15，Top-1=24.50%）用于最终评估。
+2026-04-23 12:49:39,660 - INFO - EEG embeds count: 13
+2026-04-23 12:49:39,660 - INFO - CLIP embeds count: 13
+2026-04-23 12:49:39,660 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-23 12:49:39,660 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-23 12:49:39,662 - INFO - 
+--- 评估结果 ---
+2026-04-23 12:49:39,663 - INFO - EEG -> Image | Top-1: 24.50% | Top-5: 54.00%
+2026-04-23 12:49:39,663 - INFO - Image -> EEG | Top-1: 30.50% | Top-5: 59.00%
+2026-04-23 12:49:39,663 - INFO - 最终检索指标: {'eeg_to_image_top1': 24.500000476837158, 'eeg_to_image_top5': 54.00000214576721, 'image_to_eeg_top1': 30.500000715255737, 'image_to_eeg_top5': 58.99999737739563}
+2026-04-23 12:49:39,663 - INFO - 
+--- 第 3 次实验 ---
+2026-04-23 12:49:39,674 - INFO - 开始训练，设备: cuda, Epochs: 40, LR: 0.0003
+2026-04-23 12:49:39,674 - INFO - 梯度累积步数: 1, 混合精度: True
+2026-04-23 12:49:39,674 - INFO - 模型参数量: 总计 1,856,153, 可训练 1,856,153
+2026-04-23 12:49:39,674 - INFO - 初始显存: 已分配 0.04 GB, 已预留 0.06 GB
+2026-04-23 12:49:39,685 - INFO - 第一个 batch 后显存: 已分配 0.05 GB, 已预留 0.07 GB
+2026-04-23 12:49:46,764 - INFO - Epoch [1/40] Loss=2.1956 LR=0.000300 | EEG->Img Top-1=7.50% Top-5=21.50% | Img->EEG Top-1=14.50% Top-5=36.00%
+2026-04-23 12:49:46,774 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=7.50%, epoch=1): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:49:53,850 - INFO - Epoch [2/40] Loss=1.4603 LR=0.000298 | EEG->Img Top-1=15.50% Top-5=35.50% | Img->EEG Top-1=21.50% Top-5=52.00%
+2026-04-23 12:49:53,858 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=15.50%, epoch=2): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:50:00,950 - INFO - Epoch [3/40] Loss=1.0973 LR=0.000296 | EEG->Img Top-1=19.00% Top-5=50.00% | Img->EEG Top-1=26.00% Top-5=56.50%
+2026-04-23 12:50:00,956 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=19.00%, epoch=3): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:50:08,023 - INFO - Epoch [4/40] Loss=0.8203 LR=0.000293 | EEG->Img Top-1=25.00% Top-5=49.00% | Img->EEG Top-1=30.00% Top-5=66.50%
+2026-04-23 12:50:08,031 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=25.00%, epoch=4): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:50:15,033 - INFO - Epoch [5/40] Loss=0.5959 LR=0.000289 | EEG->Img Top-1=26.50% Top-5=49.00% | Img->EEG Top-1=36.00% Top-5=66.50%
+2026-04-23 12:50:15,041 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=26.50%, epoch=5): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:50:22,028 - INFO - Epoch [6/40] Loss=0.4160 LR=0.000284 | EEG->Img Top-1=22.50% Top-5=50.50% | Img->EEG Top-1=33.00% Top-5=65.50%
+2026-04-23 12:50:29,049 - INFO - Epoch [7/40] Loss=0.2916 LR=0.000278 | EEG->Img Top-1=24.50% Top-5=52.50% | Img->EEG Top-1=35.00% Top-5=67.50%
+2026-04-23 12:50:36,030 - INFO - Epoch [8/40] Loss=0.2181 LR=0.000271 | EEG->Img Top-1=26.00% Top-5=48.50% | Img->EEG Top-1=29.00% Top-5=59.00%
+2026-04-23 12:50:43,019 - INFO - Epoch [9/40] Loss=0.1787 LR=0.000264 | EEG->Img Top-1=23.50% Top-5=51.50% | Img->EEG Top-1=29.00% Top-5=63.00%
+2026-04-23 12:50:50,112 - INFO - Epoch [10/40] Loss=0.1453 LR=0.000256 | EEG->Img Top-1=23.00% Top-5=53.50% | Img->EEG Top-1=30.50% Top-5=60.50%
+2026-04-23 12:50:57,192 - INFO - Epoch [11/40] Loss=0.1270 LR=0.000247 | EEG->Img Top-1=30.00% Top-5=53.00% | Img->EEG Top-1=33.50% Top-5=68.00%
+2026-04-23 12:50:57,201 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=30.00%, epoch=11): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:51:04,281 - INFO - Epoch [12/40] Loss=0.1166 LR=0.000238 | EEG->Img Top-1=22.50% Top-5=47.00% | Img->EEG Top-1=29.00% Top-5=60.00%
+2026-04-23 12:51:11,349 - INFO - Epoch [13/40] Loss=0.1036 LR=0.000228 | EEG->Img Top-1=19.00% Top-5=50.00% | Img->EEG Top-1=29.00% Top-5=55.00%
+2026-04-23 12:51:18,428 - INFO - Epoch [14/40] Loss=0.0931 LR=0.000218 | EEG->Img Top-1=24.00% Top-5=47.00% | Img->EEG Top-1=25.00% Top-5=55.50%
+2026-04-23 12:51:25,465 - INFO - Epoch [15/40] Loss=0.0767 LR=0.000207 | EEG->Img Top-1=22.00% Top-5=50.50% | Img->EEG Top-1=27.50% Top-5=56.00%
+2026-04-23 12:51:32,528 - INFO - Epoch [16/40] Loss=0.0686 LR=0.000196 | EEG->Img Top-1=25.00% Top-5=47.50% | Img->EEG Top-1=31.50% Top-5=58.50%
+2026-04-23 12:51:39,510 - INFO - Epoch [17/40] Loss=0.0584 LR=0.000185 | EEG->Img Top-1=24.50% Top-5=46.50% | Img->EEG Top-1=31.50% Top-5=60.50%
+2026-04-23 12:51:46,484 - INFO - Epoch [18/40] Loss=0.0504 LR=0.000173 | EEG->Img Top-1=20.50% Top-5=46.00% | Img->EEG Top-1=31.50% Top-5=59.00%
+2026-04-23 12:51:53,671 - INFO - Epoch [19/40] Loss=0.0436 LR=0.000162 | EEG->Img Top-1=24.00% Top-5=46.00% | Img->EEG Top-1=30.50% Top-5=58.00%
+2026-04-23 12:52:00,674 - INFO - Epoch [20/40] Loss=0.0438 LR=0.000150 | EEG->Img Top-1=25.00% Top-5=47.50% | Img->EEG Top-1=34.50% Top-5=61.00%
+2026-04-23 12:52:07,684 - INFO - Epoch [21/40] Loss=0.0330 LR=0.000138 | EEG->Img Top-1=26.50% Top-5=45.50% | Img->EEG Top-1=29.00% Top-5=55.00%
+2026-04-23 12:52:14,779 - INFO - Epoch [22/40] Loss=0.0298 LR=0.000127 | EEG->Img Top-1=24.00% Top-5=45.00% | Img->EEG Top-1=25.50% Top-5=53.00%
+2026-04-23 12:52:21,826 - INFO - Epoch [23/40] Loss=0.0261 LR=0.000115 | EEG->Img Top-1=24.00% Top-5=47.50% | Img->EEG Top-1=26.50% Top-5=54.00%
+2026-04-23 12:52:28,876 - INFO - Epoch [24/40] Loss=0.0235 LR=0.000104 | EEG->Img Top-1=24.00% Top-5=46.00% | Img->EEG Top-1=32.50% Top-5=55.00%
+2026-04-23 12:52:35,979 - INFO - Epoch [25/40] Loss=0.0216 LR=0.000093 | EEG->Img Top-1=20.50% Top-5=45.00% | Img->EEG Top-1=30.50% Top-5=55.50%
+2026-04-23 12:52:43,019 - INFO - Epoch [26/40] Loss=0.0165 LR=0.000082 | EEG->Img Top-1=20.00% Top-5=43.50% | Img->EEG Top-1=25.50% Top-5=51.00%
+2026-04-23 12:52:50,034 - INFO - Epoch [27/40] Loss=0.0152 LR=0.000072 | EEG->Img Top-1=25.00% Top-5=50.00% | Img->EEG Top-1=31.50% Top-5=56.00%
+2026-04-23 12:52:57,056 - INFO - Epoch [28/40] Loss=0.0137 LR=0.000062 | EEG->Img Top-1=24.50% Top-5=49.50% | Img->EEG Top-1=27.00% Top-5=55.50%
+2026-04-23 12:53:04,056 - INFO - Epoch [29/40] Loss=0.0115 LR=0.000053 | EEG->Img Top-1=22.50% Top-5=45.00% | Img->EEG Top-1=28.50% Top-5=52.50%
+2026-04-23 12:53:11,050 - INFO - Epoch [30/40] Loss=0.0110 LR=0.000044 | EEG->Img Top-1=21.00% Top-5=44.50% | Img->EEG Top-1=26.50% Top-5=54.00%
+2026-04-23 12:53:18,045 - INFO - Epoch [31/40] Loss=0.0085 LR=0.000036 | EEG->Img Top-1=22.50% Top-5=49.00% | Img->EEG Top-1=27.50% Top-5=55.00%
+2026-04-23 12:53:25,044 - INFO - Epoch [32/40] Loss=0.0105 LR=0.000029 | EEG->Img Top-1=26.00% Top-5=51.00% | Img->EEG Top-1=28.00% Top-5=57.50%
+2026-04-23 12:53:32,136 - INFO - Epoch [33/40] Loss=0.0069 LR=0.000022 | EEG->Img Top-1=21.50% Top-5=48.50% | Img->EEG Top-1=28.00% Top-5=55.50%
+2026-04-23 12:53:39,219 - INFO - Epoch [34/40] Loss=0.0066 LR=0.000016 | EEG->Img Top-1=25.00% Top-5=50.00% | Img->EEG Top-1=28.00% Top-5=55.50%
+2026-04-23 12:53:46,264 - INFO - Epoch [35/40] Loss=0.0070 LR=0.000011 | EEG->Img Top-1=25.50% Top-5=49.00% | Img->EEG Top-1=28.50% Top-5=53.50%
+2026-04-23 12:53:53,344 - INFO - Epoch [36/40] Loss=0.0064 LR=0.000007 | EEG->Img Top-1=24.00% Top-5=47.50% | Img->EEG Top-1=26.50% Top-5=52.00%
+2026-04-23 12:54:00,387 - INFO - Epoch [37/40] Loss=0.0054 LR=0.000004 | EEG->Img Top-1=24.50% Top-5=46.00% | Img->EEG Top-1=27.00% Top-5=52.50%
+2026-04-23 12:54:07,391 - INFO - Epoch [38/40] Loss=0.0055 LR=0.000002 | EEG->Img Top-1=24.00% Top-5=46.00% | Img->EEG Top-1=28.50% Top-5=51.50%
+2026-04-23 12:54:14,376 - INFO - Epoch [39/40] Loss=0.0054 LR=0.000000 | EEG->Img Top-1=22.50% Top-5=45.50% | Img->EEG Top-1=27.00% Top-5=50.50%
+2026-04-23 12:54:21,365 - INFO - Epoch [40/40] Loss=0.0040 LR=0.000000 | EEG->Img Top-1=22.00% Top-5=46.50% | Img->EEG Top-1=28.00% Top-5=52.50%
+2026-04-23 12:54:21,366 - INFO - 最后一轮训练记录: {'epoch': 40, 'loss': 0.00402819601127858, 'lr': 0.0, 'eeg_to_image_top1': 21.99999988079071, 'eeg_to_image_top5': 46.50000035762787, 'image_to_eeg_top1': 28.00000011920929, 'image_to_eeg_top5': 52.49999761581421}
+2026-04-23 12:54:21,445 - INFO - 已加载按 EEG->Image Top-1 最优的 checkpoint（epoch 11，Top-1=30.00%）用于最终评估。
+2026-04-23 12:54:21,466 - INFO - EEG embeds count: 13
+2026-04-23 12:54:21,466 - INFO - CLIP embeds count: 13
+2026-04-23 12:54:21,466 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-23 12:54:21,466 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-23 12:54:21,468 - INFO - 
+--- 评估结果 ---
+2026-04-23 12:54:21,468 - INFO - EEG -> Image | Top-1: 30.00% | Top-5: 53.00%
+2026-04-23 12:54:21,468 - INFO - Image -> EEG | Top-1: 33.50% | Top-5: 68.00%
+2026-04-23 12:54:21,469 - INFO - 最终检索指标: {'eeg_to_image_top1': 30.000001192092896, 'eeg_to_image_top5': 52.99999713897705, 'image_to_eeg_top1': 33.50000083446503, 'image_to_eeg_top5': 68.00000071525574}
+2026-04-23 12:54:21,469 - INFO - 
+--- 第 4 次实验 ---
+2026-04-23 12:54:21,480 - INFO - 开始训练，设备: cuda, Epochs: 40, LR: 0.0003
+2026-04-23 12:54:21,480 - INFO - 梯度累积步数: 1, 混合精度: True
+2026-04-23 12:54:21,480 - INFO - 模型参数量: 总计 1,856,153, 可训练 1,856,153
+2026-04-23 12:54:21,481 - INFO - 初始显存: 已分配 0.04 GB, 已预留 0.04 GB
+2026-04-23 12:54:21,492 - INFO - 第一个 batch 后显存: 已分配 0.05 GB, 已预留 0.07 GB
+2026-04-23 12:54:28,465 - INFO - Epoch [1/40] Loss=2.2410 LR=0.000300 | EEG->Img Top-1=8.00% Top-5=21.50% | Img->EEG Top-1=10.50% Top-5=34.00%
+2026-04-23 12:54:28,474 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=8.00%, epoch=1): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:54:35,454 - INFO - Epoch [2/40] Loss=1.5251 LR=0.000298 | EEG->Img Top-1=14.50% Top-5=38.00% | Img->EEG Top-1=20.50% Top-5=49.00%
+2026-04-23 12:54:35,462 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=14.50%, epoch=2): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:54:42,502 - INFO - Epoch [3/40] Loss=1.1336 LR=0.000296 | EEG->Img Top-1=15.00% Top-5=50.00% | Img->EEG Top-1=27.50% Top-5=55.50%
+2026-04-23 12:54:42,509 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=15.00%, epoch=3): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:54:49,818 - INFO - Epoch [4/40] Loss=0.8292 LR=0.000293 | EEG->Img Top-1=18.00% Top-5=42.00% | Img->EEG Top-1=29.00% Top-5=57.50%
+2026-04-23 12:54:49,826 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=18.00%, epoch=4): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:54:57,131 - INFO - Epoch [5/40] Loss=0.5890 LR=0.000289 | EEG->Img Top-1=18.50% Top-5=48.50% | Img->EEG Top-1=27.00% Top-5=60.00%
+2026-04-23 12:54:57,138 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=18.50%, epoch=5): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:55:04,456 - INFO - Epoch [6/40] Loss=0.3999 LR=0.000284 | EEG->Img Top-1=13.50% Top-5=47.50% | Img->EEG Top-1=27.00% Top-5=53.50%
+2026-04-23 12:55:11,702 - INFO - Epoch [7/40] Loss=0.2794 LR=0.000278 | EEG->Img Top-1=17.00% Top-5=51.50% | Img->EEG Top-1=28.50% Top-5=60.00%
+2026-04-23 12:55:18,939 - INFO - Epoch [8/40] Loss=0.2025 LR=0.000271 | EEG->Img Top-1=20.50% Top-5=47.00% | Img->EEG Top-1=26.50% Top-5=59.00%
+2026-04-23 12:55:18,948 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=20.50%, epoch=8): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:55:26,131 - INFO - Epoch [9/40] Loss=0.1735 LR=0.000264 | EEG->Img Top-1=23.00% Top-5=50.50% | Img->EEG Top-1=33.50% Top-5=61.50%
+2026-04-23 12:55:26,145 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=23.00%, epoch=9): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:55:33,202 - INFO - Epoch [10/40] Loss=0.1403 LR=0.000256 | EEG->Img Top-1=20.50% Top-5=48.50% | Img->EEG Top-1=24.50% Top-5=53.00%
+2026-04-23 12:55:40,217 - INFO - Epoch [11/40] Loss=0.1177 LR=0.000247 | EEG->Img Top-1=15.00% Top-5=44.50% | Img->EEG Top-1=27.50% Top-5=57.00%
+2026-04-23 12:55:47,269 - INFO - Epoch [12/40] Loss=0.1050 LR=0.000238 | EEG->Img Top-1=23.00% Top-5=46.00% | Img->EEG Top-1=25.50% Top-5=54.50%
+2026-04-23 12:55:54,348 - INFO - Epoch [13/40] Loss=0.0966 LR=0.000228 | EEG->Img Top-1=22.00% Top-5=51.00% | Img->EEG Top-1=26.50% Top-5=59.00%
+2026-04-23 12:56:01,565 - INFO - Epoch [14/40] Loss=0.0833 LR=0.000218 | EEG->Img Top-1=15.00% Top-5=46.00% | Img->EEG Top-1=28.50% Top-5=57.00%
+2026-04-23 12:56:08,841 - INFO - Epoch [15/40] Loss=0.0759 LR=0.000207 | EEG->Img Top-1=19.00% Top-5=46.50% | Img->EEG Top-1=26.50% Top-5=54.00%
+2026-04-23 12:56:16,118 - INFO - Epoch [16/40] Loss=0.0685 LR=0.000196 | EEG->Img Top-1=20.50% Top-5=48.00% | Img->EEG Top-1=30.00% Top-5=57.50%
+2026-04-23 12:56:23,375 - INFO - Epoch [17/40] Loss=0.0602 LR=0.000185 | EEG->Img Top-1=17.00% Top-5=47.50% | Img->EEG Top-1=27.50% Top-5=60.00%
+2026-04-23 12:56:30,582 - INFO - Epoch [18/40] Loss=0.0509 LR=0.000173 | EEG->Img Top-1=19.50% Top-5=45.00% | Img->EEG Top-1=31.00% Top-5=58.50%
+2026-04-23 12:56:37,979 - INFO - Epoch [19/40] Loss=0.0397 LR=0.000162 | EEG->Img Top-1=18.50% Top-5=49.00% | Img->EEG Top-1=26.50% Top-5=55.00%
+2026-04-23 12:56:45,109 - INFO - Epoch [20/40] Loss=0.0369 LR=0.000150 | EEG->Img Top-1=18.50% Top-5=44.50% | Img->EEG Top-1=24.00% Top-5=49.00%
+2026-04-23 12:56:52,118 - INFO - Epoch [21/40] Loss=0.0340 LR=0.000138 | EEG->Img Top-1=19.50% Top-5=53.50% | Img->EEG Top-1=24.50% Top-5=57.00%
+2026-04-23 12:56:59,119 - INFO - Epoch [22/40] Loss=0.0299 LR=0.000127 | EEG->Img Top-1=17.50% Top-5=46.50% | Img->EEG Top-1=26.00% Top-5=57.50%
+2026-04-23 12:57:06,156 - INFO - Epoch [23/40] Loss=0.0251 LR=0.000115 | EEG->Img Top-1=22.50% Top-5=52.50% | Img->EEG Top-1=24.00% Top-5=56.50%
+2026-04-23 12:57:13,190 - INFO - Epoch [24/40] Loss=0.0195 LR=0.000104 | EEG->Img Top-1=20.50% Top-5=46.00% | Img->EEG Top-1=24.00% Top-5=52.50%
+2026-04-23 12:57:20,247 - INFO - Epoch [25/40] Loss=0.0186 LR=0.000093 | EEG->Img Top-1=20.00% Top-5=51.00% | Img->EEG Top-1=25.50% Top-5=50.00%
+2026-04-23 12:57:27,324 - INFO - Epoch [26/40] Loss=0.0144 LR=0.000082 | EEG->Img Top-1=21.50% Top-5=51.50% | Img->EEG Top-1=28.00% Top-5=58.50%
+2026-04-23 12:57:34,467 - INFO - Epoch [27/40] Loss=0.0154 LR=0.000072 | EEG->Img Top-1=17.00% Top-5=42.00% | Img->EEG Top-1=24.00% Top-5=50.50%
+2026-04-23 12:57:41,662 - INFO - Epoch [28/40] Loss=0.0127 LR=0.000062 | EEG->Img Top-1=16.50% Top-5=40.00% | Img->EEG Top-1=23.50% Top-5=48.00%
+2026-04-23 12:57:48,787 - INFO - Epoch [29/40] Loss=0.0095 LR=0.000053 | EEG->Img Top-1=16.50% Top-5=46.50% | Img->EEG Top-1=28.00% Top-5=52.50%
+2026-04-23 12:57:55,913 - INFO - Epoch [30/40] Loss=0.0086 LR=0.000044 | EEG->Img Top-1=18.50% Top-5=44.00% | Img->EEG Top-1=24.00% Top-5=47.00%
+2026-04-23 12:58:03,050 - INFO - Epoch [31/40] Loss=0.0083 LR=0.000036 | EEG->Img Top-1=18.50% Top-5=47.00% | Img->EEG Top-1=23.50% Top-5=49.50%
+2026-04-23 12:58:10,190 - INFO - Epoch [32/40] Loss=0.0083 LR=0.000029 | EEG->Img Top-1=15.00% Top-5=43.00% | Img->EEG Top-1=24.00% Top-5=43.50%
+2026-04-23 12:58:17,358 - INFO - Epoch [33/40] Loss=0.0069 LR=0.000022 | EEG->Img Top-1=18.00% Top-5=44.50% | Img->EEG Top-1=24.50% Top-5=48.00%
+2026-04-23 12:58:24,510 - INFO - Epoch [34/40] Loss=0.0069 LR=0.000016 | EEG->Img Top-1=18.50% Top-5=45.50% | Img->EEG Top-1=25.50% Top-5=53.00%
+2026-04-23 12:58:31,741 - INFO - Epoch [35/40] Loss=0.0059 LR=0.000011 | EEG->Img Top-1=17.00% Top-5=45.50% | Img->EEG Top-1=25.50% Top-5=50.50%
+2026-04-23 12:58:38,863 - INFO - Epoch [36/40] Loss=0.0064 LR=0.000007 | EEG->Img Top-1=17.00% Top-5=47.00% | Img->EEG Top-1=25.00% Top-5=51.00%
+2026-04-23 12:58:45,963 - INFO - Epoch [37/40] Loss=0.0057 LR=0.000004 | EEG->Img Top-1=19.50% Top-5=46.00% | Img->EEG Top-1=25.00% Top-5=51.50%
+2026-04-23 12:58:53,007 - INFO - Epoch [38/40] Loss=0.0052 LR=0.000002 | EEG->Img Top-1=17.00% Top-5=43.00% | Img->EEG Top-1=23.50% Top-5=51.00%
+2026-04-23 12:59:00,003 - INFO - Epoch [39/40] Loss=0.0051 LR=0.000000 | EEG->Img Top-1=18.50% Top-5=44.50% | Img->EEG Top-1=24.50% Top-5=52.00%
+2026-04-23 12:59:06,963 - INFO - Epoch [40/40] Loss=0.0053 LR=0.000000 | EEG->Img Top-1=18.50% Top-5=44.50% | Img->EEG Top-1=24.00% Top-5=50.50%
+2026-04-23 12:59:06,963 - INFO - 最后一轮训练记录: {'epoch': 40, 'loss': 0.005314712042242966, 'lr': 0.0, 'eeg_to_image_top1': 18.50000023841858, 'eeg_to_image_top5': 44.49999928474426, 'image_to_eeg_top1': 23.999999463558197, 'image_to_eeg_top5': 50.49999952316284}
+2026-04-23 12:59:07,050 - INFO - 已加载按 EEG->Image Top-1 最优的 checkpoint（epoch 9，Top-1=23.00%）用于最终评估。
+2026-04-23 12:59:07,074 - INFO - EEG embeds count: 13
+2026-04-23 12:59:07,074 - INFO - CLIP embeds count: 13
+2026-04-23 12:59:07,074 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-23 12:59:07,074 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-23 12:59:07,076 - INFO - 
+--- 评估结果 ---
+2026-04-23 12:59:07,076 - INFO - EEG -> Image | Top-1: 23.00% | Top-5: 50.50%
+2026-04-23 12:59:07,076 - INFO - Image -> EEG | Top-1: 33.50% | Top-5: 61.50%
+2026-04-23 12:59:07,076 - INFO - 最终检索指标: {'eeg_to_image_top1': 23.000000417232513, 'eeg_to_image_top5': 50.49999952316284, 'image_to_eeg_top1': 33.50000083446503, 'image_to_eeg_top5': 61.500000953674316}
+2026-04-23 12:59:07,076 - INFO - 
+--- 第 5 次实验 ---
+2026-04-23 12:59:07,087 - INFO - 开始训练，设备: cuda, Epochs: 40, LR: 0.0003
+2026-04-23 12:59:07,088 - INFO - 梯度累积步数: 1, 混合精度: True
+2026-04-23 12:59:07,088 - INFO - 模型参数量: 总计 1,856,153, 可训练 1,856,153
+2026-04-23 12:59:07,088 - INFO - 初始显存: 已分配 0.04 GB, 已预留 0.06 GB
+2026-04-23 12:59:07,099 - INFO - 第一个 batch 后显存: 已分配 0.06 GB, 已预留 0.09 GB
+2026-04-23 12:59:14,044 - INFO - Epoch [1/40] Loss=2.1949 LR=0.000300 | EEG->Img Top-1=8.00% Top-5=24.50% | Img->EEG Top-1=11.00% Top-5=42.50%
+2026-04-23 12:59:14,053 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=8.00%, epoch=1): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:59:21,019 - INFO - Epoch [2/40] Loss=1.4240 LR=0.000298 | EEG->Img Top-1=12.00% Top-5=43.00% | Img->EEG Top-1=21.00% Top-5=52.00%
+2026-04-23 12:59:21,026 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=12.00%, epoch=2): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:59:28,004 - INFO - Epoch [3/40] Loss=1.0363 LR=0.000296 | EEG->Img Top-1=25.00% Top-5=56.50% | Img->EEG Top-1=33.50% Top-5=64.50%
+2026-04-23 12:59:28,011 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=25.00%, epoch=3): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:59:35,046 - INFO - Epoch [4/40] Loss=0.7600 LR=0.000293 | EEG->Img Top-1=28.50% Top-5=55.50% | Img->EEG Top-1=30.50% Top-5=67.00%
+2026-04-23 12:59:35,054 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=28.50%, epoch=4): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:59:42,075 - INFO - Epoch [5/40] Loss=0.5359 LR=0.000289 | EEG->Img Top-1=18.50% Top-5=46.00% | Img->EEG Top-1=35.00% Top-5=67.00%
+2026-04-23 12:59:49,101 - INFO - Epoch [6/40] Loss=0.3811 LR=0.000284 | EEG->Img Top-1=29.00% Top-5=54.00% | Img->EEG Top-1=39.00% Top-5=68.00%
+2026-04-23 12:59:49,109 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=29.00%, epoch=6): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 12:59:56,155 - INFO - Epoch [7/40] Loss=0.2704 LR=0.000278 | EEG->Img Top-1=16.50% Top-5=49.00% | Img->EEG Top-1=33.50% Top-5=60.50%
+2026-04-23 13:00:03,235 - INFO - Epoch [8/40] Loss=0.1979 LR=0.000271 | EEG->Img Top-1=25.50% Top-5=53.50% | Img->EEG Top-1=37.00% Top-5=65.50%
+2026-04-23 13:00:10,337 - INFO - Epoch [9/40] Loss=0.1690 LR=0.000264 | EEG->Img Top-1=22.50% Top-5=53.00% | Img->EEG Top-1=34.00% Top-5=64.50%
+2026-04-23 13:00:17,354 - INFO - Epoch [10/40] Loss=0.1339 LR=0.000256 | EEG->Img Top-1=22.50% Top-5=51.00% | Img->EEG Top-1=31.00% Top-5=62.00%
+2026-04-23 13:00:24,354 - INFO - Epoch [11/40] Loss=0.1185 LR=0.000247 | EEG->Img Top-1=27.00% Top-5=57.00% | Img->EEG Top-1=37.00% Top-5=66.00%
+2026-04-23 13:00:31,445 - INFO - Epoch [12/40] Loss=0.1006 LR=0.000238 | EEG->Img Top-1=27.50% Top-5=56.50% | Img->EEG Top-1=33.00% Top-5=68.50%
+2026-04-23 13:00:38,457 - INFO - Epoch [13/40] Loss=0.0930 LR=0.000228 | EEG->Img Top-1=24.00% Top-5=53.00% | Img->EEG Top-1=36.50% Top-5=62.50%
+2026-04-23 13:00:45,450 - INFO - Epoch [14/40] Loss=0.0787 LR=0.000218 | EEG->Img Top-1=20.00% Top-5=53.50% | Img->EEG Top-1=31.00% Top-5=65.00%
+2026-04-23 13:00:52,491 - INFO - Epoch [15/40] Loss=0.0710 LR=0.000207 | EEG->Img Top-1=15.00% Top-5=47.00% | Img->EEG Top-1=32.50% Top-5=63.00%
+2026-04-23 13:00:59,484 - INFO - Epoch [16/40] Loss=0.0634 LR=0.000196 | EEG->Img Top-1=20.00% Top-5=45.00% | Img->EEG Top-1=30.50% Top-5=63.00%
+2026-04-23 13:01:06,552 - INFO - Epoch [17/40] Loss=0.0556 LR=0.000185 | EEG->Img Top-1=24.00% Top-5=52.50% | Img->EEG Top-1=35.00% Top-5=67.00%
+2026-04-23 13:01:13,617 - INFO - Epoch [18/40] Loss=0.0499 LR=0.000173 | EEG->Img Top-1=19.50% Top-5=44.50% | Img->EEG Top-1=32.50% Top-5=62.50%
+2026-04-23 13:01:20,652 - INFO - Epoch [19/40] Loss=0.0420 LR=0.000162 | EEG->Img Top-1=23.00% Top-5=48.50% | Img->EEG Top-1=37.00% Top-5=61.50%
+2026-04-23 13:01:27,713 - INFO - Epoch [20/40] Loss=0.0368 LR=0.000150 | EEG->Img Top-1=25.50% Top-5=54.00% | Img->EEG Top-1=32.00% Top-5=63.50%
+2026-04-23 13:01:34,863 - INFO - Epoch [21/40] Loss=0.0334 LR=0.000138 | EEG->Img Top-1=24.00% Top-5=48.50% | Img->EEG Top-1=31.50% Top-5=59.50%
+2026-04-23 13:01:41,863 - INFO - Epoch [22/40] Loss=0.0259 LR=0.000127 | EEG->Img Top-1=20.50% Top-5=47.00% | Img->EEG Top-1=26.50% Top-5=59.00%
+2026-04-23 13:01:49,088 - INFO - Epoch [23/40] Loss=0.0244 LR=0.000115 | EEG->Img Top-1=23.00% Top-5=53.50% | Img->EEG Top-1=30.50% Top-5=64.00%
+2026-04-23 13:01:56,307 - INFO - Epoch [24/40] Loss=0.0195 LR=0.000104 | EEG->Img Top-1=28.00% Top-5=53.50% | Img->EEG Top-1=31.00% Top-5=60.00%
+2026-04-23 13:02:03,531 - INFO - Epoch [25/40] Loss=0.0190 LR=0.000093 | EEG->Img Top-1=25.00% Top-5=46.50% | Img->EEG Top-1=29.50% Top-5=61.00%
+2026-04-23 13:02:10,780 - INFO - Epoch [26/40] Loss=0.0162 LR=0.000082 | EEG->Img Top-1=26.00% Top-5=50.50% | Img->EEG Top-1=29.50% Top-5=59.00%
+2026-04-23 13:02:18,034 - INFO - Epoch [27/40] Loss=0.0150 LR=0.000072 | EEG->Img Top-1=24.50% Top-5=50.50% | Img->EEG Top-1=31.00% Top-5=63.50%
+2026-04-23 13:02:25,275 - INFO - Epoch [28/40] Loss=0.0133 LR=0.000062 | EEG->Img Top-1=21.50% Top-5=50.00% | Img->EEG Top-1=27.00% Top-5=62.00%
+2026-04-23 13:02:32,348 - INFO - Epoch [29/40] Loss=0.0122 LR=0.000053 | EEG->Img Top-1=22.50% Top-5=46.00% | Img->EEG Top-1=26.50% Top-5=57.00%
+2026-04-23 13:02:39,396 - INFO - Epoch [30/40] Loss=0.0099 LR=0.000044 | EEG->Img Top-1=25.00% Top-5=54.50% | Img->EEG Top-1=33.00% Top-5=65.50%
+2026-04-23 13:02:46,428 - INFO - Epoch [31/40] Loss=0.0100 LR=0.000036 | EEG->Img Top-1=21.50% Top-5=50.50% | Img->EEG Top-1=25.50% Top-5=62.00%
+2026-04-23 13:02:53,420 - INFO - Epoch [32/40] Loss=0.0077 LR=0.000029 | EEG->Img Top-1=26.50% Top-5=52.00% | Img->EEG Top-1=31.50% Top-5=61.00%
+2026-04-23 13:03:00,408 - INFO - Epoch [33/40] Loss=0.0081 LR=0.000022 | EEG->Img Top-1=22.50% Top-5=50.50% | Img->EEG Top-1=30.00% Top-5=61.50%
+2026-04-23 13:03:07,366 - INFO - Epoch [34/40] Loss=0.0070 LR=0.000016 | EEG->Img Top-1=25.00% Top-5=51.50% | Img->EEG Top-1=31.00% Top-5=63.00%
+2026-04-23 13:03:14,342 - INFO - Epoch [35/40] Loss=0.0065 LR=0.000011 | EEG->Img Top-1=27.50% Top-5=53.50% | Img->EEG Top-1=30.50% Top-5=65.50%
+2026-04-23 13:03:21,299 - INFO - Epoch [36/40] Loss=0.0053 LR=0.000007 | EEG->Img Top-1=24.00% Top-5=53.00% | Img->EEG Top-1=30.50% Top-5=59.50%
+2026-04-23 13:03:28,283 - INFO - Epoch [37/40] Loss=0.0053 LR=0.000004 | EEG->Img Top-1=26.00% Top-5=49.50% | Img->EEG Top-1=27.50% Top-5=59.00%
+2026-04-23 13:03:35,388 - INFO - Epoch [38/40] Loss=0.0055 LR=0.000002 | EEG->Img Top-1=25.00% Top-5=51.50% | Img->EEG Top-1=28.00% Top-5=60.50%
+2026-04-23 13:03:42,577 - INFO - Epoch [39/40] Loss=0.0048 LR=0.000000 | EEG->Img Top-1=24.50% Top-5=51.00% | Img->EEG Top-1=28.50% Top-5=60.50%
+2026-04-23 13:03:49,726 - INFO - Epoch [40/40] Loss=0.0045 LR=0.000000 | EEG->Img Top-1=25.00% Top-5=51.00% | Img->EEG Top-1=28.50% Top-5=59.50%
+2026-04-23 13:03:49,726 - INFO - 最后一轮训练记录: {'epoch': 40, 'loss': 0.0044522181892320805, 'lr': 0.0, 'eeg_to_image_top1': 25.0, 'eeg_to_image_top5': 50.999999046325684, 'image_to_eeg_top1': 28.49999964237213, 'image_to_eeg_top5': 59.50000286102295}
+2026-04-23 13:03:49,739 - INFO - 已加载按 EEG->Image Top-1 最优的 checkpoint（epoch 6，Top-1=29.00%）用于最终评估。
+2026-04-23 13:03:49,758 - INFO - EEG embeds count: 13
+2026-04-23 13:03:49,758 - INFO - CLIP embeds count: 13
+2026-04-23 13:03:49,758 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:03:49,758 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:03:49,760 - INFO - 
+--- 评估结果 ---
+2026-04-23 13:03:49,760 - INFO - EEG -> Image | Top-1: 29.00% | Top-5: 54.00%
+2026-04-23 13:03:49,760 - INFO - Image -> EEG | Top-1: 39.00% | Top-5: 68.00%
+2026-04-23 13:03:49,761 - INFO - 最终检索指标: {'eeg_to_image_top1': 28.999999165534973, 'eeg_to_image_top5': 54.00000214576721, 'image_to_eeg_top1': 38.999998569488525, 'image_to_eeg_top5': 68.00000071525574}
+2026-04-23 13:03:49,761 - INFO - 
+--- 第 6 次实验 ---
+2026-04-23 13:03:49,772 - INFO - 开始训练，设备: cuda, Epochs: 40, LR: 0.0003
+2026-04-23 13:03:49,772 - INFO - 梯度累积步数: 1, 混合精度: True
+2026-04-23 13:03:49,772 - INFO - 模型参数量: 总计 1,856,153, 可训练 1,856,153
+2026-04-23 13:03:49,773 - INFO - 初始显存: 已分配 0.04 GB, 已预留 0.04 GB
+2026-04-23 13:03:49,785 - INFO - 第一个 batch 后显存: 已分配 0.05 GB, 已预留 0.07 GB
+2026-04-23 13:03:56,913 - INFO - Epoch [1/40] Loss=2.2334 LR=0.000300 | EEG->Img Top-1=8.00% Top-5=20.50% | Img->EEG Top-1=18.50% Top-5=41.50%
+2026-04-23 13:03:56,922 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=8.00%, epoch=1): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:04:04,125 - INFO - Epoch [2/40] Loss=1.4539 LR=0.000298 | EEG->Img Top-1=12.50% Top-5=38.50% | Img->EEG Top-1=29.00% Top-5=60.50%
+2026-04-23 13:04:04,133 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=12.50%, epoch=2): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:04:11,294 - INFO - Epoch [3/40] Loss=1.0764 LR=0.000296 | EEG->Img Top-1=17.00% Top-5=47.00% | Img->EEG Top-1=26.00% Top-5=59.00%
+2026-04-23 13:04:11,302 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=17.00%, epoch=3): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:04:18,464 - INFO - Epoch [4/40] Loss=0.8006 LR=0.000293 | EEG->Img Top-1=21.00% Top-5=50.00% | Img->EEG Top-1=31.50% Top-5=63.50%
+2026-04-23 13:04:18,470 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=21.00%, epoch=4): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:04:25,621 - INFO - Epoch [5/40] Loss=0.5713 LR=0.000289 | EEG->Img Top-1=23.00% Top-5=53.00% | Img->EEG Top-1=34.00% Top-5=70.00%
+2026-04-23 13:04:25,628 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=23.00%, epoch=5): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:04:32,744 - INFO - Epoch [6/40] Loss=0.4028 LR=0.000284 | EEG->Img Top-1=18.50% Top-5=49.00% | Img->EEG Top-1=33.00% Top-5=68.00%
+2026-04-23 13:04:39,807 - INFO - Epoch [7/40] Loss=0.2941 LR=0.000278 | EEG->Img Top-1=22.50% Top-5=52.00% | Img->EEG Top-1=33.00% Top-5=66.00%
+2026-04-23 13:04:46,873 - INFO - Epoch [8/40] Loss=0.2241 LR=0.000271 | EEG->Img Top-1=17.50% Top-5=46.50% | Img->EEG Top-1=32.00% Top-5=66.50%
+2026-04-23 13:04:54,009 - INFO - Epoch [9/40] Loss=0.1777 LR=0.000264 | EEG->Img Top-1=20.50% Top-5=49.50% | Img->EEG Top-1=31.00% Top-5=63.00%
+2026-04-23 13:05:01,151 - INFO - Epoch [10/40] Loss=0.1485 LR=0.000256 | EEG->Img Top-1=17.00% Top-5=45.50% | Img->EEG Top-1=31.00% Top-5=61.00%
+2026-04-23 13:05:08,271 - INFO - Epoch [11/40] Loss=0.1224 LR=0.000247 | EEG->Img Top-1=19.50% Top-5=47.00% | Img->EEG Top-1=37.00% Top-5=71.00%
+2026-04-23 13:05:15,380 - INFO - Epoch [12/40] Loss=0.1142 LR=0.000238 | EEG->Img Top-1=22.00% Top-5=49.50% | Img->EEG Top-1=29.00% Top-5=63.50%
+2026-04-23 13:05:22,453 - INFO - Epoch [13/40] Loss=0.1056 LR=0.000228 | EEG->Img Top-1=18.00% Top-5=44.50% | Img->EEG Top-1=29.00% Top-5=64.00%
+2026-04-23 13:05:29,508 - INFO - Epoch [14/40] Loss=0.0913 LR=0.000218 | EEG->Img Top-1=19.50% Top-5=52.00% | Img->EEG Top-1=29.50% Top-5=66.00%
+2026-04-23 13:05:36,570 - INFO - Epoch [15/40] Loss=0.0755 LR=0.000207 | EEG->Img Top-1=19.00% Top-5=44.50% | Img->EEG Top-1=28.00% Top-5=56.00%
+2026-04-23 13:05:43,673 - INFO - Epoch [16/40] Loss=0.0737 LR=0.000196 | EEG->Img Top-1=21.00% Top-5=50.00% | Img->EEG Top-1=29.50% Top-5=63.50%
+2026-04-23 13:05:50,707 - INFO - Epoch [17/40] Loss=0.0621 LR=0.000185 | EEG->Img Top-1=18.50% Top-5=45.00% | Img->EEG Top-1=29.50% Top-5=60.00%
+2026-04-23 13:05:57,785 - INFO - Epoch [18/40] Loss=0.0523 LR=0.000173 | EEG->Img Top-1=20.50% Top-5=47.00% | Img->EEG Top-1=35.50% Top-5=64.50%
+2026-04-23 13:06:04,883 - INFO - Epoch [19/40] Loss=0.0481 LR=0.000162 | EEG->Img Top-1=18.50% Top-5=48.00% | Img->EEG Top-1=28.50% Top-5=61.50%
+2026-04-23 13:06:12,018 - INFO - Epoch [20/40] Loss=0.0405 LR=0.000150 | EEG->Img Top-1=21.00% Top-5=49.00% | Img->EEG Top-1=28.50% Top-5=59.50%
+2026-04-23 13:06:19,492 - INFO - Epoch [21/40] Loss=0.0349 LR=0.000138 | EEG->Img Top-1=22.00% Top-5=58.00% | Img->EEG Top-1=29.50% Top-5=65.50%
+2026-04-23 13:06:26,548 - INFO - Epoch [22/40] Loss=0.0316 LR=0.000127 | EEG->Img Top-1=20.50% Top-5=52.00% | Img->EEG Top-1=30.00% Top-5=58.50%
+2026-04-23 13:06:33,581 - INFO - Epoch [23/40] Loss=0.0267 LR=0.000115 | EEG->Img Top-1=23.00% Top-5=51.50% | Img->EEG Top-1=30.00% Top-5=57.00%
+2026-04-23 13:06:40,617 - INFO - Epoch [24/40] Loss=0.0223 LR=0.000104 | EEG->Img Top-1=19.50% Top-5=51.50% | Img->EEG Top-1=28.50% Top-5=65.50%
+2026-04-23 13:06:47,664 - INFO - Epoch [25/40] Loss=0.0184 LR=0.000093 | EEG->Img Top-1=20.50% Top-5=44.00% | Img->EEG Top-1=32.00% Top-5=62.00%
+2026-04-23 13:06:54,687 - INFO - Epoch [26/40] Loss=0.0177 LR=0.000082 | EEG->Img Top-1=22.50% Top-5=47.00% | Img->EEG Top-1=29.50% Top-5=58.00%
+2026-04-23 13:07:01,731 - INFO - Epoch [27/40] Loss=0.0143 LR=0.000072 | EEG->Img Top-1=20.50% Top-5=50.50% | Img->EEG Top-1=32.00% Top-5=62.00%
+2026-04-23 13:07:08,757 - INFO - Epoch [28/40] Loss=0.0144 LR=0.000062 | EEG->Img Top-1=19.00% Top-5=52.00% | Img->EEG Top-1=28.00% Top-5=60.50%
+2026-04-23 13:07:15,804 - INFO - Epoch [29/40] Loss=0.0116 LR=0.000053 | EEG->Img Top-1=24.00% Top-5=54.50% | Img->EEG Top-1=33.50% Top-5=61.00%
+2026-04-23 13:07:15,816 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=24.00%, epoch=29): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:07:22,902 - INFO - Epoch [30/40] Loss=0.0099 LR=0.000044 | EEG->Img Top-1=26.00% Top-5=53.00% | Img->EEG Top-1=30.50% Top-5=57.50%
+2026-04-23 13:07:22,910 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=26.00%, epoch=30): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:07:29,976 - INFO - Epoch [31/40] Loss=0.0096 LR=0.000036 | EEG->Img Top-1=24.50% Top-5=53.50% | Img->EEG Top-1=27.50% Top-5=59.00%
+2026-04-23 13:07:37,152 - INFO - Epoch [32/40] Loss=0.0079 LR=0.000029 | EEG->Img Top-1=25.00% Top-5=54.00% | Img->EEG Top-1=30.50% Top-5=58.00%
+2026-04-23 13:07:44,275 - INFO - Epoch [33/40] Loss=0.0072 LR=0.000022 | EEG->Img Top-1=23.00% Top-5=50.50% | Img->EEG Top-1=29.50% Top-5=54.50%
+2026-04-23 13:07:51,346 - INFO - Epoch [34/40] Loss=0.0071 LR=0.000016 | EEG->Img Top-1=24.00% Top-5=50.00% | Img->EEG Top-1=28.50% Top-5=57.50%
+2026-04-23 13:07:58,394 - INFO - Epoch [35/40] Loss=0.0071 LR=0.000011 | EEG->Img Top-1=25.50% Top-5=51.50% | Img->EEG Top-1=29.50% Top-5=59.50%
+2026-04-23 13:08:05,415 - INFO - Epoch [36/40] Loss=0.0055 LR=0.000007 | EEG->Img Top-1=24.00% Top-5=54.00% | Img->EEG Top-1=29.00% Top-5=58.50%
+2026-04-23 13:08:12,428 - INFO - Epoch [37/40] Loss=0.0057 LR=0.000004 | EEG->Img Top-1=26.00% Top-5=51.50% | Img->EEG Top-1=29.00% Top-5=57.00%
+2026-04-23 13:08:19,414 - INFO - Epoch [38/40] Loss=0.0057 LR=0.000002 | EEG->Img Top-1=25.00% Top-5=50.50% | Img->EEG Top-1=28.50% Top-5=57.00%
+2026-04-23 13:08:26,431 - INFO - Epoch [39/40] Loss=0.0058 LR=0.000000 | EEG->Img Top-1=25.00% Top-5=50.00% | Img->EEG Top-1=29.50% Top-5=57.00%
+2026-04-23 13:08:33,509 - INFO - Epoch [40/40] Loss=0.0062 LR=0.000000 | EEG->Img Top-1=23.50% Top-5=49.00% | Img->EEG Top-1=29.00% Top-5=56.50%
+2026-04-23 13:08:33,509 - INFO - 最后一轮训练记录: {'epoch': 40, 'loss': 0.00620285895619518, 'lr': 0.0, 'eeg_to_image_top1': 23.499999940395355, 'eeg_to_image_top5': 49.000000953674316, 'image_to_eeg_top1': 28.999999165534973, 'image_to_eeg_top5': 56.49999976158142}
+2026-04-23 13:08:33,529 - INFO - 已加载按 EEG->Image Top-1 最优的 checkpoint（epoch 30，Top-1=26.00%）用于最终评估。
+2026-04-23 13:08:33,547 - INFO - EEG embeds count: 13
+2026-04-23 13:08:33,548 - INFO - CLIP embeds count: 13
+2026-04-23 13:08:33,548 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:08:33,548 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:08:33,550 - INFO - 
+--- 评估结果 ---
+2026-04-23 13:08:33,550 - INFO - EEG -> Image | Top-1: 26.00% | Top-5: 53.00%
+2026-04-23 13:08:33,550 - INFO - Image -> EEG | Top-1: 30.50% | Top-5: 57.50%
+2026-04-23 13:08:33,550 - INFO - 最终检索指标: {'eeg_to_image_top1': 25.999999046325684, 'eeg_to_image_top5': 52.99999713897705, 'image_to_eeg_top1': 30.500000715255737, 'image_to_eeg_top5': 57.499998807907104}
+2026-04-23 13:08:33,550 - INFO - 
+--- 第 7 次实验 ---
+2026-04-23 13:08:33,561 - INFO - 开始训练，设备: cuda, Epochs: 40, LR: 0.0003
+2026-04-23 13:08:33,561 - INFO - 梯度累积步数: 1, 混合精度: True
+2026-04-23 13:08:33,561 - INFO - 模型参数量: 总计 1,856,153, 可训练 1,856,153
+2026-04-23 13:08:33,562 - INFO - 初始显存: 已分配 0.04 GB, 已预留 0.06 GB
+2026-04-23 13:08:33,573 - INFO - 第一个 batch 后显存: 已分配 0.06 GB, 已预留 0.08 GB
+2026-04-23 13:08:40,765 - INFO - Epoch [1/40] Loss=2.1824 LR=0.000300 | EEG->Img Top-1=10.00% Top-5=21.50% | Img->EEG Top-1=16.50% Top-5=42.50%
+2026-04-23 13:08:40,773 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=10.00%, epoch=1): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:08:48,136 - INFO - Epoch [2/40] Loss=1.4556 LR=0.000298 | EEG->Img Top-1=15.50% Top-5=45.50% | Img->EEG Top-1=26.00% Top-5=63.00%
+2026-04-23 13:08:48,143 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=15.50%, epoch=2): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:08:55,526 - INFO - Epoch [3/40] Loss=1.0774 LR=0.000296 | EEG->Img Top-1=16.50% Top-5=52.50% | Img->EEG Top-1=33.50% Top-5=63.50%
+2026-04-23 13:08:55,534 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=16.50%, epoch=3): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:09:03,113 - INFO - Epoch [4/40] Loss=0.7929 LR=0.000293 | EEG->Img Top-1=22.00% Top-5=48.00% | Img->EEG Top-1=29.50% Top-5=66.00%
+2026-04-23 13:09:03,121 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=22.00%, epoch=4): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:09:10,704 - INFO - Epoch [5/40] Loss=0.5637 LR=0.000289 | EEG->Img Top-1=23.50% Top-5=52.50% | Img->EEG Top-1=32.50% Top-5=69.50%
+2026-04-23 13:09:10,712 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=23.50%, epoch=5): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:09:18,216 - INFO - Epoch [6/40] Loss=0.3948 LR=0.000284 | EEG->Img Top-1=24.50% Top-5=54.50% | Img->EEG Top-1=33.50% Top-5=67.50%
+2026-04-23 13:09:18,224 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=24.50%, epoch=6): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:09:25,534 - INFO - Epoch [7/40] Loss=0.2818 LR=0.000278 | EEG->Img Top-1=24.50% Top-5=52.50% | Img->EEG Top-1=32.50% Top-5=66.50%
+2026-04-23 13:09:32,781 - INFO - Epoch [8/40] Loss=0.2146 LR=0.000271 | EEG->Img Top-1=25.00% Top-5=50.50% | Img->EEG Top-1=34.50% Top-5=65.50%
+2026-04-23 13:09:32,789 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=25.00%, epoch=8): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:09:40,004 - INFO - Epoch [9/40] Loss=0.1792 LR=0.000264 | EEG->Img Top-1=25.00% Top-5=50.50% | Img->EEG Top-1=31.00% Top-5=59.50%
+2026-04-23 13:09:47,274 - INFO - Epoch [10/40] Loss=0.1496 LR=0.000256 | EEG->Img Top-1=21.50% Top-5=49.00% | Img->EEG Top-1=32.50% Top-5=63.50%
+2026-04-23 13:09:54,534 - INFO - Epoch [11/40] Loss=0.1234 LR=0.000247 | EEG->Img Top-1=23.50% Top-5=52.00% | Img->EEG Top-1=33.00% Top-5=65.00%
+2026-04-23 13:10:01,784 - INFO - Epoch [12/40] Loss=0.1076 LR=0.000238 | EEG->Img Top-1=24.00% Top-5=51.00% | Img->EEG Top-1=31.50% Top-5=63.00%
+2026-04-23 13:10:08,899 - INFO - Epoch [13/40] Loss=0.0961 LR=0.000228 | EEG->Img Top-1=21.50% Top-5=46.00% | Img->EEG Top-1=27.50% Top-5=60.50%
+2026-04-23 13:10:16,011 - INFO - Epoch [14/40] Loss=0.0874 LR=0.000218 | EEG->Img Top-1=23.50% Top-5=52.00% | Img->EEG Top-1=28.00% Top-5=56.00%
+2026-04-23 13:10:23,086 - INFO - Epoch [15/40] Loss=0.0798 LR=0.000207 | EEG->Img Top-1=23.00% Top-5=52.00% | Img->EEG Top-1=30.00% Top-5=58.50%
+2026-04-23 13:10:30,160 - INFO - Epoch [16/40] Loss=0.0750 LR=0.000196 | EEG->Img Top-1=28.00% Top-5=49.00% | Img->EEG Top-1=30.50% Top-5=61.00%
+2026-04-23 13:10:30,172 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=28.00%, epoch=16): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:10:37,276 - INFO - Epoch [17/40] Loss=0.0622 LR=0.000185 | EEG->Img Top-1=21.50% Top-5=48.50% | Img->EEG Top-1=28.00% Top-5=64.50%
+2026-04-23 13:10:44,318 - INFO - Epoch [18/40] Loss=0.0520 LR=0.000173 | EEG->Img Top-1=24.00% Top-5=49.50% | Img->EEG Top-1=32.00% Top-5=63.00%
+2026-04-23 13:10:51,383 - INFO - Epoch [19/40] Loss=0.0489 LR=0.000162 | EEG->Img Top-1=23.00% Top-5=51.00% | Img->EEG Top-1=26.50% Top-5=60.50%
+2026-04-23 13:10:58,434 - INFO - Epoch [20/40] Loss=0.0379 LR=0.000150 | EEG->Img Top-1=22.50% Top-5=47.00% | Img->EEG Top-1=25.00% Top-5=54.50%
+2026-04-23 13:11:05,515 - INFO - Epoch [21/40] Loss=0.0372 LR=0.000138 | EEG->Img Top-1=24.50% Top-5=50.50% | Img->EEG Top-1=32.00% Top-5=62.00%
+2026-04-23 13:11:12,656 - INFO - Epoch [22/40] Loss=0.0322 LR=0.000127 | EEG->Img Top-1=23.50% Top-5=45.50% | Img->EEG Top-1=30.00% Top-5=58.50%
+2026-04-23 13:11:19,768 - INFO - Epoch [23/40] Loss=0.0281 LR=0.000115 | EEG->Img Top-1=23.50% Top-5=50.00% | Img->EEG Top-1=32.00% Top-5=64.50%
+2026-04-23 13:11:26,981 - INFO - Epoch [24/40] Loss=0.0234 LR=0.000104 | EEG->Img Top-1=25.00% Top-5=48.00% | Img->EEG Top-1=26.00% Top-5=56.50%
+2026-04-23 13:11:34,093 - INFO - Epoch [25/40] Loss=0.0175 LR=0.000093 | EEG->Img Top-1=22.50% Top-5=43.00% | Img->EEG Top-1=28.00% Top-5=59.50%
+2026-04-23 13:11:41,169 - INFO - Epoch [26/40] Loss=0.0164 LR=0.000082 | EEG->Img Top-1=20.50% Top-5=44.50% | Img->EEG Top-1=29.50% Top-5=58.00%
+2026-04-23 13:11:48,232 - INFO - Epoch [27/40] Loss=0.0164 LR=0.000072 | EEG->Img Top-1=23.00% Top-5=46.50% | Img->EEG Top-1=29.50% Top-5=60.00%
+2026-04-23 13:11:55,292 - INFO - Epoch [28/40] Loss=0.0144 LR=0.000062 | EEG->Img Top-1=25.50% Top-5=50.50% | Img->EEG Top-1=31.00% Top-5=58.50%
+2026-04-23 13:12:02,418 - INFO - Epoch [29/40] Loss=0.0114 LR=0.000053 | EEG->Img Top-1=24.50% Top-5=52.00% | Img->EEG Top-1=29.00% Top-5=60.00%
+2026-04-23 13:12:09,517 - INFO - Epoch [30/40] Loss=0.0101 LR=0.000044 | EEG->Img Top-1=24.50% Top-5=46.50% | Img->EEG Top-1=27.50% Top-5=57.50%
+2026-04-23 13:12:16,640 - INFO - Epoch [31/40] Loss=0.0084 LR=0.000036 | EEG->Img Top-1=21.50% Top-5=45.50% | Img->EEG Top-1=26.00% Top-5=57.50%
+2026-04-23 13:12:23,750 - INFO - Epoch [32/40] Loss=0.0087 LR=0.000029 | EEG->Img Top-1=22.50% Top-5=49.00% | Img->EEG Top-1=30.50% Top-5=57.50%
+2026-04-23 13:12:30,925 - INFO - Epoch [33/40] Loss=0.0078 LR=0.000022 | EEG->Img Top-1=24.50% Top-5=49.00% | Img->EEG Top-1=28.00% Top-5=57.00%
+2026-04-23 13:12:38,063 - INFO - Epoch [34/40] Loss=0.0077 LR=0.000016 | EEG->Img Top-1=21.50% Top-5=51.50% | Img->EEG Top-1=27.50% Top-5=55.50%
+2026-04-23 13:12:45,200 - INFO - Epoch [35/40] Loss=0.0062 LR=0.000011 | EEG->Img Top-1=24.00% Top-5=52.00% | Img->EEG Top-1=27.00% Top-5=57.00%
+2026-04-23 13:12:52,282 - INFO - Epoch [36/40] Loss=0.0066 LR=0.000007 | EEG->Img Top-1=23.00% Top-5=51.50% | Img->EEG Top-1=29.00% Top-5=57.50%
+2026-04-23 13:12:59,328 - INFO - Epoch [37/40] Loss=0.0060 LR=0.000004 | EEG->Img Top-1=22.00% Top-5=50.00% | Img->EEG Top-1=26.50% Top-5=56.00%
+2026-04-23 13:13:06,377 - INFO - Epoch [38/40] Loss=0.0045 LR=0.000002 | EEG->Img Top-1=24.00% Top-5=52.00% | Img->EEG Top-1=27.00% Top-5=54.50%
+2026-04-23 13:13:13,418 - INFO - Epoch [39/40] Loss=0.0052 LR=0.000000 | EEG->Img Top-1=23.50% Top-5=51.00% | Img->EEG Top-1=26.00% Top-5=56.50%
+2026-04-23 13:13:20,474 - INFO - Epoch [40/40] Loss=0.0059 LR=0.000000 | EEG->Img Top-1=24.00% Top-5=50.50% | Img->EEG Top-1=25.00% Top-5=55.00%
+2026-04-23 13:13:20,475 - INFO - 最后一轮训练记录: {'epoch': 40, 'loss': 0.005920123427789262, 'lr': 0.0, 'eeg_to_image_top1': 23.999999463558197, 'eeg_to_image_top5': 50.49999952316284, 'image_to_eeg_top1': 25.0, 'image_to_eeg_top5': 55.000001192092896}
+2026-04-23 13:13:20,487 - INFO - 已加载按 EEG->Image Top-1 最优的 checkpoint（epoch 16，Top-1=28.00%）用于最终评估。
+2026-04-23 13:13:20,505 - INFO - EEG embeds count: 13
+2026-04-23 13:13:20,505 - INFO - CLIP embeds count: 13
+2026-04-23 13:13:20,506 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:13:20,506 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:13:20,508 - INFO - 
+--- 评估结果 ---
+2026-04-23 13:13:20,508 - INFO - EEG -> Image | Top-1: 28.00% | Top-5: 49.00%
+2026-04-23 13:13:20,508 - INFO - Image -> EEG | Top-1: 30.50% | Top-5: 61.00%
+2026-04-23 13:13:20,508 - INFO - 最终检索指标: {'eeg_to_image_top1': 28.00000011920929, 'eeg_to_image_top5': 49.000000953674316, 'image_to_eeg_top1': 30.500000715255737, 'image_to_eeg_top5': 61.000001430511475}
+2026-04-23 13:13:20,508 - INFO - 
+--- 第 8 次实验 ---
+2026-04-23 13:13:20,519 - INFO - 开始训练，设备: cuda, Epochs: 40, LR: 0.0003
+2026-04-23 13:13:20,520 - INFO - 梯度累积步数: 1, 混合精度: True
+2026-04-23 13:13:20,520 - INFO - 模型参数量: 总计 1,856,153, 可训练 1,856,153
+2026-04-23 13:13:20,520 - INFO - 初始显存: 已分配 0.04 GB, 已预留 0.04 GB
+2026-04-23 13:13:20,531 - INFO - 第一个 batch 后显存: 已分配 0.05 GB, 已预留 0.07 GB
+2026-04-23 13:13:27,582 - INFO - Epoch [1/40] Loss=2.2075 LR=0.000300 | EEG->Img Top-1=11.50% Top-5=29.00% | Img->EEG Top-1=13.50% Top-5=36.00%
+2026-04-23 13:13:27,590 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=11.50%, epoch=1): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:13:34,725 - INFO - Epoch [2/40] Loss=1.4216 LR=0.000298 | EEG->Img Top-1=22.00% Top-5=45.50% | Img->EEG Top-1=31.00% Top-5=58.00%
+2026-04-23 13:13:34,732 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=22.00%, epoch=2): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:13:41,862 - INFO - Epoch [3/40] Loss=1.0338 LR=0.000296 | EEG->Img Top-1=27.50% Top-5=57.00% | Img->EEG Top-1=35.50% Top-5=65.00%
+2026-04-23 13:13:41,869 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=27.50%, epoch=3): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:13:48,989 - INFO - Epoch [4/40] Loss=0.7617 LR=0.000293 | EEG->Img Top-1=20.50% Top-5=45.00% | Img->EEG Top-1=35.00% Top-5=70.00%
+2026-04-23 13:13:56,127 - INFO - Epoch [5/40] Loss=0.5455 LR=0.000289 | EEG->Img Top-1=25.50% Top-5=57.00% | Img->EEG Top-1=34.00% Top-5=69.00%
+2026-04-23 13:14:03,268 - INFO - Epoch [6/40] Loss=0.3889 LR=0.000284 | EEG->Img Top-1=22.00% Top-5=57.00% | Img->EEG Top-1=38.00% Top-5=73.50%
+2026-04-23 13:14:10,358 - INFO - Epoch [7/40] Loss=0.2816 LR=0.000278 | EEG->Img Top-1=25.50% Top-5=51.00% | Img->EEG Top-1=38.50% Top-5=67.50%
+2026-04-23 13:14:17,430 - INFO - Epoch [8/40] Loss=0.2134 LR=0.000271 | EEG->Img Top-1=19.50% Top-5=52.00% | Img->EEG Top-1=32.00% Top-5=62.50%
+2026-04-23 13:14:24,500 - INFO - Epoch [9/40] Loss=0.1695 LR=0.000264 | EEG->Img Top-1=27.00% Top-5=57.00% | Img->EEG Top-1=37.50% Top-5=69.00%
+2026-04-23 13:14:31,595 - INFO - Epoch [10/40] Loss=0.1487 LR=0.000256 | EEG->Img Top-1=22.00% Top-5=51.00% | Img->EEG Top-1=32.50% Top-5=64.50%
+2026-04-23 13:14:38,656 - INFO - Epoch [11/40] Loss=0.1222 LR=0.000247 | EEG->Img Top-1=22.50% Top-5=45.00% | Img->EEG Top-1=34.50% Top-5=65.50%
+2026-04-23 13:14:45,708 - INFO - Epoch [12/40] Loss=0.1103 LR=0.000238 | EEG->Img Top-1=18.50% Top-5=46.50% | Img->EEG Top-1=30.50% Top-5=63.50%
+2026-04-23 13:14:52,819 - INFO - Epoch [13/40] Loss=0.1007 LR=0.000228 | EEG->Img Top-1=24.00% Top-5=54.00% | Img->EEG Top-1=33.50% Top-5=68.50%
+2026-04-23 13:14:59,955 - INFO - Epoch [14/40] Loss=0.0848 LR=0.000218 | EEG->Img Top-1=20.50% Top-5=50.00% | Img->EEG Top-1=29.00% Top-5=58.00%
+2026-04-23 13:15:07,052 - INFO - Epoch [15/40] Loss=0.0797 LR=0.000207 | EEG->Img Top-1=23.00% Top-5=51.50% | Img->EEG Top-1=31.50% Top-5=66.50%
+2026-04-23 13:15:14,163 - INFO - Epoch [16/40] Loss=0.0646 LR=0.000196 | EEG->Img Top-1=14.00% Top-5=47.50% | Img->EEG Top-1=25.00% Top-5=63.50%
+2026-04-23 13:15:21,237 - INFO - Epoch [17/40] Loss=0.0606 LR=0.000185 | EEG->Img Top-1=19.50% Top-5=46.00% | Img->EEG Top-1=30.50% Top-5=62.00%
+2026-04-23 13:15:28,268 - INFO - Epoch [18/40] Loss=0.0519 LR=0.000173 | EEG->Img Top-1=20.00% Top-5=45.00% | Img->EEG Top-1=31.50% Top-5=61.00%
+2026-04-23 13:15:35,353 - INFO - Epoch [19/40] Loss=0.0420 LR=0.000162 | EEG->Img Top-1=22.50% Top-5=53.00% | Img->EEG Top-1=32.50% Top-5=67.00%
+2026-04-23 13:15:42,623 - INFO - Epoch [20/40] Loss=0.0371 LR=0.000150 | EEG->Img Top-1=18.00% Top-5=48.00% | Img->EEG Top-1=32.00% Top-5=60.00%
+2026-04-23 13:15:49,888 - INFO - Epoch [21/40] Loss=0.0385 LR=0.000138 | EEG->Img Top-1=23.00% Top-5=44.00% | Img->EEG Top-1=32.50% Top-5=60.00%
+2026-04-23 13:15:57,129 - INFO - Epoch [22/40] Loss=0.0309 LR=0.000127 | EEG->Img Top-1=24.00% Top-5=49.50% | Img->EEG Top-1=30.00% Top-5=60.50%
+2026-04-23 13:16:04,402 - INFO - Epoch [23/40] Loss=0.0267 LR=0.000115 | EEG->Img Top-1=23.50% Top-5=46.00% | Img->EEG Top-1=27.00% Top-5=56.00%
+2026-04-23 13:16:11,755 - INFO - Epoch [24/40] Loss=0.0207 LR=0.000104 | EEG->Img Top-1=23.00% Top-5=49.00% | Img->EEG Top-1=34.50% Top-5=63.50%
+2026-04-23 13:16:19,081 - INFO - Epoch [25/40] Loss=0.0193 LR=0.000093 | EEG->Img Top-1=25.00% Top-5=47.00% | Img->EEG Top-1=29.00% Top-5=60.00%
+2026-04-23 13:16:26,190 - INFO - Epoch [26/40] Loss=0.0183 LR=0.000082 | EEG->Img Top-1=22.00% Top-5=49.50% | Img->EEG Top-1=32.00% Top-5=58.00%
+2026-04-23 13:16:33,326 - INFO - Epoch [27/40] Loss=0.0141 LR=0.000072 | EEG->Img Top-1=21.50% Top-5=44.50% | Img->EEG Top-1=27.00% Top-5=54.00%
+2026-04-23 13:16:40,457 - INFO - Epoch [28/40] Loss=0.0136 LR=0.000062 | EEG->Img Top-1=25.00% Top-5=47.00% | Img->EEG Top-1=26.00% Top-5=55.50%
+2026-04-23 13:16:47,482 - INFO - Epoch [29/40] Loss=0.0120 LR=0.000053 | EEG->Img Top-1=22.50% Top-5=51.50% | Img->EEG Top-1=28.50% Top-5=58.50%
+2026-04-23 13:16:54,511 - INFO - Epoch [30/40] Loss=0.0093 LR=0.000044 | EEG->Img Top-1=23.50% Top-5=49.50% | Img->EEG Top-1=32.50% Top-5=57.50%
+2026-04-23 13:17:01,537 - INFO - Epoch [31/40] Loss=0.0082 LR=0.000036 | EEG->Img Top-1=21.50% Top-5=46.50% | Img->EEG Top-1=33.00% Top-5=59.50%
+2026-04-23 13:17:08,564 - INFO - Epoch [32/40] Loss=0.0093 LR=0.000029 | EEG->Img Top-1=23.50% Top-5=47.50% | Img->EEG Top-1=28.00% Top-5=52.50%
+2026-04-23 13:17:15,611 - INFO - Epoch [33/40] Loss=0.0084 LR=0.000022 | EEG->Img Top-1=21.00% Top-5=44.00% | Img->EEG Top-1=25.50% Top-5=53.00%
+2026-04-23 13:17:22,668 - INFO - Epoch [34/40] Loss=0.0088 LR=0.000016 | EEG->Img Top-1=19.50% Top-5=45.00% | Img->EEG Top-1=26.00% Top-5=54.00%
+2026-04-23 13:17:29,767 - INFO - Epoch [35/40] Loss=0.0063 LR=0.000011 | EEG->Img Top-1=22.50% Top-5=48.00% | Img->EEG Top-1=27.50% Top-5=54.00%
+2026-04-23 13:17:36,857 - INFO - Epoch [36/40] Loss=0.0065 LR=0.000007 | EEG->Img Top-1=21.00% Top-5=47.50% | Img->EEG Top-1=25.50% Top-5=55.00%
+2026-04-23 13:17:44,025 - INFO - Epoch [37/40] Loss=0.0057 LR=0.000004 | EEG->Img Top-1=21.00% Top-5=49.50% | Img->EEG Top-1=27.00% Top-5=52.00%
+2026-04-23 13:17:51,114 - INFO - Epoch [38/40] Loss=0.0062 LR=0.000002 | EEG->Img Top-1=21.00% Top-5=47.00% | Img->EEG Top-1=27.50% Top-5=52.00%
+2026-04-23 13:17:58,138 - INFO - Epoch [39/40] Loss=0.0058 LR=0.000000 | EEG->Img Top-1=22.00% Top-5=48.50% | Img->EEG Top-1=28.00% Top-5=52.50%
+2026-04-23 13:18:05,182 - INFO - Epoch [40/40] Loss=0.0056 LR=0.000000 | EEG->Img Top-1=21.00% Top-5=47.50% | Img->EEG Top-1=28.00% Top-5=50.50%
+2026-04-23 13:18:05,182 - INFO - 最后一轮训练记录: {'epoch': 40, 'loss': 0.005623795130498152, 'lr': 0.0, 'eeg_to_image_top1': 20.999999344348907, 'eeg_to_image_top5': 47.49999940395355, 'image_to_eeg_top1': 28.00000011920929, 'image_to_eeg_top5': 50.49999952316284}
+2026-04-23 13:18:05,245 - INFO - 已加载按 EEG->Image Top-1 最优的 checkpoint（epoch 3，Top-1=27.50%）用于最终评估。
+2026-04-23 13:18:05,267 - INFO - EEG embeds count: 13
+2026-04-23 13:18:05,267 - INFO - CLIP embeds count: 13
+2026-04-23 13:18:05,267 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:18:05,267 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:18:05,269 - INFO - 
+--- 评估结果 ---
+2026-04-23 13:18:05,269 - INFO - EEG -> Image | Top-1: 27.50% | Top-5: 57.00%
+2026-04-23 13:18:05,269 - INFO - Image -> EEG | Top-1: 35.50% | Top-5: 65.00%
+2026-04-23 13:18:05,269 - INFO - 最终检索指标: {'eeg_to_image_top1': 27.500000596046448, 'eeg_to_image_top5': 56.99999928474426, 'image_to_eeg_top1': 35.499998927116394, 'image_to_eeg_top5': 64.99999761581421}
+2026-04-23 13:18:05,269 - INFO - 
+--- 第 9 次实验 ---
+2026-04-23 13:18:05,280 - INFO - 开始训练，设备: cuda, Epochs: 40, LR: 0.0003
+2026-04-23 13:18:05,281 - INFO - 梯度累积步数: 1, 混合精度: True
+2026-04-23 13:18:05,281 - INFO - 模型参数量: 总计 1,856,153, 可训练 1,856,153
+2026-04-23 13:18:05,281 - INFO - 初始显存: 已分配 0.04 GB, 已预留 0.06 GB
+2026-04-23 13:18:05,292 - INFO - 第一个 batch 后显存: 已分配 0.06 GB, 已预留 0.09 GB
+2026-04-23 13:18:12,276 - INFO - Epoch [1/40] Loss=2.2430 LR=0.000300 | EEG->Img Top-1=4.00% Top-5=15.00% | Img->EEG Top-1=9.00% Top-5=31.00%
+2026-04-23 13:18:12,285 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=4.00%, epoch=1): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:18:19,309 - INFO - Epoch [2/40] Loss=1.4437 LR=0.000298 | EEG->Img Top-1=13.50% Top-5=45.50% | Img->EEG Top-1=21.50% Top-5=51.50%
+2026-04-23 13:18:19,316 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=13.50%, epoch=2): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:18:26,333 - INFO - Epoch [3/40] Loss=1.0505 LR=0.000296 | EEG->Img Top-1=15.00% Top-5=43.50% | Img->EEG Top-1=29.00% Top-5=64.50%
+2026-04-23 13:18:26,340 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=15.00%, epoch=3): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:18:33,408 - INFO - Epoch [4/40] Loss=0.7788 LR=0.000293 | EEG->Img Top-1=23.00% Top-5=57.00% | Img->EEG Top-1=33.50% Top-5=66.00%
+2026-04-23 13:18:33,415 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=23.00%, epoch=4): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:18:40,462 - INFO - Epoch [5/40] Loss=0.5689 LR=0.000289 | EEG->Img Top-1=21.00% Top-5=56.50% | Img->EEG Top-1=36.50% Top-5=70.50%
+2026-04-23 13:18:47,585 - INFO - Epoch [6/40] Loss=0.4041 LR=0.000284 | EEG->Img Top-1=19.50% Top-5=49.00% | Img->EEG Top-1=38.00% Top-5=70.00%
+2026-04-23 13:18:54,655 - INFO - Epoch [7/40] Loss=0.3016 LR=0.000278 | EEG->Img Top-1=18.50% Top-5=50.50% | Img->EEG Top-1=35.00% Top-5=69.00%
+2026-04-23 13:19:01,785 - INFO - Epoch [8/40] Loss=0.2267 LR=0.000271 | EEG->Img Top-1=16.50% Top-5=51.50% | Img->EEG Top-1=32.50% Top-5=68.50%
+2026-04-23 13:19:08,933 - INFO - Epoch [9/40] Loss=0.1836 LR=0.000264 | EEG->Img Top-1=21.00% Top-5=42.00% | Img->EEG Top-1=32.50% Top-5=66.00%
+2026-04-23 13:19:16,087 - INFO - Epoch [10/40] Loss=0.1515 LR=0.000256 | EEG->Img Top-1=24.50% Top-5=53.00% | Img->EEG Top-1=35.50% Top-5=67.00%
+2026-04-23 13:19:16,107 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=24.50%, epoch=10): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:19:23,235 - INFO - Epoch [11/40] Loss=0.1369 LR=0.000247 | EEG->Img Top-1=17.50% Top-5=45.50% | Img->EEG Top-1=33.00% Top-5=64.00%
+2026-04-23 13:19:30,357 - INFO - Epoch [12/40] Loss=0.1236 LR=0.000238 | EEG->Img Top-1=22.00% Top-5=54.00% | Img->EEG Top-1=38.50% Top-5=70.00%
+2026-04-23 13:19:37,446 - INFO - Epoch [13/40] Loss=0.1011 LR=0.000228 | EEG->Img Top-1=21.50% Top-5=50.00% | Img->EEG Top-1=34.00% Top-5=65.50%
+2026-04-23 13:19:44,542 - INFO - Epoch [14/40] Loss=0.0978 LR=0.000218 | EEG->Img Top-1=24.00% Top-5=46.00% | Img->EEG Top-1=31.50% Top-5=61.50%
+2026-04-23 13:19:51,651 - INFO - Epoch [15/40] Loss=0.0815 LR=0.000207 | EEG->Img Top-1=19.50% Top-5=46.50% | Img->EEG Top-1=28.50% Top-5=61.00%
+2026-04-23 13:19:58,691 - INFO - Epoch [16/40] Loss=0.0730 LR=0.000196 | EEG->Img Top-1=21.00% Top-5=48.00% | Img->EEG Top-1=33.00% Top-5=60.50%
+2026-04-23 13:20:05,733 - INFO - Epoch [17/40] Loss=0.0649 LR=0.000185 | EEG->Img Top-1=20.50% Top-5=49.50% | Img->EEG Top-1=36.00% Top-5=70.00%
+2026-04-23 13:20:12,762 - INFO - Epoch [18/40] Loss=0.0556 LR=0.000173 | EEG->Img Top-1=22.50% Top-5=46.50% | Img->EEG Top-1=35.50% Top-5=59.50%
+2026-04-23 13:20:19,903 - INFO - Epoch [19/40] Loss=0.0457 LR=0.000162 | EEG->Img Top-1=20.00% Top-5=51.00% | Img->EEG Top-1=30.00% Top-5=63.50%
+2026-04-23 13:20:27,077 - INFO - Epoch [20/40] Loss=0.0426 LR=0.000150 | EEG->Img Top-1=20.50% Top-5=52.00% | Img->EEG Top-1=33.50% Top-5=62.50%
+2026-04-23 13:20:34,202 - INFO - Epoch [21/40] Loss=0.0366 LR=0.000138 | EEG->Img Top-1=22.50% Top-5=49.50% | Img->EEG Top-1=34.50% Top-5=66.50%
+2026-04-23 13:20:41,336 - INFO - Epoch [22/40] Loss=0.0321 LR=0.000127 | EEG->Img Top-1=21.50% Top-5=50.00% | Img->EEG Top-1=35.00% Top-5=65.50%
+2026-04-23 13:20:48,504 - INFO - Epoch [23/40] Loss=0.0261 LR=0.000115 | EEG->Img Top-1=22.00% Top-5=50.50% | Img->EEG Top-1=29.50% Top-5=63.50%
+2026-04-23 13:20:55,647 - INFO - Epoch [24/40] Loss=0.0259 LR=0.000104 | EEG->Img Top-1=26.00% Top-5=56.00% | Img->EEG Top-1=29.50% Top-5=60.50%
+2026-04-23 13:20:55,662 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=26.00%, epoch=24): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:21:02,809 - INFO - Epoch [25/40] Loss=0.0204 LR=0.000093 | EEG->Img Top-1=20.00% Top-5=46.50% | Img->EEG Top-1=33.50% Top-5=60.50%
+2026-04-23 13:21:09,967 - INFO - Epoch [26/40] Loss=0.0178 LR=0.000082 | EEG->Img Top-1=22.50% Top-5=49.50% | Img->EEG Top-1=34.00% Top-5=65.00%
+2026-04-23 13:21:17,148 - INFO - Epoch [27/40] Loss=0.0154 LR=0.000072 | EEG->Img Top-1=24.00% Top-5=50.00% | Img->EEG Top-1=31.50% Top-5=62.50%
+2026-04-23 13:21:24,325 - INFO - Epoch [28/40] Loss=0.0136 LR=0.000062 | EEG->Img Top-1=21.50% Top-5=49.50% | Img->EEG Top-1=32.00% Top-5=58.50%
+2026-04-23 13:21:31,399 - INFO - Epoch [29/40] Loss=0.0120 LR=0.000053 | EEG->Img Top-1=18.50% Top-5=49.50% | Img->EEG Top-1=31.00% Top-5=62.50%
+2026-04-23 13:21:38,490 - INFO - Epoch [30/40] Loss=0.0101 LR=0.000044 | EEG->Img Top-1=20.00% Top-5=53.50% | Img->EEG Top-1=35.50% Top-5=65.00%
+2026-04-23 13:21:45,538 - INFO - Epoch [31/40] Loss=0.0091 LR=0.000036 | EEG->Img Top-1=24.00% Top-5=48.50% | Img->EEG Top-1=31.00% Top-5=63.50%
+2026-04-23 13:21:52,552 - INFO - Epoch [32/40] Loss=0.0086 LR=0.000029 | EEG->Img Top-1=22.50% Top-5=48.50% | Img->EEG Top-1=28.50% Top-5=58.50%
+2026-04-23 13:21:59,566 - INFO - Epoch [33/40] Loss=0.0075 LR=0.000022 | EEG->Img Top-1=21.00% Top-5=48.00% | Img->EEG Top-1=32.50% Top-5=57.50%
+2026-04-23 13:22:06,599 - INFO - Epoch [34/40] Loss=0.0070 LR=0.000016 | EEG->Img Top-1=23.50% Top-5=50.00% | Img->EEG Top-1=33.50% Top-5=62.00%
+2026-04-23 13:22:13,626 - INFO - Epoch [35/40] Loss=0.0067 LR=0.000011 | EEG->Img Top-1=21.00% Top-5=49.00% | Img->EEG Top-1=33.50% Top-5=59.50%
+2026-04-23 13:22:20,633 - INFO - Epoch [36/40] Loss=0.0064 LR=0.000007 | EEG->Img Top-1=21.50% Top-5=49.00% | Img->EEG Top-1=32.00% Top-5=61.50%
+2026-04-23 13:22:27,719 - INFO - Epoch [37/40] Loss=0.0054 LR=0.000004 | EEG->Img Top-1=23.00% Top-5=50.00% | Img->EEG Top-1=31.50% Top-5=59.00%
+2026-04-23 13:22:34,896 - INFO - Epoch [38/40] Loss=0.0055 LR=0.000002 | EEG->Img Top-1=20.50% Top-5=49.50% | Img->EEG Top-1=32.50% Top-5=60.00%
+2026-04-23 13:22:42,242 - INFO - Epoch [39/40] Loss=0.0063 LR=0.000000 | EEG->Img Top-1=21.50% Top-5=50.00% | Img->EEG Top-1=33.00% Top-5=60.50%
+2026-04-23 13:22:49,574 - INFO - Epoch [40/40] Loss=0.0047 LR=0.000000 | EEG->Img Top-1=21.50% Top-5=49.50% | Img->EEG Top-1=31.50% Top-5=60.00%
+2026-04-23 13:22:49,574 - INFO - 最后一轮训练记录: {'epoch': 40, 'loss': 0.004652157249343465, 'lr': 0.0, 'eeg_to_image_top1': 21.50000035762787, 'eeg_to_image_top5': 49.50000047683716, 'image_to_eeg_top1': 31.49999976158142, 'image_to_eeg_top5': 60.00000238418579}
+2026-04-23 13:22:49,593 - INFO - 已加载按 EEG->Image Top-1 最优的 checkpoint（epoch 24，Top-1=26.00%）用于最终评估。
+2026-04-23 13:22:49,612 - INFO - EEG embeds count: 13
+2026-04-23 13:22:49,612 - INFO - CLIP embeds count: 13
+2026-04-23 13:22:49,612 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:22:49,612 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:22:49,614 - INFO - 
+--- 评估结果 ---
+2026-04-23 13:22:49,614 - INFO - EEG -> Image | Top-1: 26.00% | Top-5: 56.00%
+2026-04-23 13:22:49,614 - INFO - Image -> EEG | Top-1: 29.50% | Top-5: 60.50%
+2026-04-23 13:22:49,614 - INFO - 最终检索指标: {'eeg_to_image_top1': 25.999999046325684, 'eeg_to_image_top5': 56.00000023841858, 'image_to_eeg_top1': 29.499998688697815, 'image_to_eeg_top5': 60.50000190734863}
+2026-04-23 13:22:49,614 - INFO - 
+--- 第 10 次实验 ---
+2026-04-23 13:22:49,626 - INFO - 开始训练，设备: cuda, Epochs: 40, LR: 0.0003
+2026-04-23 13:22:49,626 - INFO - 梯度累积步数: 1, 混合精度: True
+2026-04-23 13:22:49,626 - INFO - 模型参数量: 总计 1,856,153, 可训练 1,856,153
+2026-04-23 13:22:49,627 - INFO - 初始显存: 已分配 0.04 GB, 已预留 0.04 GB
+2026-04-23 13:22:49,638 - INFO - 第一个 batch 后显存: 已分配 0.05 GB, 已预留 0.07 GB
+2026-04-23 13:22:56,986 - INFO - Epoch [1/40] Loss=2.6171 LR=0.000300 | EEG->Img Top-1=2.50% Top-5=9.00% | Img->EEG Top-1=7.50% Top-5=20.50%
+2026-04-23 13:22:56,994 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=2.50%, epoch=1): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:23:04,294 - INFO - Epoch [2/40] Loss=2.0624 LR=0.000298 | EEG->Img Top-1=2.50% Top-5=12.00% | Img->EEG Top-1=7.00% Top-5=25.50%
+2026-04-23 13:23:11,548 - INFO - Epoch [3/40] Loss=1.6044 LR=0.000296 | EEG->Img Top-1=2.00% Top-5=20.00% | Img->EEG Top-1=16.50% Top-5=46.00%
+2026-04-23 13:23:18,706 - INFO - Epoch [4/40] Loss=1.2494 LR=0.000293 | EEG->Img Top-1=7.50% Top-5=32.50% | Img->EEG Top-1=20.00% Top-5=48.50%
+2026-04-23 13:23:18,714 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=7.50%, epoch=4): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:23:25,752 - INFO - Epoch [5/40] Loss=0.9838 LR=0.000289 | EEG->Img Top-1=8.00% Top-5=26.50% | Img->EEG Top-1=19.50% Top-5=46.50%
+2026-04-23 13:23:25,759 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=8.00%, epoch=5): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:23:32,808 - INFO - Epoch [6/40] Loss=0.7400 LR=0.000284 | EEG->Img Top-1=8.50% Top-5=26.50% | Img->EEG Top-1=19.00% Top-5=41.00%
+2026-04-23 13:23:32,815 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=8.50%, epoch=6): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:23:39,908 - INFO - Epoch [7/40] Loss=0.5233 LR=0.000278 | EEG->Img Top-1=14.00% Top-5=32.00% | Img->EEG Top-1=17.00% Top-5=45.00%
+2026-04-23 13:23:39,916 - INFO - 💾 已更新最佳 checkpoint (EEG->Image Top-1=14.00%, epoch=7): ../artifacts/atm_s_retrieval_best.pt
+2026-04-23 13:23:47,028 - INFO - Epoch [8/40] Loss=0.3747 LR=0.000271 | EEG->Img Top-1=11.00% Top-5=33.00% | Img->EEG Top-1=17.50% Top-5=37.00%
+2026-04-23 13:23:54,137 - INFO - Epoch [9/40] Loss=0.2687 LR=0.000264 | EEG->Img Top-1=10.00% Top-5=28.50% | Img->EEG Top-1=14.50% Top-5=37.00%
+2026-04-23 13:24:01,229 - INFO - Epoch [10/40] Loss=0.2105 LR=0.000256 | EEG->Img Top-1=10.00% Top-5=24.50% | Img->EEG Top-1=11.50% Top-5=40.00%
+2026-04-23 13:24:08,347 - INFO - Epoch [11/40] Loss=0.1684 LR=0.000247 | EEG->Img Top-1=10.50% Top-5=37.00% | Img->EEG Top-1=16.00% Top-5=39.50%
+2026-04-23 13:24:15,401 - INFO - Epoch [12/40] Loss=0.1456 LR=0.000238 | EEG->Img Top-1=8.00% Top-5=26.50% | Img->EEG Top-1=13.50% Top-5=35.50%
+2026-04-23 13:24:22,426 - INFO - Epoch [13/40] Loss=0.1344 LR=0.000228 | EEG->Img Top-1=11.00% Top-5=30.00% | Img->EEG Top-1=15.00% Top-5=37.00%
+2026-04-23 13:24:29,446 - INFO - Epoch [14/40] Loss=0.1111 LR=0.000218 | EEG->Img Top-1=11.50% Top-5=31.50% | Img->EEG Top-1=16.50% Top-5=41.00%
+2026-04-23 13:24:36,609 - INFO - Epoch [15/40] Loss=0.0995 LR=0.000207 | EEG->Img Top-1=8.50% Top-5=33.00% | Img->EEG Top-1=16.00% Top-5=40.50%
+2026-04-23 13:24:45,966 - INFO - Epoch [16/40] Loss=0.0852 LR=0.000196 | EEG->Img Top-1=7.50% Top-5=26.50% | Img->EEG Top-1=12.50% Top-5=30.50%
+2026-04-23 13:24:53,097 - INFO - Epoch [17/40] Loss=0.0772 LR=0.000185 | EEG->Img Top-1=10.00% Top-5=29.50% | Img->EEG Top-1=14.00% Top-5=37.50%
+2026-04-23 13:25:00,140 - INFO - Epoch [18/40] Loss=0.0659 LR=0.000173 | EEG->Img Top-1=9.50% Top-5=28.00% | Img->EEG Top-1=10.50% Top-5=29.50%
+2026-04-23 13:25:07,228 - INFO - Epoch [19/40] Loss=0.0581 LR=0.000162 | EEG->Img Top-1=9.00% Top-5=30.00% | Img->EEG Top-1=15.50% Top-5=38.00%
+2026-04-23 13:25:14,344 - INFO - Epoch [20/40] Loss=0.0440 LR=0.000150 | EEG->Img Top-1=11.50% Top-5=31.50% | Img->EEG Top-1=14.50% Top-5=40.00%
+2026-04-23 13:25:21,444 - INFO - Epoch [21/40] Loss=0.0444 LR=0.000138 | EEG->Img Top-1=10.50% Top-5=29.50% | Img->EEG Top-1=19.50% Top-5=40.50%
+2026-04-23 13:25:28,537 - INFO - Epoch [22/40] Loss=0.0355 LR=0.000127 | EEG->Img Top-1=7.50% Top-5=30.00% | Img->EEG Top-1=13.50% Top-5=30.50%
+2026-04-23 13:25:35,594 - INFO - Epoch [23/40] Loss=0.0335 LR=0.000115 | EEG->Img Top-1=11.50% Top-5=29.00% | Img->EEG Top-1=18.50% Top-5=37.50%
+2026-04-23 13:25:42,644 - INFO - Epoch [24/40] Loss=0.0257 LR=0.000104 | EEG->Img Top-1=7.50% Top-5=26.00% | Img->EEG Top-1=13.50% Top-5=34.50%
+2026-04-23 13:25:49,693 - INFO - Epoch [25/40] Loss=0.0248 LR=0.000093 | EEG->Img Top-1=10.00% Top-5=30.00% | Img->EEG Top-1=16.00% Top-5=41.50%
+2026-04-23 13:25:56,710 - INFO - Epoch [26/40] Loss=0.0195 LR=0.000082 | EEG->Img Top-1=8.00% Top-5=29.50% | Img->EEG Top-1=14.50% Top-5=37.50%
+2026-04-23 13:26:03,705 - INFO - Epoch [27/40] Loss=0.0174 LR=0.000072 | EEG->Img Top-1=7.50% Top-5=26.00% | Img->EEG Top-1=15.50% Top-5=34.00%
+2026-04-23 13:26:10,732 - INFO - Epoch [28/40] Loss=0.0170 LR=0.000062 | EEG->Img Top-1=9.50% Top-5=26.50% | Img->EEG Top-1=12.00% Top-5=32.00%
+2026-04-23 13:26:17,822 - INFO - Epoch [29/40] Loss=0.0140 LR=0.000053 | EEG->Img Top-1=8.00% Top-5=29.00% | Img->EEG Top-1=12.50% Top-5=31.50%
+2026-04-23 13:26:24,928 - INFO - Epoch [30/40] Loss=0.0115 LR=0.000044 | EEG->Img Top-1=11.50% Top-5=26.00% | Img->EEG Top-1=15.50% Top-5=34.00%
+2026-04-23 13:26:32,044 - INFO - Epoch [31/40] Loss=0.0106 LR=0.000036 | EEG->Img Top-1=10.50% Top-5=25.00% | Img->EEG Top-1=14.00% Top-5=30.50%
+2026-04-23 13:26:39,126 - INFO - Epoch [32/40] Loss=0.0084 LR=0.000029 | EEG->Img Top-1=8.50% Top-5=24.00% | Img->EEG Top-1=13.00% Top-5=27.50%
+2026-04-23 13:26:46,485 - INFO - Epoch [33/40] Loss=0.0083 LR=0.000022 | EEG->Img Top-1=9.50% Top-5=28.00% | Img->EEG Top-1=16.00% Top-5=31.50%
+2026-04-23 13:26:53,668 - INFO - Epoch [34/40] Loss=0.0065 LR=0.000016 | EEG->Img Top-1=10.00% Top-5=25.00% | Img->EEG Top-1=13.00% Top-5=29.00%
+2026-04-23 13:27:00,893 - INFO - Epoch [35/40] Loss=0.0065 LR=0.000011 | EEG->Img Top-1=8.50% Top-5=23.00% | Img->EEG Top-1=12.50% Top-5=29.00%
+2026-04-23 13:27:08,115 - INFO - Epoch [36/40] Loss=0.0061 LR=0.000007 | EEG->Img Top-1=9.00% Top-5=23.00% | Img->EEG Top-1=12.50% Top-5=29.00%
+2026-04-23 13:27:15,316 - INFO - Epoch [37/40] Loss=0.0060 LR=0.000004 | EEG->Img Top-1=9.50% Top-5=25.00% | Img->EEG Top-1=13.00% Top-5=31.00%
+2026-04-23 13:27:22,604 - INFO - Epoch [38/40] Loss=0.0065 LR=0.000002 | EEG->Img Top-1=9.00% Top-5=23.50% | Img->EEG Top-1=13.00% Top-5=29.50%
+2026-04-23 13:27:29,806 - INFO - Epoch [39/40] Loss=0.0067 LR=0.000000 | EEG->Img Top-1=9.50% Top-5=22.50% | Img->EEG Top-1=13.00% Top-5=27.50%
+2026-04-23 13:27:36,924 - INFO - Epoch [40/40] Loss=0.0060 LR=0.000000 | EEG->Img Top-1=10.00% Top-5=24.00% | Img->EEG Top-1=13.50% Top-5=27.00%
+2026-04-23 13:27:36,924 - INFO - 最后一轮训练记录: {'epoch': 40, 'loss': 0.00598326395430417, 'lr': 0.0, 'eeg_to_image_top1': 10.000000149011612, 'eeg_to_image_top5': 23.999999463558197, 'image_to_eeg_top1': 13.500000536441803, 'image_to_eeg_top5': 27.000001072883606}
+2026-04-23 13:27:36,999 - INFO - 已加载按 EEG->Image Top-1 最优的 checkpoint（epoch 7，Top-1=14.00%）用于最终评估。
+2026-04-23 13:27:37,022 - INFO - EEG embeds count: 13
+2026-04-23 13:27:37,022 - INFO - CLIP embeds count: 13
+2026-04-23 13:27:37,022 - INFO - EEG embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:27:37,022 - INFO - CLIP embeddings shape: torch.Size([200, 1024])
+2026-04-23 13:27:37,024 - INFO - 
+--- 评估结果 ---
+2026-04-23 13:27:37,024 - INFO - EEG -> Image | Top-1: 14.00% | Top-5: 32.00%
+2026-04-23 13:27:37,024 - INFO - Image -> EEG | Top-1: 17.00% | Top-5: 45.00%
+2026-04-23 13:27:37,024 - INFO - 最终检索指标: {'eeg_to_image_top1': 14.000000059604645, 'eeg_to_image_top5': 31.999999284744263, 'image_to_eeg_top1': 17.000000178813934, 'image_to_eeg_top5': 44.999998807907104}
+2026-04-23 13:27:37,076 - INFO - 
+============================================================
+2026-04-23 13:27:37,077 - INFO - 10次实验结果汇总:
+2026-04-23 13:27:37,077 - INFO - Top-1: 均值=25.30%, 标准差=4.27
+2026-04-23 13:27:37,077 - INFO - Top-5: 均值=51.35%, 标准差=6.83
+2026-04-23 13:27:37,077 - INFO - 原始数据 - Top1: [25.0, 24.500000476837158, 30.000001192092896, 23.000000417232513, 28.999999165534973, 25.999999046325684, 28.00000011920929, 27.500000596046448, 25.999999046325684, 14.000000059604645]
+2026-04-23 13:27:37,077 - INFO - 原始数据 - Top5: [55.000001192092896, 54.00000214576721, 52.99999713897705, 50.49999952316284, 54.00000214576721, 52.99999713897705, 49.000000953674316, 56.99999928474426, 56.00000023841858, 31.999999284744263]
+2026-04-23 13:27:37,077 - INFO - ============================================================
