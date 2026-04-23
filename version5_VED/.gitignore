@@ -1,0 +1,33 @@
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+
+# Runtime outputs
+output/
+logs/
+runs/
+checkpoints/
+outputs/
+wandb/
+
+# Course data, generated image features, and model weights.
+# Keep these outside git and recreate/download them on the target HPC.
+data/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+
+# OS/editor noise
+.DS_Store
+*.swp
+*.swo
+
+# Large paper/visualization artifacts copied from the reference repo
+*.pdf
