@@ -21,7 +21,8 @@ DL_Project/
 ├── version1/                     # Original planned baseline
 ├── version2/                     # ChatGPT/Claude/Gemini co-designed plan, poor results
 ├── version3_ATM/                 # Reproduction of EEG_Image_decode (ATM)
-└── version4_CCP/                 # Reproduction of CognitionCapturerPro (CCP)
+├── version4_CCP/                 # Reproduction of CognitionCapturerPro (CCP)
+└── version5_VED/                 # Reproduction/adaptation of VisualEEGDecoding
 ```
 
 ## Version Overview
@@ -31,7 +32,8 @@ DL_Project/
 | [`version1`](version1/README.md) | The original project plan: custom EEG encoder aligned to CLIP ViT-H/14, then SD v1.5 + IP-Adapter reconstruction | Baseline and reference implementation | Joint baseline: Top-1 13.5%, Top-5 36.5%, SSIM 0.276, CLIP 0.708 |
 | [`version2`](version2/README.md) | A plan designed through cross-discussion among ChatGPT, Claude, and Gemini, with a stronger dual-path encoder and multi-target supervision | Exploratory attempt; the final result was poor and did not meet the intended target | `v2_final`: Top-1 15.0%, Top-5 35.0%, SSIM 0.3709, CLIP 0.2779 |
 | [`version3_ATM`](version3_ATM/README.md) | Reproduction and adaptation of `EEG_Image_decode`, based on the ATM/ATMS approach | Strong retrieval branch with complete evaluation scripts | Top-1 29.0%, Top-5 62.0%, SSIM 0.2852, CLIP 0.6696 |
-| [`version4_CCP`](version4_CCP/README.md) | Reproduction and adaptation of `CognitionCapturerPro` (CCP), including multimodal embeddings, alignment, and SDXL-Turbo generation | Final large-scale CCP reproduction/adaptation branch | Fusion Top-1 31.5%, Top-5 64.5%; reconstruction SSIM 0.2254, CLIP 0.5169 |
+| [`version4_CCP`](version4_CCP/README.md) | Reproduction and adaptation of `CognitionCapturerPro` (CCP), including multimodal embeddings, alignment, and SDXL-Turbo generation | Final large-scale CCP reconstruction/adaptation branch | Any-modality Top-1 61.0%, Top-5 88.0%; fusion Top-1 31.5%, Top-5 64.5%; reconstruction SSIM 0.2363, CLIP 0.6587 |
+| [`version5_VED`](version5_VED/README.md) | Reproduction and course adaptation of `VisualEEGDecoding`, using multi-blur OpenCLIP RN50 visual features and contrastive EEG-image alignment | Best retrieval-only branch; designed for direct Python runs on an A800-style HPC | Val selection used 827-way retrieval; test used 200-way retrieval. Validation-selected Top-1 82.40% ± 2.01%, Top-5 97.80% ± 0.54%; best-test reference Top-1 86.85% ± 0.63%, Top-5 98.10% ± 0.52% |
 
 ## Data and Model Artifacts
 
@@ -54,7 +56,7 @@ Pretrained models are expected to be stored outside git, for example under:
 /hpc2hdd/home/ckwong627/workdir/models/
 ```
 
-Typical required model assets include CLIP ViT-H/14, Stable Diffusion v1.5, SDXL-Turbo, and IP-Adapter weights. See the version-specific READMEs and config files for exact paths.
+Typical required model assets include CLIP ViT-H/14, OpenCLIP RN50, Stable Diffusion v1.5, SDXL-Turbo, and IP-Adapter weights. See the version-specific READMEs and config files for exact paths.
 
 ## Results and Tracked Outputs
 
@@ -86,5 +88,6 @@ Use `git add -n` first when checking whether a file would be staged without actu
 
 1. Start with this root README for the project map.
 2. Read [`version1/README.md`](version1/README.md) for the original planned baseline.
-3. Read [`version3_ATM/README.md`](version3_ATM/README.md) and [`version4_CCP/README.md`](version4_CCP/README.md) for the two reproduction branches.
-4. Check [`plan/`](plan/) for planning history and implementation decisions.
+3. Read [`version3_ATM/README.md`](version3_ATM/README.md) and [`version4_CCP/README.md`](version4_CCP/README.md) for the two reconstruction-oriented reproduction branches.
+4. Read [`version5_VED/README.md`](version5_VED/README.md) for the strongest retrieval-only VisualEEGDecoding branch and the A800/HPC run command.
+5. Check [`plan/`](plan/) for planning history and implementation decisions.

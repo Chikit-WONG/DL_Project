@@ -14,7 +14,25 @@ temp/
 references/
 checkpoints/
 clip_cache/
+# output/
+# outputs/
+runs/
+wandb/
+**/__pycache__/
 __pycache__/
+*.py[cod]
+*.pyo
 *.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
 *.log
 logs/
+
+# Version-local runtime artifacts. These should be recreated or copied from HPC,
+# not pushed to GitHub.
+# version5_VED/output/
+version5_VED/data/
+version5_VED/logs/
+version5_VED/checkpoints/

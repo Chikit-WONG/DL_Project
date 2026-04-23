@@ -235,6 +235,12 @@ def train(params, logger):
         params['use_filter'], params['low_freq'], params['high_freq'], params['select_period']
     )
     logger.info(f"Dataset sizes: train={len(train_dataset)}, val={len(val_dataset)}, test={len(test_dataset)}")
+    val_way = len(val_dataset)
+    test_way = len(test_dataset)
+    logger.info(
+        f"Retrieval candidate pools: VAL={val_way}-way, TEST={test_way}-way. "
+        "VAL way is the number of validation images ranked together in each epoch."
+    )
 
     train_loader = DataLoader(train_dataset, batch_size=params['train_batch_size'], shuffle=True, drop_last=True)
     val_loader   = DataLoader(val_dataset,   batch_size=len(val_dataset),  shuffle=False)
@@ -250,7 +256,11 @@ def train(params, logger):
     best_val_accu  = 0
     best_test_accu = 0
     select_model = best_model = None
-    saved_metric = {}
+    saved_metric = {
+        'train_size': len(train_dataset),
+        'val_way': val_way,
+        'test_way': test_way,
+    }
     loss_points = []
     accu_top1 = []
     accu_top3 = []
@@ -301,8 +311,8 @@ def train(params, logger):
             best_model = copy.deepcopy(model.state_dict())
             saved_metric.update({'best_test_top1_acc': test_top1, 'best_test_top3_acc': test_top3, 'best_test_top5_acc': test_top5})
 
-        logger.info(f'VAL  epoch:{e} loss:{train_loss:.4f} top1:{val_top1:.4f} top3:{val_top3:.4f} top5:{val_top5:.4f}')
-        logger.info(f'TEST epoch:{e} loss:{train_loss:.4f} top1:{test_top1:.4f} top3:{test_top3:.4f} top5:{test_top5:.4f}')
+        logger.info(f'VAL  ({val_way}-way) epoch:{e} loss:{train_loss:.4f} top1:{val_top1:.4f} top3:{val_top3:.4f} top5:{val_top5:.4f}')
+        logger.info(f'TEST ({test_way}-way) epoch:{e} loss:{train_loss:.4f} top1:{test_top1:.4f} top3:{test_top3:.4f} top5:{test_top5:.4f}')
 
     saved_metric['train_loss_points']    = loss_points
     saved_metric['test_top1_acc_points'] = accu_top1
