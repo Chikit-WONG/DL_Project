@@ -1,8 +1,10 @@
 image-eeg-data/
 true-image-eeg-data/
+true-image-eeg-data-converted/
 *.pt
 private/
 AI_Cache/
 true-image-eeg-data.zip
 *.pdf
 papers/
+*.tar.gz

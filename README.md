@@ -13,3 +13,7 @@ Best test checkpoint            0.8815 ± 0.0092     0.9825 ± 0.0056
 #### EVNet with no blur:  
 Validation-selected checkpoint  0.7340 ± 0.0214     0.9565 ± 0.0090   
 Best test checkpoint            0.7785 ± 0.0150     0.9660 ± 0.0080  
+
+#### No blur and no EVNet:  
+Validation-selected checkpoint  0.6120 ± 0.0235     0.9060 ± 0.0176   
+Best test checkpoint            0.6705 ± 0.0101     0.9110 ± 0.0170  
