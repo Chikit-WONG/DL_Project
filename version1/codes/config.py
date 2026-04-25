@@ -14,6 +14,7 @@ from typing import Tuple
 # Project root: resolved relative to this file (codes/config.py -> DL_Project/)
 # ---------------------------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+SHARED_DATA_ROOT = PROJECT_ROOT.parent / "image-eeg-data"
 MODELS_ROOT = Path("/hpc2hdd/home/ckwong627/workdir/models")
 
 
@@ -21,10 +22,10 @@ MODELS_ROOT = Path("/hpc2hdd/home/ckwong627/workdir/models")
 class Config:
     # ---------------- paths ----------------
     project_root: Path = PROJECT_ROOT
-    data_dir: Path = PROJECT_ROOT / "image-eeg-data"
-    train_image_dir: Path = PROJECT_ROOT / "image-eeg-data" / "training_images"
-    test_image_dir: Path = PROJECT_ROOT / "image-eeg-data" / "test_images"
-    eeg_channels_jsonl: Path = PROJECT_ROOT / "image-eeg-data" / "EEG_CHANNELS.jsonl"
+    data_dir: Path = SHARED_DATA_ROOT
+    train_image_dir: Path = SHARED_DATA_ROOT / "training_images"
+    test_image_dir: Path = SHARED_DATA_ROOT / "test_images"
+    eeg_channels_jsonl: Path = SHARED_DATA_ROOT / "EEG_CHANNELS.jsonl"
 
     cache_dir: Path = PROJECT_ROOT / "clip_cache"
     ckpt_dir: Path = PROJECT_ROOT / "checkpoints"

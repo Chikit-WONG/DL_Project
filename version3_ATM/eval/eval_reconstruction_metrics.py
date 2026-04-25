@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import csv
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -183,37 +184,68 @@ def eval_images(real_images: torch.Tensor, fake_images: torch.Tensor,
 
 def evaluate(args):
     device = torch.device(args.device)
-    tensors_path = Path(args.tensors_path)
+    tensors_paths = []
+    if args.tensors_glob:
+        tensors_paths = sorted(Path().glob(args.tensors_glob))
+    elif args.tensors_dir:
+        tensors_paths = sorted(Path(args.tensors_dir).glob("seed*/recon_tensors.pt"))
+    elif args.tensors_path:
+        tensors_paths = [Path(args.tensors_path)]
+    else:
+        raise ValueError("One of --tensors_path, --tensors_dir, or --tensors_glob must be provided.")
 
-    print(f"Loading tensors from {tensors_path} …")
-    saved = torch.load(tensors_path, map_location="cpu")
-    real_images = saved["real"].float()   # [200, 3, 256, 256]  in [0,1]
-    fake_images = saved["fake"].float()  # [200, 3, 256, 256]  in [0,1]
-    print(f"  real: {real_images.shape}, fake: {fake_images.shape}")
+    if not tensors_paths:
+        raise FileNotFoundError("No reconstruction tensor files were found for evaluation.")
 
-    # Run over args.num_seeds seeds (sample different subsets, if desired)
-    # For deterministic generation (one set of 200 images), all seeds give the same result.
+    def infer_seed(path: Path, fallback: int) -> int:
+        match = re.search(r"seed(\d+)", str(path))
+        return int(match.group(1)) if match else fallback
+
     seed_results = []
-    for seed in range(args.num_seeds):
-        print(f"\n--- Seed {seed} ---")
-        torch.manual_seed(seed)
-        np.random.seed(seed)
-        metrics = eval_images(real_images, fake_images, device)
-        metrics["seed"] = seed
-        seed_results.append(metrics)
-        print(f"  SSIM  : {metrics['eval_ssim']:.4f}")
-        print(f"  CLIP  : {metrics['eval_clip']:.4f}")
-        print(f"  PixCorr: {metrics['eval_pixcorr']:.4f}")
+    if len(tensors_paths) > 1:
+        print(f"Found {len(tensors_paths)} tensor files for multi-seed evaluation.")
+        for idx, tensors_path in enumerate(tensors_paths):
+            print(f"\n--- Evaluating {tensors_path} ---")
+            saved = torch.load(tensors_path, map_location="cpu")
+            real_images = saved["real"].float()
+            fake_images = saved["fake"].float()
+            print(f"  real: {real_images.shape}, fake: {fake_images.shape}")
+            metrics = eval_images(real_images, fake_images, device)
+            metrics["seed"] = infer_seed(tensors_path, idx)
+            seed_results.append(metrics)
+            print(f"  SSIM  : {metrics['eval_ssim']:.4f}")
+            print(f"  CLIP  : {metrics['eval_clip']:.4f}")
+            print(f"  PixCorr: {metrics['eval_pixcorr']:.4f}")
+    else:
+        tensors_path = tensors_paths[0]
+        print(f"Loading tensors from {tensors_path} …")
+        saved = torch.load(tensors_path, map_location="cpu")
+        real_images = saved["real"].float()
+        fake_images = saved["fake"].float()
+        print(f"  real: {real_images.shape}, fake: {fake_images.shape}")
+
+        # Backward-compatible single-file mode.
+        for seed in range(args.num_seeds):
+            print(f"\n--- Seed {seed} ---")
+            torch.manual_seed(seed)
+            np.random.seed(seed)
+            metrics = eval_images(real_images, fake_images, device)
+            metrics["seed"] = seed
+            seed_results.append(metrics)
+            print(f"  SSIM  : {metrics['eval_ssim']:.4f}")
+            print(f"  CLIP  : {metrics['eval_clip']:.4f}")
+            print(f"  PixCorr: {metrics['eval_pixcorr']:.4f}")
 
     # Summarize
     metric_keys = [k for k in seed_results[0] if k != "seed"]
     print(f"\n{'='*60}")
-    print(f"Reconstruction Evaluation over {args.num_seeds} seeds")
+    print(f"Reconstruction Evaluation over {len(seed_results)} seeds")
     print(f"{'='*60}")
     summaries = {}
     for key in metric_keys:
         vals = np.array([r[key] for r in seed_results])
-        mean, std = vals.mean(), vals.std(ddof=1)
+        mean = vals.mean()
+        std = vals.std(ddof=1) if len(vals) > 1 else 0.0
         summaries[key] = (mean, std)
         print(f"  {key:<20s}: {mean:.4f} ± {std:.4f}")
 
@@ -238,8 +270,12 @@ def evaluate(args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--tensors_path", required=True,
-                        help="Path to recon_tensors.pt (output of generate_reconstructions.py)")
+    parser.add_argument("--tensors_path",
+                        help="Path to one recon_tensors.pt file")
+    parser.add_argument("--tensors_dir",
+                        help="Directory containing seed*/recon_tensors.pt files")
+    parser.add_argument("--tensors_glob",
+                        help="Glob for multiple recon_tensors.pt files, e.g. outputs/reconstructions/run01/seed*/recon_tensors.pt")
     parser.add_argument("--output_csv",
                         default="./outputs/reconstruction_eval.csv")
     parser.add_argument("--device", default="cuda:0")

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p long_cpu
+#SBATCH -p a128m512u
 #SBATCH -n 2
 #SBATCH --time=00:30:00
 #SBATCH -J cogcap_summary_v2

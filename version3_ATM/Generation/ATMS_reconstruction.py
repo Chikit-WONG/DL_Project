@@ -519,6 +519,13 @@ def main_train_loop(sub, current_time, eeg_model, train_dataloader, test_dataloa
 
 import datetime
 
+def set_random_seed(seed: int) -> None:
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
 def main():
     # Use argparse to parse the command-line arguments
     parser = argparse.ArgumentParser(description='EEG Transformer Training Script')
@@ -536,6 +543,7 @@ def main():
     parser.add_argument('--insubject', type=str2bool, default=True, help='In-subject mode or cross-subject mode')
     parser.add_argument('--encoder_type', type=str, default='ATMS', help='Encoder type')
     parser.add_argument('--subjects', nargs='+', default=['sub-01'], help='List of subject IDs')    
+    parser.add_argument('--seed', type=int, default=0, help='Training seed used for model init and dataloader shuffling')
     args = parser.parse_args()
 
     # Set device based on the argument
@@ -544,8 +552,9 @@ def main():
     else:
         device = torch.device('cpu')
 
+    set_random_seed(args.seed)
     subjects = args.subjects        
-    current_time = datetime.datetime.now().strftime("%m-%d_%H-%M")
+    current_time = f"{datetime.datetime.now().strftime('%m-%d_%H-%M')}_seed{args.seed:02d}"
 
     for sub in subjects:
         eeg_model = globals()[args.encoder_type]()
@@ -560,8 +569,12 @@ def main():
             train_dataset = EEGDataset(args.data_path, exclude_subject=sub, subjects=subjects, train=True)
             test_dataset = EEGDataset(args.data_path, exclude_subject=sub, subjects=subjects, train=False)
 
-        train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=0, drop_last=True)
-        test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0, drop_last=True)
+        train_generator = torch.Generator()
+        train_generator.manual_seed(args.seed)
+        test_generator = torch.Generator()
+        test_generator.manual_seed(args.seed)
+        train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=0, drop_last=True, generator=train_generator)
+        test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0, drop_last=True, generator=test_generator)
 
         text_features_train_all = train_dataset.text_features
         text_features_test_all = test_dataset.text_features

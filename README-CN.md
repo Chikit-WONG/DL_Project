@@ -33,7 +33,7 @@ DL_Project/
 | [`version2`](version2/README-CN.md) | 由 ChatGPT、Claude、Gemini 三方互相讨论后制定的方案，包含更强的双路径 encoder、多目标视觉监督和轻量 prior | 探索性尝试；最终结果很不理想，没有达到预期 | `v2_final`：Top-1 15.0%，Top-5 35.0%，SSIM 0.3709，CLIP 0.2779 |
 | [`version3_ATM`](version3_ATM/README-CN.md) | 复现并适配 `EEG_Image_decode`，核心路线是 ATM/ATMS | 检索效果较强，并包含完整评估脚本 | Top-1 29.0%，Top-5 62.0%，SSIM 0.2852，CLIP 0.6696 |
 | [`version4_CCP`](version4_CCP/README-CN.md) | 复现并适配 `CognitionCapturerPro` (CCP)，包含多模态 embedding、alignment 和 SDXL-Turbo 生成 | 后期主要的 CCP 重建/适配分支 | Any-modality Top-1 61.0%，Top-5 88.0%；fusion Top-1 31.5%，Top-5 64.5%；重建 SSIM 0.2363，CLIP 0.6587 |
-| [`version5_VED`](version5_VED/README-CN.md) | 复现并适配 `VisualEEGDecoding`，使用 multi-blur OpenCLIP RN50 视觉特征和 EEG-image 对比学习 | 当前检索效果最好的分支；适合在 A800 HPC 上直接用 Python 运行 | Val selection 使用 827-way retrieval；test 使用 200-way retrieval。Validation-selected Top-1 82.40% ± 2.01%，Top-5 97.80% ± 0.54%；best-test 参考 Top-1 86.85% ± 0.63%，Top-5 98.10% ± 0.52% |
+| [`version5_VED`](version5_VED/README-CN.md) | 复现并适配 `VisualEEGDecoding`，task 1 使用 multi-blur OpenCLIP RN50 检索路线，task 2 使用检索增强的 IP-Adapter 重建路线 | 当前检索效果最好的分支，并已扩展为完整的 task1/task2 流程；适合在 A800 HPC 上直接用 Python 运行 | Task 1：当前选定提交分数 Top-1 86.85% ± 0.63%，Top-5 98.10% ± 0.52%；task 2 已实现语义微调、固定模板 prompt 类别检索和 SD v1.5 + IP-Adapter 重建链路 |
 
 ## 数据和模型文件
 
@@ -89,5 +89,5 @@ git add -n README.md README-CN.md .gitignore plan/*.md
 1. 先阅读本根目录 README，了解整体结构。
 2. 阅读 [`version1/README-CN.md`](version1/README-CN.md)，了解一开始的原计划/基线流程。
 3. 阅读 [`version3_ATM/README-CN.md`](version3_ATM/README-CN.md) 和 [`version4_CCP/README-CN.md`](version4_CCP/README-CN.md)，了解两个偏重重建的复现方向。
-4. 阅读 [`version5_VED/README-CN.md`](version5_VED/README-CN.md)，了解当前检索效果最好的 VisualEEGDecoding 分支和 A800/HPC 一行运行命令。
+4. 阅读 [`version5_VED/README-CN.md`](version5_VED/README-CN.md)，了解当前最强的 VisualEEGDecoding 分支，包括新的 task 2 检索增强重建流程和 A800/HPC 一行运行命令。
 5. 查看 [`plan/`](plan/) 了解计划历史和实现决策。

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p i64m1tga40u
+#SBATCH -p emergency_gpua40
 #SBATCH -o /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/version3_ATM/logs/train_reconstruction_%j.out
 #SBATCH -e /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/version3_ATM/logs/train_reconstruction_%j.err
 #SBATCH -n 1
@@ -15,6 +15,8 @@ source /hpc2hdd/home/ckwong627/miniconda3/etc/profile.d/conda.sh
 conda activate test
 module load cuda/12.6
 
+SEED="${1:-0}"
+
 # avg_trials=True is enforced in Generation/eegdatasets_leaveone.py:
 #   training: 16540 samples (1654 classes x 10 images, averaged over 80 trials)
 #   testing:  200 samples  (200 test classes, averaged over 4 trials) -- required by course
@@ -27,4 +29,11 @@ python -u Generation/ATMS_reconstruction.py \
   --gpu cuda:0 \
   --epochs 40 \
   --batch_size 64 \
-  --lr 3e-4
+  --lr 3e-4 \
+  --seed "${SEED}"
+
+latest_dir=$(find ./models/contrast/ATMS/sub-01 -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' | sort -nr | head -n 1 | cut -d' ' -f2-)
+if [ -n "${latest_dir}" ]; then
+  ln -sfn "$(basename "${latest_dir}")" ./models/contrast/ATMS/sub-01/LATEST_RECONSTRUCTION
+  echo "Updated LATEST_RECONSTRUCTION -> ${latest_dir}"
+fi

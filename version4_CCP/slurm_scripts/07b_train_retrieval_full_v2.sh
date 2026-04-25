@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p long_gpu
+#SBATCH -p emergency_gpu
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks-per-node=8
 #SBATCH --time=24:00:00
@@ -9,7 +9,7 @@
 
 # Full 80-epoch retrieval training (3-stage: 20+40+20 per cogcappro.yaml default).
 # Differs from 07_train_retrieval_full.sh: no --epoch override so config default (80) is used,
-# and time limit extended to 24h on long_gpu.
+# and time limit extended beyond the debug partition.
 
 REPO=/hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/version4_CCP
 EXP_ROOT=$REPO/runs/full_v2

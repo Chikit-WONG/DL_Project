@@ -80,6 +80,19 @@ class EEGDataset():
                 saved_features = torch.load(features_filename, map_location='cpu')
                 self.text_features = saved_features['text_features']
                 self.img_features = saved_features['img_features']
+                if len(self.text_features) != len(self.text) or len(self.img_features) != len(self.img):
+                    print(
+                        f"Cached features mismatch current dataset: "
+                        f"text {len(self.text_features)} vs {len(self.text)}, "
+                        f"image {len(self.img_features)} vs {len(self.img)}. "
+                        f"Rebuilding cache."
+                    )
+                    self.text_features = self.Textencoder(self.text)
+                    self.img_features = self.ImageEncoder(self.img)
+                    torch.save({
+                        'text_features': self.text_features.cpu(),
+                        'img_features': self.img_features.cpu(),
+                    }, str(features_filename))
             else:
                 self.text_features = self.Textencoder(self.text)
                 self.img_features = self.ImageEncoder(self.img)

@@ -104,13 +104,13 @@ sbatch slurm_scripts/08d_simple_align.sh
 ### Step 4 — Generate Images
 
 ```bash
-sbatch slurm_scripts/09e_generate_debug.sh   # both all_before and all modes
+sbatch slurm_scripts/09d_generate_fixed.sh   # both all_before and all modes
 ```
 
 ### Step 5 — Evaluate
 
 ```bash
-sbatch slurm_scripts/10d_eval_debug.sh
+sbatch slurm_scripts/10e_eval_full_both.sh
 sbatch slurm_scripts/11b_summary_v2.sh
 ```
 

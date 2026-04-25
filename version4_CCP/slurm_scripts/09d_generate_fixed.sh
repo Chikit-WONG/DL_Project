@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p emergency_gpua40
+#SBATCH -p emergency_gpu
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks-per-node=8
 #SBATCH --time=08:00:00

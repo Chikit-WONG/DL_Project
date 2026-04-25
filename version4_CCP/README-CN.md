@@ -104,13 +104,13 @@ sbatch slurm_scripts/08d_simple_align.sh
 ### 第 4 步 — 生成图像
 
 ```bash
-sbatch slurm_scripts/09e_generate_debug.sh   # 同时生成 all_before 和 all 两种模式
+sbatch slurm_scripts/09d_generate_fixed.sh   # 同时生成 all_before 和 all 两种模式
 ```
 
 ### 第 5 步 — 评估
 
 ```bash
-sbatch slurm_scripts/10d_eval_debug.sh
+sbatch slurm_scripts/10e_eval_full_both.sh
 sbatch slurm_scripts/11b_summary_v2.sh
 ```
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p i64m1tga40u
+#SBATCH -p emergency_gpua40
 #SBATCH -o /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/version3_ATM/logs/eval_retrieval_%j.out
 #SBATCH -e /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/version3_ATM/logs/eval_retrieval_%j.err
 #SBATCH -n 1
@@ -17,7 +17,7 @@ source /hpc2hdd/home/ckwong627/miniconda3/etc/profile.d/conda.sh
 conda activate test
 module load cuda/12.6
 
-CHECKPOINT="${1:-./models/contrast/ATMS/sub-01/LATEST/40.pth}"
+CHECKPOINT="${1:-./models/contrast/ATMS/sub-01/LATEST_RETRIEVAL/40.pth}"
 RUN_NAME="${2:-run01}"
 
 echo "Evaluating checkpoint: ${CHECKPOINT}"

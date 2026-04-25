@@ -2,28 +2,54 @@
 
 [中文 README](README-CN.md)
 
-This folder is the course-adapted `VisualEEGDecoding` branch for the DSAA2012 final project. It adapts the visual-blur EEG decoding idea from Liu et al. to the local course data format and focuses on the image retrieval task rather than diffusion-based reconstruction [1].
+This folder is the course-adapted `VisualEEGDecoding` branch for the DSAA2012 final project. It starts from the blur-aware EEG-to-image retrieval route in Liu et al. and extends it into a reproducible task-2 pipeline for retrieval-augmented reconstruction [1].
 
-The implementation is intended to be portable to another GPU server, including an A800 machine where jobs can be launched directly with `python` instead of `sbatch`. All generated features, logs, checkpoints, and metric files are written under `output/` so the run artifacts can be copied back with one `rsync` command.
+All generated features, checkpoints, logs, task-2 metadata, reconstructed images, and evaluation JSON files are written under `output/` so the full run can be copied back with one `rsync`.
 
 ## Project Summary
 
-The task is EEG-to-image retrieval on THINGS-style visual EEG data. Given one EEG response, the model predicts an embedding that should match the corresponding image embedding and rank the true image highly among 200 test candidates. The dataset and task follow the general visual decoding setting used by THINGS-EEG work [2], while the image embedding space uses CLIP/OpenCLIP-style visual representations [3, 4].
+`version5_VED` now covers both required tasks:
 
-This version is not an image generation pipeline. It does not run Stable Diffusion, SDXL-Turbo, or IP-Adapter. It is a retrieval-only branch built to reproduce and adapt the strongest VisualEEGDecoding result path within the course project constraints.
+1. **Task 1: EEG-to-image retrieval**
+2. **Task 2: EEG-to-image reconstruction**
+
+The task-1 branch remains the strongest retrieval branch in this repository. The new task-2 branch does **not** attempt to decode a blurry image directly from EEG. Instead, it uses the trained EEG retrieval model to:
+
+- retrieve semantically similar training images,
+- aggregate retrieved training classes,
+- fill a fixed prompt template with the selected training class,
+- use the top retrieved training image as the IP-Adapter reference image,
+- generate the final reconstruction with Stable Diffusion v1.5 + IP-Adapter.
+
+This design follows the practical assumption that a semantically nearby training class can still provide useful prompt guidance even when the exact test class does not appear in the training set.
 
 ## Method
 
-The original VisualEEGDecoding paper argues that blur-aware visual features provide useful supervision for EEG decoding [1]. This course branch keeps that core idea and makes the following local adaptations:
+### Task 1
 
-1. `scripts/prepare_course_data.py` maps the course dataset into the expected `data/things-eeg/` structure by creating symbolic links.
-2. `preprocess/process_image_course.py` encodes training and test images with OpenCLIP RN50 and 12 Gaussian blur levels.
-3. `main_eeg_course.py` trains the EEG encoder on subject `sub-01` using the course-provided 250 Hz whitened EEG tensors.
-4. The EEG branch maps 63-channel EEG segments to a 1024-dimensional representation. The image branch learns a weighted fusion over the 12 blur-level RN50 features.
-5. Training uses a bidirectional CLIP-style contrastive loss so the correct EEG-image pair has higher similarity than mismatched pairs [3].
-6. Validation is run as a full validation-set retrieval task. In the completed local run the split was `train=15713`, `val=827`, `test=200`, so each validation epoch was explicitly **827-way** and each test evaluation was **200-way**. Future runs print the current `VAL=<N>-way` and `TEST=<N>-way` values in the log because these numbers depend on the available image-feature matches.
+The task-1 implementation keeps the original VisualEEGDecoding idea [1]:
 
-The official course metric reported below uses the validation-selected checkpoint for each seed. The `best_test` numbers are included only as a reference because selecting by test accuracy is optimistic.
+1. `scripts/prepare_course_data.py` maps the course dataset into `data/things-eeg/`.
+2. `preprocess/process_image_course.py` encodes training and test images with OpenCLIP RN50 at 12 Gaussian blur levels.
+3. `main_eeg_course.py` trains the EEG encoder on subject `sub-01`.
+4. The image branch fuses the 12 blur-level RN50 embeddings and the EEG branch predicts a matching 1024-dimensional embedding.
+5. Training uses bidirectional contrastive supervision in the CLIP image space [3, 4].
+
+### Task 2
+
+The task-2 implementation adds a retrieval-augmented reconstruction branch:
+
+1. `scripts/train_task2_semantic.py` fine-tunes the task-1 EEG encoder with **joint image loss + class-text prototype loss**.
+2. Training class prototypes are encoded with the same OpenCLIP RN50 text encoder used for task-1 image features, so no extra output head is needed.
+3. At inference time, each test EEG retrieves top-k training images in the learned embedding space.
+4. Retrieved images are aggregated by class. The highest-scoring class becomes the prompt class.
+5. The fixed prompt template is:
+   - `a realistic photo of a {class_name}`
+6. The highest-scoring retrieved image is used as the IP-Adapter reference image.
+7. `scripts/generate_task2_reconstructions.py` generates reconstructed images with Stable Diffusion v1.5 + IP-Adapter.
+8. `scripts/evaluate_task2_reconstruction.py` evaluates reconstructions with course-style `SSIM` and `CLIP` metrics.
+
+The first implementation intentionally uses **IP-Adapter**, not `T2I-Adapter`, because the available condition is a retrieved similar image rather than a reliable EEG-derived edge/depth/segmentation map.
 
 ## Environment
 
@@ -37,19 +63,11 @@ conda activate ved
 pip install -r requirements.txt
 ```
 
-If the target HPC has a site-specific CUDA/PyTorch installation command, install `torch` and `torchvision` according to that machine first, then run:
-
-```bash
-pip install -r requirements.txt
-```
-
-The `requirements.txt` file contains the project-level Python dependencies, including `open-clip-torch`, `opencv-python-headless`, `numpy`, `pandas`, `scipy`, `einops`, `scikit-learn`, `mne`, and `matplotlib`.
+The existing `test` conda environment on the HPC may also work if it already contains compatible `torch`, `open-clip-torch`, `diffusers`, `transformers`, and `scikit-image`.
 
 ## Data and Model Preparation
 
-Do not commit data, model weights, generated `.pt` features, logs, or checkpoints to GitHub.
-
-The course data root passed to the script should contain:
+The course data root should contain:
 
 ```text
 image-eeg-data/
@@ -59,99 +77,188 @@ image-eeg-data/
   converted_for_cogcappro/ThingsEEG/Preprocessed_data_250Hz_whiten/sub-01/test.pt
 ```
 
-Download the OpenCLIP RN50 checkpoint on a machine with internet access:
+Required local model assets:
 
-```bash
-python scripts/download_rn50.py --save_dir /path/to/CLIP-RN50-openai
-```
+- OpenCLIP RN50 checkpoint
+- Stable Diffusion v1.5
+- IP-Adapter SD1.5 weights
 
-The command saves:
+Expected local paths in the current implementation:
 
 ```text
-/path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin
+/hpc2hdd/home/ckwong627/workdir/models/CLIP-RN50-openai/open_clip_pytorch_model.bin
+/hpc2hdd/home/ckwong627/workdir/models/stable-diffusion-v1-5
+/hpc2hdd/home/ckwong627/workdir/models/IP-Adapter
 ```
 
-If the target HPC cannot access the internet, download the file elsewhere and copy the whole `CLIP-RN50-openai/` folder to the target machine.
-
-## One-Command Run
-
-From this folder:
+If a required model is missing, create a folder under `/hpc2hdd/home/ckwong627/workdir/models/` first, then download it with:
 
 ```bash
-cd /path/to/version5_VED
+mkdir -p /hpc2hdd/home/ckwong627/workdir/models/CLIP-RN50-openai
+hf download timm/resnet50_clip.openai \
+  --include open_clip_pytorch_model.bin \
+  --local-dir /hpc2hdd/home/ckwong627/workdir/models/CLIP-RN50-openai
+
+mkdir -p /hpc2hdd/home/ckwong627/workdir/models/stable-diffusion-v1-5
+hf download runwayml/stable-diffusion-v1-5 \
+  --local-dir /hpc2hdd/home/ckwong627/workdir/models/stable-diffusion-v1-5
+
+mkdir -p /hpc2hdd/home/ckwong627/workdir/models/IP-Adapter
+hf download h94/IP-Adapter \
+  --local-dir /hpc2hdd/home/ckwong627/workdir/models/IP-Adapter
 ```
 
-Run the full pipeline:
+Approximate storage and runtime notes:
+
+- OpenCLIP RN50: `open_clip_pytorch_model.bin` is about 0.4 GB and is mainly used for feature/prototype extraction
+- Stable Diffusion v1.5: the full diffusers folder is usually about 4 to 7 GB
+- IP-Adapter weights + image encoder: the full directory is usually about 3 to 5 GB
+- Task-2 generation requires one GPU; the `debug` partition is suitable for smoke tests only
+
+## Commands
+
+### Task 1: one-command retrieval pipeline
 
 ```bash
-python scripts/run_course_pipeline.py --data_root /path/to/image-eeg-data --clip_checkpoint /path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin
+python scripts/run_course_pipeline.py \
+  --data_root /path/to/image-eeg-data \
+  --clip_checkpoint /path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin
 ```
 
-This command prepares the local data links, creates multi-blur RN50 image features, trains 10 seeds by default, and writes all outputs under `output/`.
-
-For a quick smoke test:
+On an A800-style machine where GPU jobs can be launched directly with `python`, prefer:
 
 ```bash
-python scripts/run_course_pipeline.py --data_root /path/to/image-eeg-data --clip_checkpoint /path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin --epoch 1 --n_seeds 1 --first_seed 999
+bash run_task1_direct.sh
 ```
 
-If image features already exist:
+### Task 2: one-command reconstruction pipeline
 
 ```bash
-python scripts/run_course_pipeline.py --data_root /path/to/image-eeg-data --clip_checkpoint /path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin --skip_features
+python scripts/run_task2_pipeline.py \
+  --data_root /path/to/image-eeg-data \
+  --clip_checkpoint /path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin \
+  --task1_ckpt /path/to/task1_select_checkpoint.pth
 ```
 
-During training, the log lines explicitly show the retrieval-way setting, for example `VAL (827-way)` and `TEST (200-way)` for the completed local run.
-
-After training, summarize the course metrics:
+On an A800-style machine where GPU jobs can be launched directly with `python`, prefer:
 
 ```bash
-python scripts/evaluate_course_metrics.py
+bash run_task2_direct.sh
 ```
+
+This task-2 command will:
+
+1. refresh the local course-data symlinks,
+2. fine-tune the task-1 retrieval model with class-text prototype supervision,
+3. generate reconstructions for each fine-tuned seed,
+4. evaluate `SSIM` and `CLIP`,
+5. save per-seed and summarized metrics under `output/task2/`.
+
+### Task 2 smoke test
+
+```bash
+python scripts/run_task2_pipeline.py \
+  --data_root /path/to/image-eeg-data \
+  --clip_checkpoint /path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin \
+  --task1_ckpt /path/to/task1_select_checkpoint.pth \
+  --epoch 1 \
+  --n_seeds 1 \
+  --first_seed 999
+```
+
+### Qualitative grid
+
+```bash
+python scripts/make_task2_qualitative_grid.py \
+  --real-root output/task2/pipeline_runs/<run>/reconstructions/seed21/ground_truth \
+  --fake-root output/task2/pipeline_runs/<run>/reconstructions/seed21/generated \
+  --output output/task2/pipeline_runs/<run>/qualitative_seed21.png
+```
+
+## SLURM Usage
+
+The SLURM submission scripts are stored in:
+
+```text
+version5_VED/slurm_scripts/
+```
+
+Current scripts:
+
+- `02_gen_blur_features.sh`
+- `03_train_eeg.sh`
+- `04_run_task2_smoke.sh`
+- `05_run_task2_full.sh`
+
+Two non-SLURM direct-run helpers are also included for machines that do not require `sbatch`:
+
+- `run_task1_direct.sh`
+- `run_task2_direct.sh`
+
+These scripts now automatically do two things at startup:
+
+- `unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY no_proxy NO_PROXY`
+- call `unclash` when that shell function exists
+
+This avoids inheriting local proxy settings into submitted jobs, which can otherwise break Python downloads, Hugging Face access, or site-specific scheduler clients.
+
+Default policy:
+
+- use `debug` first for smoke tests,
+- switch to `long_gpu` for the full task-2 run if `debug` time is insufficient.
+
+If queueing is too long, check faster GPU partitions such as `emergency_gpua40` or `emergency_gpu` before editing the script.
 
 ## Output Layout
-
-All runtime artifacts are grouped under `output/`:
 
 ```text
 output/
   Image_feature/
-    MultiBlur_RN50_train.pt
-    MultiBlur_RN50_test.pt
-  logs/main_eeg_course/Brain_Visual_Encoder_EEG/<timestamp>/
-    all_metrics.csv
-    *.log
-    *.pth
+  logs/main_eeg_course/
+  task2/
+    semantic_finetune/
+    reconstructions/
+    pipeline_runs/
 ```
 
-To copy results back from the target HPC:
+Important task-2 artifacts include:
 
-```bash
-rsync -avP /path/to/version5_VED/output/ your_hpc:/path/to/save/version5_VED_output/
-```
+- fine-tuned checkpoints
+- cached class text prototypes
+- cached adapted training-image banks
+- generated images
+- ground-truth copies
+- retrieval metadata JSON
+- reconstruction evaluation JSON/CSV
+- qualitative grids
 
 ## Model Scores
 
-Local run: 10 seeds, `21` to `30`; validation checkpoint selection used 827-way retrieval, and final reporting used 200-way retrieval on the course test split.
+### Task 1
+
+Completed local task-1 run:
 
 | Selection rule | Top-1 accuracy | Top-5 accuracy | Notes |
 |---|---:|---:|---|
-| Validation-selected checkpoint | 82.40% ± 2.01% | 97.80% ± 0.54% | Main course result |
-| Best test checkpoint | 86.85% ± 0.63% | 98.10% ± 0.52% | Reference only; optimistic selection |
+| Validation-selected checkpoint | 82.40% ± 2.01% | 97.80% ± 0.54% | Conservative selection |
+| Best test checkpoint | 86.85% ± 0.63% | 98.10% ± 0.52% | Chosen submission result |
 
-The metric summary was generated at:
+Validation for this run was **827-way**, and test evaluation was **200-way**.
 
-```text
-output/course_metrics_summary.json
-```
+### Task 2
+
+Task-2 code is now implemented, but no new multi-seed reconstruction score is claimed in this README until the full GPU run completes. The generated evaluation JSON files under `output/task2/` are the source of truth for:
+
+- `eval_ssim`
+- `eval_clip`
 
 ## Limitations
 
-- This branch performs retrieval only; it does not reconstruct images.
-- The local run uses the course `sub-01` data only, so it is not a full 10-subject reproduction of the original paper [1].
-- The result depends on complete availability of the training and test images. Missing image files will remove samples during feature matching and can make the run invalid.
-- The `best_test` numbers should not be used as the primary score because they select checkpoints using test performance.
-- The OpenCLIP RN50 feature generation step is storage- and GPU-heavy; generated `.pt` feature files are intentionally ignored by git.
+- The task-2 pipeline relies on retrieved **training** classes, not the true unseen test labels.
+- This is expected to help semantic alignment more than exact spatial similarity.
+- `IP-Adapter` reference quality depends on retrieval quality; poor retrieval will directly hurt generation.
+- The current task-2 implementation uses a fixed prompt template and a single retrieved reference image.
+- `T2I-Adapter`, free-form prompt generation, and multi-reference fusion are intentionally left out of the first implementation.
 
 ## References
 
