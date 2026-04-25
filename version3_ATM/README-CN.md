@@ -37,23 +37,25 @@ EEG [B, 63, 250]
 
 | 指标 | 分数 |
 |------|------|
-| Top-1 准确率 | **29.00%** |
-| Top-5 准确率 | **62.00%** |
+| Top-1 准确率 | **33.50%** |
+| Top-5 准确率 | **63.50%** |
 
 ### 重建
 
 | 指标 | 分数 |
 |------|------|
-| CLIP Score | **0.6696** |
-| SSIM | **0.2852** |
-| PixCorr | **0.0387** |
-| AlexNet-2 | 0.7164 |
-| AlexNet-5 | 0.7684 |
-| Inception | 0.6603 |
-| EffNet（↓ 越低越好） | 0.9380 |
-| SwAV（↓ 越低越好） | 0.6453 |
+| CLIP Score | **0.6089 ± 0.0123** |
+| SSIM | **0.2709 ± 0.0052** |
+| PixCorr | **0.0500 ± 0.0093** |
+| AlexNet-2 | 0.6994 ± 0.0149 |
+| AlexNet-5 | 0.7047 ± 0.0175 |
+| Inception | 0.5765 ± 0.0242 |
+| EffNet（↓ 越低越好） | 0.9581 ± 0.0041 |
+| SwAV（↓ 越低越好） | 0.6493 ± 0.0032 |
 
-详细结果 CSV：[`outputs/retrieval_eval_run01.csv`](outputs/retrieval_eval_run01.csv) · [`outputs/reconstruction_eval_run01.csv`](outputs/reconstruction_eval_run01.csv)
+详细结果 CSV：[`outputs/retrieval_eval_run01.csv`](outputs/retrieval_eval_run01.csv) · [`outputs/reconstruction_eval_run02_multiseed.csv`](outputs/reconstruction_eval_run02_multiseed.csv)
+
+其中 retrieval 的 CSV 虽然按标准 10 个随机 200-way seed 输出，但因为候选集本来就是全部 200 个测试类别，所以每一行结果都相同；reconstruction 的 CSV 现在已经是真正的 10-seed 生成与评估结果。
 
 ---
 
@@ -186,7 +188,7 @@ sbatch slurm_scripts/run_eval_reconstruction.sh \
 
 - **单一被试**：所有结果仅针对 `sub-01`，未评估跨被试泛化能力。
 - **训练轮数较少**：在单张 A40 GPU 上训练 40 个 epoch；原始 ATMS 论文使用更长的训练周期。
-- **重建质量有限**：CLIP Score 为 0.67，明显低于当前最优水平（CognitionCapturerPro 使用 80 epoch 训练 + IP-Adapter 可达 ~0.83）。ATMS 重建分支使用回归损失而非对比对齐，限制了嵌入质量。
+- **重建质量有限**：即使完成了多 seed 重跑，CLIP Score 也只有 0.61，仍明显低于本仓库最强分支。ATMS 重建分支使用回归损失而非对比对齐，限制了嵌入质量。
 - **EffNet / SwAV 距离较高**：说明生成图像的纹理和底层特征与真实图像差异较大。
 - **无数据增强或多试验集成**：课程协议要求对多次试验取均值，这会损失时间维度的变异信息。
 

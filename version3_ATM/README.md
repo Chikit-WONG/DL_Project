@@ -36,23 +36,25 @@ EEG [B, 63, 250]
 
 | Metric | Score |
 |--------|-------|
-| Top-1 Accuracy | **29.00%** |
-| Top-5 Accuracy | **62.00%** |
+| Top-1 Accuracy | **33.50%** |
+| Top-5 Accuracy | **63.50%** |
 
 ### Reconstruction
 
 | Metric | Score |
 |--------|-------|
-| CLIP Score | **0.6696** |
-| SSIM | **0.2852** |
-| PixCorr | **0.0387** |
-| AlexNet-2 | 0.7164 |
-| AlexNet-5 | 0.7684 |
-| Inception | 0.6603 |
-| EffNet (↓ lower=better) | 0.9380 |
-| SwAV (↓ lower=better) | 0.6453 |
+| CLIP Score | **0.6089 ± 0.0123** |
+| SSIM | **0.2709 ± 0.0052** |
+| PixCorr | **0.0500 ± 0.0093** |
+| AlexNet-2 | 0.6994 ± 0.0149 |
+| AlexNet-5 | 0.7047 ± 0.0175 |
+| Inception | 0.5765 ± 0.0242 |
+| EffNet (↓ lower=better) | 0.9581 ± 0.0041 |
+| SwAV (↓ lower=better) | 0.6493 ± 0.0032 |
 
-Detailed CSV results: [`outputs/retrieval_eval_run01.csv`](outputs/retrieval_eval_run01.csv) · [`outputs/reconstruction_eval_run01.csv`](outputs/reconstruction_eval_run01.csv)
+Detailed CSV results: [`outputs/retrieval_eval_run01.csv`](outputs/retrieval_eval_run01.csv) · [`outputs/reconstruction_eval_run02_multiseed.csv`](outputs/reconstruction_eval_run02_multiseed.csv)
+
+The retrieval CSV is reported over the standard 10 random 200-way seeds, but because the 200-way candidate set already contains all 200 test classes, every row is identical. The reconstruction CSV now reflects a real 10-seed generation/evaluation run.
 
 ---
 
@@ -185,7 +187,7 @@ Three non-trivial bugs were found and fixed during this project:
 
 - **Single subject**: all results are for `sub-01` only; cross-subject generalisation was not evaluated.
 - **Short training**: 40 epochs on a single A40 GPU; the original ATMS paper uses longer schedules.
-- **Reconstruction quality**: CLIP score 0.67 is noticeably below state-of-the-art (~0.83 from CognitionCapturerPro with 80-epoch retrieval + IP-Adapter). The ATMS reconstruction branch uses a regression loss rather than contrastive alignment, which limits embedding quality.
+- **Reconstruction quality**: even after the multi-seed rerun, CLIP score 0.61 remains clearly below the strongest branch in this repository. The ATMS reconstruction branch still relies on a regression-style objective, which limits embedding quality.
 - **EffNet / SwAV distances** are high (closer to random), indicating generated textures and low-level features do not closely match ground truth.
 - **No augmentation or multi-trial ensemble**: averaging trials at test time is required by the course protocol but loses temporal variability information.
 

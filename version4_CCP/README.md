@@ -122,23 +122,25 @@ sbatch slurm_scripts/11b_summary_v2.sh
 
 | Metric | Ours | Paper (10-subject avg) |
 |--------|------|------------------------|
-| **Top-1** | **61.0%** | 61.2% |
-| **Top-5** | **88.0%** | 90.8% |
+| **Top-1** | **61.5%** | 61.2% |
+| **Top-5** | **89.0%** | 90.8% |
 
 ### Reconstruction
 
-Two generation modes are provided:
+Two generation modes are provided. The completed `full_v2` rerun shows that `all` is now the stronger mode:
 
-| Metric | `all_before` (EEG → IP-Adapter, **best**) | `all` (SimpleAlignPipe) | Paper |
+| Metric | `all_before` (EEG → IP-Adapter) | `all` (SimpleAlignPipe, **best**) | Paper |
 |--------|------------------------------------------|--------------------------|-------|
-| CLIP (↑) | **0.707** | 0.659 | 0.830 |
-| PixCorr (↑) | 0.130 | **0.133** | 0.163 |
-| SSIM (↑) | **0.316** | 0.236 | 0.398 |
-| AlexNet-2 (↑) | **0.663** | 0.618 | 0.831 |
-| AlexNet-5 (↑) | **0.698** | 0.682 | 0.937 |
-| Inception (↑) | 0.597 | **0.607** | 0.720 |
+| CLIP (↑) | 0.716 | **0.898** | 0.830 |
+| PixCorr (↑) | 0.131 | **0.159** | 0.163 |
+| SSIM (↑) | 0.311 | **0.373** | 0.398 |
+| AlexNet-2 (↑) | 0.662 | **0.782** | 0.831 |
+| AlexNet-5 (↑) | 0.689 | **0.889** | 0.937 |
+| Inception (↑) | 0.621 | **0.810** | 0.720 |
 
-**`all_before` is the recommended mode**: it feeds EEG CLIP embeddings directly into IP-Adapter without an intermediate alignment step, achieving better overall quality.
+**`all` is the recommended mode for the completed `full_v2` rerun**. The aligned embedding branch outperformed `all_before` on every reported reconstruction metric in this run.
+
+Fresh rerun summary: [`runs/summary_metrics_v2.json`](runs/summary_metrics_v2.json)
 
 ---
 
@@ -176,8 +178,8 @@ Six bugs were identified and fixed compared to the original repository:
 
 - **Single subject**: the paper reports 10-subject averages. Using 1 subject produces less reliable EEG embeddings (irreducible gap ~10–20%).
 - **EEG noise**: raw EEG signals are very noisy; even after 80 epochs the embedding quality is limited by signal SNR.
-- **Semantic gap**: CLIP-based retrieval/generation captures high-level category correctly (61% top-1) but cannot encode fine-grained visual details (viewpoint, texture, lighting) from EEG alone.
-- **Alignment stage introduces noise**: the EEG retrieval model already outputs CLIP-space embeddings that IP-Adapter expects. Mapping to a separate "diffusion embedding space" introduces distortion rather than improvement (CLIP drops 0.707 → 0.659).
+- **Semantic gap**: retrieval is now strong at the category level (61.5% top-1), but EEG-conditioned generation is still less reliable than the paper's 10-subject setting on fine details.
+- **Single-subject variance**: this rerun is for `sub-01` only. The strong `all`-mode reconstruction metrics should still be interpreted as a single-subject result, not a 10-subject average.
 
 ---
 
