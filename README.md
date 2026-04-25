@@ -32,5 +32,9 @@ Best test checkpoint            0.8185 ± 0.0081     0.9630 ± 0.0078
 Validation-selected checkpoint  0.8225 ± 0.0155     0.9750 ± 0.0067   
 Best test checkpoint            0.8595 ± 0.0069     0.9735 ± 0.0055  
 
+#### 8 blur level, grey background:  
+Validation-selected checkpoint  0.8105 ± 0.0106     0.9795 ± 0.0061  
+Best test checkpoint            0.8415 ± 0.0125     0.9805 ± 0.0072  
+
 使用灰背景的EVNet比不使用灰背景的EVNet高了将近10%，但加上blur却差不多相同。  
 灰背景大概充当了blur的效果  
