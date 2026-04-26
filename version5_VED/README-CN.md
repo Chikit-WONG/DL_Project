@@ -247,10 +247,18 @@ task 2 重点产物包括：
 
 ### Task 2
 
-task 2 的代码链路已经实现，但在完整多 seed GPU 运行完成前，这里不预填新的最终重建分数。真正的结果以 `output/task2/` 下生成的评估 JSON 为准，重点看：
+已完成的多 seed task 2 运行结果：
 
-- `eval_ssim`
-- `eval_clip`
+| 指标 | 分数 |
+|---|---:|
+| SSIM | **0.2977 ± 0.0066** |
+| CLIP | **0.7610 ± 0.0148** |
+| Seeds | **10** |
+
+结果来源：
+
+- `output/task2/pipeline_runs/2026-04-24-20-55/evaluation/task2_reconstruction_summary.json`
+- `output/task2/pipeline_runs/2026-04-24-20-55/evaluation/task2_reconstruction_metrics.csv`
 
 ## 局限性
 

@@ -247,10 +247,18 @@ Validation for this run was **827-way**, and test evaluation was **200-way**.
 
 ### Task 2
 
-Task-2 code is now implemented, but no new multi-seed reconstruction score is claimed in this README until the full GPU run completes. The generated evaluation JSON files under `output/task2/` are the source of truth for:
+Completed multi-seed task-2 run:
 
-- `eval_ssim`
-- `eval_clip`
+| Metric | Score |
+|---|---:|
+| SSIM | **0.2977 ± 0.0066** |
+| CLIP | **0.7610 ± 0.0148** |
+| Seeds | **10** |
+
+Source of truth:
+
+- `output/task2/pipeline_runs/2026-04-24-20-55/evaluation/task2_reconstruction_summary.json`
+- `output/task2/pipeline_runs/2026-04-24-20-55/evaluation/task2_reconstruction_metrics.csv`
 
 ## Limitations
 

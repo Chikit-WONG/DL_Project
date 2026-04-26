@@ -33,7 +33,7 @@ DL_Project/
 | [`version2`](version2/README-CN.md) | 由 ChatGPT、Claude、Gemini 三方互相讨论后制定的方案，包含更强的双路径 encoder、多目标视觉监督和轻量 prior | 探索性尝试；最终结果很不理想，没有达到预期 | 完整重跑：Top-1 20.0%，Top-5 50.5%，SSIM 0.3753，CLIP 0.2755 |
 | [`version3_ATM`](version3_ATM/README-CN.md) | 复现并适配 `EEG_Image_decode`，核心路线是 ATM/ATMS | 检索效果较强，并包含完整评估脚本 | 完整重跑：Top-1 33.5%，Top-5 63.5%，SSIM 0.2709，CLIP 0.6089 |
 | [`version4_CCP`](version4_CCP/README-CN.md) | 复现并适配 `CognitionCapturerPro` (CCP)，包含多模态 embedding、alignment 和 SDXL-Turbo 生成 | 后期主要的 CCP 重建/适配分支 | 完整重跑：Any-modality Top-1 61.5%，Top-5 89.0%；重建（`all`）SSIM 0.3732，CLIP 0.8981 |
-| [`version5_VED`](version5_VED/README-CN.md) | 复现并适配 `VisualEEGDecoding`，task 1 使用 multi-blur OpenCLIP RN50 检索路线，task 2 使用检索增强的 IP-Adapter 重建路线 | 当前检索效果最好的分支，并已扩展为完整的 task1/task2 流程；适合在 A800 HPC 上直接用 Python 运行 | Task 1：当前选定提交分数 Top-1 86.85% ± 0.63%，Top-5 98.10% ± 0.52%；task 2 已实现语义微调、固定模板 prompt 类别检索和 SD v1.5 + IP-Adapter 重建链路 |
+| [`version5_VED`](version5_VED/README-CN.md) | 复现并适配 `VisualEEGDecoding`，task 1 使用 multi-blur OpenCLIP RN50 检索路线，task 2 使用检索增强的 IP-Adapter 重建路线 | 当前检索效果最好的分支，并已扩展为完整的 task1/task2 流程；适合在 A800 HPC 上直接用 Python 运行 | Task 1：当前选定提交分数 Top-1 86.85% ± 0.63%，Top-5 98.10% ± 0.52%；Task 2：SSIM 0.2977 ± 0.0066，CLIP 0.7610 ± 0.0148 |
 
 ## 数据和模型文件
 
