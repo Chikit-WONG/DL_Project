@@ -1,0 +1,2 @@
+ablation: A1_prior
+enabled: [clip, multiblur, prior_mapper]

@@ -1,0 +1,32 @@
+[
+    {
+        "test_loss_image": 2.9173431396484375,
+        "test_loss_text": 4.118865966796875,
+        "test_loss_depth": 2.5819296836853027,
+        "test_loss_edge": 3.1798064708709717,
+        "test_loss_fusion": 3.202273368835449,
+        "test_total_loss_epoch": 16.000219345092773,
+        "test_top1_acc_image": 0.2549999952316284,
+        "test_top5_acc_image": 0.5699999928474426,
+        "mAP_image": 0.39760252833366394,
+        "similarity_image": 0.11685475707054138,
+        "test_top1_acc_text": 0.11500000208616257,
+        "test_top5_acc_text": 0.33000001311302185,
+        "mAP_text": 0.2283458262681961,
+        "similarity_text": 0.07297392934560776,
+        "test_top1_acc_depth": 0.33500000834465027,
+        "test_top5_acc_depth": 0.6800000071525574,
+        "mAP_depth": 0.4884605407714844,
+        "similarity_depth": 0.11866595596075058,
+        "test_top1_acc_edge": 0.1850000023841858,
+        "test_top5_acc_edge": 0.550000011920929,
+        "mAP_edge": 0.3547569513320923,
+        "similarity_edge": 0.12822464108467102,
+        "test_top1_acc_fusion": 0.35499998927116394,
+        "test_top5_acc_fusion": 0.675000011920929,
+        "mAP_fusion": 0.5044845938682556,
+        "similarity_fusion": 4.41425895690918,
+        "test_any_modality_top1_acc": 0.6150000095367432,
+        "test_any_modality_top5_acc": 0.8899999856948853
+    }
+]

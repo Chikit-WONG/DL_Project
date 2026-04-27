@@ -22,8 +22,6 @@
 
 6. 课程数据在这个路径下 /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/image-eeg-data。
 
-7. 如果复现后发现模型得分和论文中的不一样，请分析原因。
+7. 因为我感觉我的名为test的conda环境依赖挺多的，你看看可不可以复用。如果会有依赖冲突的话，就新建一个conda环境。
 
-8. 因为我感觉我的名为test的conda环境依赖挺多的，你看看可不可以复用。如果会有依赖冲突的话，就新建一个conda环境。
-
-9. 可以参考这里sample code读取数据的方式 /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/sample_codes
+8. 可以参考这里sample code读取数据的方式 /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/sample_codes

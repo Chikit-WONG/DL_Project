@@ -1,0 +1,2 @@
+ablation: A4_struct
+enabled: [clip, multiblur, vae, evnet]

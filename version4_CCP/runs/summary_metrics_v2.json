@@ -1,0 +1,233 @@
+{
+  "runs": [
+    {
+      "run_dir": "/hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/version4_CCP/runs/full_v2/intra-subject_cogcappro_EEGProjectLayer_multimodal_cogcap_list_ViT-H-14/sub-01_seed0",
+      "metrics": {
+        "retrieval_test_loss_image": 2.9173431396484375,
+        "retrieval_test_loss_text": 4.118865966796875,
+        "retrieval_test_loss_depth": 2.5819296836853027,
+        "retrieval_test_loss_edge": 3.1798064708709717,
+        "retrieval_test_loss_fusion": 3.202273368835449,
+        "retrieval_test_total_loss_epoch": 16.000219345092773,
+        "retrieval_test_top1_acc_image": 0.2549999952316284,
+        "retrieval_test_top5_acc_image": 0.5699999928474426,
+        "retrieval_mAP_image": 0.39760252833366394,
+        "retrieval_similarity_image": 0.11685475707054138,
+        "retrieval_test_top1_acc_text": 0.11500000208616257,
+        "retrieval_test_top5_acc_text": 0.33000001311302185,
+        "retrieval_mAP_text": 0.2283458262681961,
+        "retrieval_similarity_text": 0.07297392934560776,
+        "retrieval_test_top1_acc_depth": 0.33500000834465027,
+        "retrieval_test_top5_acc_depth": 0.6800000071525574,
+        "retrieval_mAP_depth": 0.4884605407714844,
+        "retrieval_similarity_depth": 0.11866595596075058,
+        "retrieval_test_top1_acc_edge": 0.1850000023841858,
+        "retrieval_test_top5_acc_edge": 0.550000011920929,
+        "retrieval_mAP_edge": 0.3547569513320923,
+        "retrieval_similarity_edge": 0.12822464108467102,
+        "retrieval_test_top1_acc_fusion": 0.35499998927116394,
+        "retrieval_test_top5_acc_fusion": 0.675000011920929,
+        "retrieval_mAP_fusion": 0.5044845938682556,
+        "retrieval_similarity_fusion": 4.41425895690918,
+        "retrieval_test_any_modality_top1_acc": 0.6150000095367432,
+        "retrieval_test_any_modality_top5_acc": 0.8899999856948853,
+        "reconstruction_eval_pixcorr": 0.15900881601191613,
+        "reconstruction_eval_ssim": 0.37319265468957524,
+        "reconstruction_eval_alex2": 0.7824371859296483,
+        "reconstruction_eval_alex5": 0.889070351758794,
+        "reconstruction_eval_inception": 0.8098241206030151,
+        "reconstruction_eval_clip": 0.8980904522613066,
+        "reconstruction_eval_effnet": 0.8348412762851579,
+        "reconstruction_eval_swav": 0.5325008049288001,
+        "reconstruction_matched_images": 200.0
+      }
+    }
+  ],
+  "aggregate": {
+    "reconstruction_eval_alex2": {
+      "mean": 0.7824371859296483,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_alex5": {
+      "mean": 0.889070351758794,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_clip": {
+      "mean": 0.8980904522613066,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_effnet": {
+      "mean": 0.8348412762851579,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_inception": {
+      "mean": 0.8098241206030151,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_pixcorr": {
+      "mean": 0.15900881601191613,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_ssim": {
+      "mean": 0.37319265468957524,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_eval_swav": {
+      "mean": 0.5325008049288001,
+      "std": 0.0,
+      "n": 1
+    },
+    "reconstruction_matched_images": {
+      "mean": 200.0,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_mAP_depth": {
+      "mean": 0.4884605407714844,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_mAP_edge": {
+      "mean": 0.3547569513320923,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_mAP_fusion": {
+      "mean": 0.5044845938682556,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_mAP_image": {
+      "mean": 0.39760252833366394,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_mAP_text": {
+      "mean": 0.2283458262681961,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_similarity_depth": {
+      "mean": 0.11866595596075058,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_similarity_edge": {
+      "mean": 0.12822464108467102,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_similarity_fusion": {
+      "mean": 4.41425895690918,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_similarity_image": {
+      "mean": 0.11685475707054138,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_similarity_text": {
+      "mean": 0.07297392934560776,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_any_modality_top1_acc": {
+      "mean": 0.6150000095367432,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_any_modality_top5_acc": {
+      "mean": 0.8899999856948853,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_loss_depth": {
+      "mean": 2.5819296836853027,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_loss_edge": {
+      "mean": 3.1798064708709717,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_loss_fusion": {
+      "mean": 3.202273368835449,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_loss_image": {
+      "mean": 2.9173431396484375,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_loss_text": {
+      "mean": 4.118865966796875,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top1_acc_depth": {
+      "mean": 0.33500000834465027,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top1_acc_edge": {
+      "mean": 0.1850000023841858,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top1_acc_fusion": {
+      "mean": 0.35499998927116394,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top1_acc_image": {
+      "mean": 0.2549999952316284,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top1_acc_text": {
+      "mean": 0.11500000208616257,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top5_acc_depth": {
+      "mean": 0.6800000071525574,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top5_acc_edge": {
+      "mean": 0.550000011920929,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top5_acc_fusion": {
+      "mean": 0.675000011920929,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top5_acc_image": {
+      "mean": 0.5699999928474426,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_top5_acc_text": {
+      "mean": 0.33000001311302185,
+      "std": 0.0,
+      "n": 1
+    },
+    "retrieval_test_total_loss_epoch": {
+      "mean": 16.000219345092773,
+      "std": 0.0,
+      "n": 1
+    }
+  }
+}

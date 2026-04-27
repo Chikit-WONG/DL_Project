@@ -1,0 +1,9 @@
+paths:
+  data_root: /absolute/path/to/image-eeg-data
+  outputs: outputs
+  checkpoints: checkpoints
+  feature_cache: feature_cache
+  clip_rn50: /absolute/path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin
+  clip_vith14: /absolute/path/to/CLIP-ViT-H-14/open_clip_pytorch_model.bin
+  sdxl_turbo: /absolute/path/to/sdxl-turbo
+  ip_adapter_root: /absolute/path/to/IP-Adapter

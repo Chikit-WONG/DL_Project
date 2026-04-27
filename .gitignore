@@ -16,7 +16,7 @@ checkpoints/
 clip_cache/
 # output/
 # outputs/
-runs/
+# runs/
 wandb/
 **/__pycache__/
 __pycache__/

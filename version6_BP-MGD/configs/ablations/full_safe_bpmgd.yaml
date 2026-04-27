@@ -1,0 +1,2 @@
+ablation: A7_full_safe_bpmgd
+enabled: [clip, multiblur, vae, evnet, edge_depth, prior_mapper, train_only_prototype, self_rerank]

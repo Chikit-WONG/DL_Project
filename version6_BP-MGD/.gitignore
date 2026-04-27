@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+outputs/*
+!outputs/.gitkeep
+checkpoints/*
+!checkpoints/.gitkeep
+feature_cache/*
+!feature_cache/.gitkeep
+third_party/*
+!third_party/.gitkeep

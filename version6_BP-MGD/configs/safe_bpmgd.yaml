@@ -1,0 +1,78 @@
+seed: 2026
+
+paths:
+  data_root: /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/image-eeg-data
+  outputs: outputs
+  checkpoints: checkpoints
+  feature_cache: feature_cache
+  clip_rn50: /hpc2hdd/home/ckwong627/workdir/models/CLIP-RN50-openai/open_clip_pytorch_model.bin
+  clip_vith14: /hpc2hdd/home/ckwong627/workdir/models/CLIP-ViT-H-14-laion2B-s32B-b79K/open_clip_pytorch_model.bin
+  sdxl_turbo: /hpc2hdd/home/ckwong627/workdir/models/sdxl-turbo
+  ip_adapter_root: /hpc2hdd/home/ckwong627/workdir/models/IP-Adapter
+
+data:
+  avg_trials_train: true
+  avg_trials_test: true
+  val_fraction: 0.05
+  channels: 63
+  timesteps: 250
+
+runtime:
+  cache_batch_size: 256
+  num_workers: 2
+
+features:
+  clip:
+    model_name: RN50
+    pretrained: /hpc2hdd/home/ckwong627/workdir/models/CLIP-RN50-openai/open_clip_pytorch_model.bin
+
+model:
+  channels: 63
+  timesteps: 250
+  hidden_dim: 1024
+  semantic_dim: 1024
+  struct_dim: 256
+  edge_dim: 512
+  depth_dim: 512
+  vae_dim: 512
+  num_blur_levels: 6
+  dropout: 0.1
+
+loss:
+  lambda_semantic: 1.0
+  lambda_blur: 0.5
+  lambda_struct: 0.3
+  lambda_edge: 0.2
+  lambda_depth: 0.2
+  lambda_vae: 0.3
+  lambda_uncertainty: 0.05
+
+optimizer:
+  lr: 0.0001
+  weight_decay: 0.05
+  batch_size: 512
+  epochs: 80
+  mixed_precision: true
+
+prior:
+  lr: 0.0001
+  epochs: 20
+
+generation:
+  prompt: "a natural image, high quality, realistic"
+  num_candidates_per_eeg: 16
+  final_num_candidates_per_eeg: 32
+  top_k: 16
+  seed_list: [7, 19, 31, 43, 59, 71, 83, 97]
+  eval_size: 256
+  height: 512
+  width: 512
+  num_inference_steps: 4
+  guidance_scale: 0.0
+  ip_adapter_scale: 0.75
+
+inference:
+  use_test_candidate_bank: false
+  use_test_gt_img2img: false
+  use_test_label_prompt: false
+  prototype_bank_name: train_only_prototype_bank
