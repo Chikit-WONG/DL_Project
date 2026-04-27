@@ -86,13 +86,6 @@ class Brain_Visual_Encoder_EEG(nn.Module):
             nn.Linear(25 * self.embed_dim, proj_dim),
         )
 
-        self.fusion_adapter = nn.Sequential(
-            nn.Linear(proj_dim, 768),
-            nn.ELU(),
-            nn.Dropout(0.85),
-            nn.Linear(768, proj_dim),
-        )
-
         self.learned_scale = nn.Parameter(torch.rand([1, 50, proj_dim]), requires_grad=True)
         self.default_feature = nn.Parameter(torch.zeros([1, 4, proj_dim]), requires_grad=True)
         self.softplus = nn.Softplus()
@@ -106,18 +99,16 @@ class Brain_Visual_Encoder_EEG(nn.Module):
         # 处理多尺度模糊特征
         imgs = torch.cat([imgs, self.default_feature.expand(imgs.shape[0], -1, -1)], 1)
         rates = torch.softmax(self.learned_scale[:, :imgs.shape[1]], -2)
-        blur_agg = torch.sum(imgs * rates, 1)  # [B, proj_dim]
+        blur_agg = torch.sum(imgs * rates, 1)
+        blur_feat = self.img_adapter(blur_agg)
         
         if self.use_evnet and evnet_feat is not None:
-            # 先融合 blur_agg 和 evnet_feat（融合前都不经过各自的 MLP）
+            # 对 EVNet 特征也应用适配器
+            evnet_feat = self.evnet_adapter(evnet_feat)
+            # 可学习加权融合
             w = torch.softmax(self.fusion_logits, dim=0)
-            fused_agg = w[0] * blur_agg + w[1] * evnet_feat  # [B, proj_dim]
-            # 融合后再统一过一个 MLP
-            fused_feat = self.fusion_adapter(fused_agg)
-            return fused_feat
+            return w[0] * blur_feat + w[1] * evnet_feat
         else:
-            # 没有 EVNet 时，blur_agg 过原来的 img_adapter
-            blur_feat = self.img_adapter(blur_agg)
             return blur_feat
 
     def get_fusion_weights(self):
