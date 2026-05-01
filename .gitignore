@@ -1,17 +1,38 @@
-# *.zip
-# test_images/
-# training_images/
-# EEG_CHANNELS.jsonl
-# *.pt
-# implementation_plan.md
-# experiment_plan.md
-plan/
-old_code/
-image-eeg-data/
-temp/
-external/
-checkpoints/
-clip_cache/
-__pycache__/
+# Python
+**/__pycache__/
+*.py[cod]
+*.pyo
+
+# Model checkpoints and large tensors
 *.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+
+# Logs
 *.log
+slurm_scripts/logs/
+!slurm_scripts/logs/.gitkeep
+
+# Task 1 runtime artifacts
+task1/output/
+task1/data/
+
+# Task 2 runtime artifacts
+task2/runs/
+task2/outputs/*/final_recon/
+task2/outputs/*/ground_truth/
+task2/outputs/*/candidates/
+task2/configs/local.yaml
+
+# General
+*.zip
+wandb/
+.DS_Store
+
+# Data
+image-eeg-data/
+
+# temp
+temp/
