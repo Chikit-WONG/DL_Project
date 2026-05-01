@@ -15,6 +15,7 @@
 DL_Project/
 ├── Final_Project_Instructions/   # 课程项目 PDF
 ├── image-eeg-data/               # 本地 THINGS-EEG 数据，已被 git 忽略
+├── model_score_compare/          # 各版本分数对比摘要
 ├── plan/                         # 项目计划文档，Markdown 文件允许提交
 ├── references/                   # 论文和本地参考材料
 ├── sample_codes/                 # 原始示例 notebook
@@ -22,7 +23,9 @@ DL_Project/
 ├── version2/                     # ChatGPT、Claude、Gemini 三方讨论出的计划，结果不理想
 ├── version3_ATM/                 # 复现 EEG_Image_decode (ATM)
 ├── version4_CCP/                 # 复现 CognitionCapturerPro (CCP)
-└── version5_VED/                 # 复现并适配 VisualEEGDecoding
+├── version5_VED/                 # 复现并适配 VisualEEGDecoding
+├── version6_BP-MGD/              # Safe BP-MGD：防泄漏的任务 2 重建分支
+└── version7_VED_plus_EVNet/      # VED + EVNet：加入仿生视觉前端的检索增强分支
 ```
 
 ## 各版本说明
@@ -33,7 +36,9 @@ DL_Project/
 | [`version2`](version2/README-CN.md) | 由 ChatGPT、Claude、Gemini 三方互相讨论后制定的方案，包含更强的双路径 encoder、多目标视觉监督和轻量 prior | 探索性尝试；最终结果很不理想，没有达到预期 | 完整重跑：Top-1 20.0%，Top-5 50.5%，SSIM 0.3753，CLIP 0.2755 |
 | [`version3_ATM`](version3_ATM/README-CN.md) | 复现并适配 `EEG_Image_decode`，核心路线是 ATM/ATMS | 检索效果较强，并包含完整评估脚本 | 完整重跑：Top-1 33.5%，Top-5 63.5%，SSIM 0.2709，CLIP 0.6089 |
 | [`version4_CCP`](version4_CCP/README-CN.md) | 复现并适配 `CognitionCapturerPro` (CCP)，包含多模态 embedding、alignment 和 SDXL-Turbo 生成 | 后期主要的 CCP 重建/适配分支 | 完整重跑：Any-modality Top-1 61.5%，Top-5 89.0%；重建（`all`）SSIM 0.3732，CLIP 0.8981 |
-| [`version5_VED`](version5_VED/README-CN.md) | 复现并适配 `VisualEEGDecoding`，task 1 使用 multi-blur OpenCLIP RN50 检索路线，task 2 使用检索增强的 IP-Adapter 重建路线 | 当前检索效果最好的分支，并已扩展为完整的 task1/task2 流程；适合在 A800 HPC 上直接用 Python 运行 | Task 1：当前选定提交分数 Top-1 86.85% ± 0.63%，Top-5 98.10% ± 0.52%；Task 2：SSIM 0.2977 ± 0.0066，CLIP 0.7610 ± 0.0148 |
+| [`version5_VED`](version5_VED/README-CN.md) | 复现并适配 `VisualEEGDecoding`，task 1 使用 multi-blur OpenCLIP RN50 检索路线，task 2 使用检索增强的 IP-Adapter 重建路线 | 完整的 task1/task2 流程基线，已被 version7 进一步扩展 | Task 1：当前选定提交分数 Top-1 86.85% ± 0.63%，Top-5 98.10% ± 0.52%；Task 2：SSIM 0.2977 ± 0.0066，CLIP 0.7610 ± 0.0148 |
+| [`version6_BP-MGD`](version6_BP-MGD/README.md) | Safe BP-MGD：基于仅训练集原型记忆库的防泄漏任务 2 重建流程，使用 SDXL-Turbo 生成和 IP-Adapter 条件控制 | 严格防泄漏的任务 2 重建分支（测试图像在生成阶段完全不可见） | Task 2：SSIM 0.3799，CLIP 0.5346（全量训练 hybrid SDXL 最终运行） |
+| [`version7_VED_plus_EVNet`](version7_VED_plus_EVNet/README-CN.md) | 在 version5_VED 基础上引入仿生视觉前端 EVNet（SubcorticalBlock + VOneBlock，全参数冻结），通过可学习权重与多尺度模糊 CLIP 特征融合 | 当前任务 1 检索效果最好的分支；包含模糊级别数、训练集大小、适配层初始化方式、CLIP 主干的消融实验 | Task 1：Best-test Top-1 87.85% ± 0.82%（8-blur + EVNet，RN50，全量训练，10 seeds） |
 
 ## 数据和模型文件
 
@@ -56,7 +61,7 @@ image-eeg-data/
 /hpc2hdd/home/ckwong627/workdir/models/
 ```
 
-常见依赖包括 CLIP ViT-H/14、OpenCLIP RN50、Stable Diffusion v1.5、SDXL-Turbo 和 IP-Adapter 权重。精确路径以各版本 README 和配置文件为准。
+常见依赖包括 CLIP ViT-H/14、OpenCLIP RN50、CLIP ViT-H/14（LAION-2B，用于 version7 消融实验）、Stable Diffusion v1.5、SDXL-Turbo 和 IP-Adapter 权重。精确路径以各版本 README 和配置文件为准。
 
 ## 结果文件和提交策略
 
@@ -89,5 +94,8 @@ git add -n README.md README-CN.md .gitignore plan/*.md
 1. 先阅读本根目录 README，了解整体结构。
 2. 阅读 [`version1/README-CN.md`](version1/README-CN.md)，了解一开始的原计划/基线流程。
 3. 阅读 [`version3_ATM/README-CN.md`](version3_ATM/README-CN.md) 和 [`version4_CCP/README-CN.md`](version4_CCP/README-CN.md)，了解两个偏重重建的复现方向。
-4. 阅读 [`version5_VED/README-CN.md`](version5_VED/README-CN.md)，了解当前最强的 VisualEEGDecoding 分支，包括新的 task 2 检索增强重建流程和 A800/HPC 一行运行命令。
-5. 查看 [`plan/`](plan/) 了解计划历史和实现决策。
+4. 阅读 [`version5_VED/README-CN.md`](version5_VED/README-CN.md)，了解 VisualEEGDecoding 基线，包括检索增强的 task 2 重建流程。
+5. 阅读 [`version6_BP-MGD/README.md`](version6_BP-MGD/README.md)，了解防泄漏的任务 2 重建分支。
+6. 阅读 [`version7_VED_plus_EVNet/README-CN.md`](version7_VED_plus_EVNet/README-CN.md)，了解当前任务 1 效果最好的分支，即在 version5_VED 基础上融入 EVNet 仿生视觉前端的扩展方案。
+7. 查看 [`plan/`](plan/) 了解计划历史和实现决策。
+8. 查看 [`model_score_compare/`](model_score_compare/) 了解各版本简明分数对比。

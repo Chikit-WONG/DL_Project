@@ -15,6 +15,7 @@ The repository keeps multiple experimental versions because the project evolved 
 DL_Project/
 ├── Final_Project_Instructions/   # Course project PDFs
 ├── image-eeg-data/               # Local THINGS-EEG data, ignored by git
+├── model_score_compare/          # Cross-version score comparison summaries
 ├── plan/                         # Project planning notes, Markdown files are tracked
 ├── references/                   # Papers and local reference material
 ├── sample_codes/                 # Original sample notebooks
@@ -22,7 +23,9 @@ DL_Project/
 ├── version2/                     # ChatGPT/Claude/Gemini co-designed plan, poor results
 ├── version3_ATM/                 # Reproduction of EEG_Image_decode (ATM)
 ├── version4_CCP/                 # Reproduction of CognitionCapturerPro (CCP)
-└── version5_VED/                 # Reproduction/adaptation of VisualEEGDecoding
+├── version5_VED/                 # Reproduction/adaptation of VisualEEGDecoding
+├── version6_BP-MGD/              # Safe BP-MGD: leakage-safe Task 2 reconstruction
+└── version7_VED_plus_EVNet/      # VED + EVNet biologically-inspired visual frontend
 ```
 
 ## Version Overview
@@ -33,7 +36,9 @@ DL_Project/
 | [`version2`](version2/README.md) | A plan designed through cross-discussion among ChatGPT, Claude, and Gemini, with a stronger dual-path encoder and multi-target supervision | Exploratory attempt; the final result was poor and did not meet the intended target | Full rerun: Top-1 20.0%, Top-5 50.5%, SSIM 0.3753, CLIP 0.2755 |
 | [`version3_ATM`](version3_ATM/README.md) | Reproduction and adaptation of `EEG_Image_decode`, based on the ATM/ATMS approach | Strong retrieval branch with complete evaluation scripts | Full rerun: Top-1 33.5%, Top-5 63.5%, SSIM 0.2709, CLIP 0.6089 |
 | [`version4_CCP`](version4_CCP/README.md) | Reproduction and adaptation of `CognitionCapturerPro` (CCP), including multimodal embeddings, alignment, and SDXL-Turbo generation | Final large-scale CCP reconstruction/adaptation branch | Full rerun: Any-modality Top-1 61.5%, Top-5 89.0%; reconstruction (`all`) SSIM 0.3732, CLIP 0.8981 |
-| [`version5_VED`](version5_VED/README.md) | Reproduction and course adaptation of `VisualEEGDecoding`, using multi-blur OpenCLIP RN50 visual features for task 1 and retrieval-augmented IP-Adapter reconstruction for task 2 | Current best retrieval branch, now extended into a complete task1/task2 pipeline for direct Python runs on an A800-style HPC | Task 1: chosen submission score Top-1 86.85% ± 0.63%, Top-5 98.10% ± 0.52%; Task 2: SSIM 0.2977 ± 0.0066, CLIP 0.7610 ± 0.0148 |
+| [`version5_VED`](version5_VED/README.md) | Reproduction and course adaptation of `VisualEEGDecoding`, using multi-blur OpenCLIP RN50 visual features for task 1 and retrieval-augmented IP-Adapter reconstruction for task 2 | Complete task1/task2 pipeline; strong retrieval baseline extended into version7 | Task 1: chosen submission score Top-1 86.85% ± 0.63%, Top-5 98.10% ± 0.52%; Task 2: SSIM 0.2977 ± 0.0066, CLIP 0.7610 ± 0.0148 |
+| [`version6_BP-MGD`](version6_BP-MGD/README.md) | Safe BP-MGD: leakage-safe Task 2 reconstruction pipeline using a train-only prototype memory bank, SDXL-Turbo generation, and IP-Adapter conditioning | Task 2 reconstruction branch with strict leakage-safety guarantee (no test images used at any stage) | Task 2: SSIM 0.3799, CLIP 0.5346 (full-train hybrid SDXL run) |
+| [`version7_VED_plus_EVNet`](version7_VED_plus_EVNet/README.md) | Extends version5_VED by adding a biologically-inspired EVNet visual frontend (SubcorticalBlock + VOneBlock, frozen) fused with the multi-blur CLIP features via learnable weights | Current best Task 1 retrieval branch; ablation study over blur level count, training set size, adapter init, and CLIP backbone | Task 1: Best-test Top-1 87.85% ± 0.82% (8-blur + EVNet, RN50, full train, 10 seeds) |
 
 ## Data and Model Artifacts
 
@@ -56,7 +61,7 @@ Pretrained models are expected to be stored outside git, for example under:
 /hpc2hdd/home/ckwong627/workdir/models/
 ```
 
-Typical required model assets include CLIP ViT-H/14, OpenCLIP RN50, Stable Diffusion v1.5, SDXL-Turbo, and IP-Adapter weights. See the version-specific READMEs and config files for exact paths.
+Typical required model assets include CLIP ViT-H/14, OpenCLIP RN50, CLIP ViT-H/14 (LAION-2B, for version7 ablation), Stable Diffusion v1.5, SDXL-Turbo, and IP-Adapter weights. See the version-specific READMEs and config files for exact paths.
 
 ## Results and Tracked Outputs
 
@@ -89,5 +94,8 @@ Use `git add -n` first when checking whether a file would be staged without actu
 1. Start with this root README for the project map.
 2. Read [`version1/README.md`](version1/README.md) for the original planned baseline.
 3. Read [`version3_ATM/README.md`](version3_ATM/README.md) and [`version4_CCP/README.md`](version4_CCP/README.md) for the two reconstruction-oriented reproduction branches.
-4. Read [`version5_VED/README.md`](version5_VED/README.md) for the strongest VisualEEGDecoding branch, including the new task-2 retrieval-augmented reconstruction pipeline and the A800/HPC run commands.
-5. Check [`plan/`](plan/) for planning history and implementation decisions.
+4. Read [`version5_VED/README.md`](version5_VED/README.md) for the VisualEEGDecoding baseline, including the retrieval-augmented task-2 pipeline.
+5. Read [`version6_BP-MGD/README.md`](version6_BP-MGD/README.md) for the leakage-safe Task 2 reconstruction branch.
+6. Read [`version7_VED_plus_EVNet/README.md`](version7_VED_plus_EVNet/README.md) for the strongest Task 1 retrieval branch, which adds EVNet biologically-inspired visual features on top of version5_VED.
+7. Check [`plan/`](plan/) for planning history and implementation decisions.
+8. See [`model_score_compare/`](model_score_compare/) for a concise cross-version score summary.

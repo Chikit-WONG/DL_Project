@@ -36,3 +36,12 @@ logs/
 version5_VED/data/
 version5_VED/logs/
 version5_VED/checkpoints/
+
+# Version 6: generated reconstruction images and feature caches (large)
+version6_BP-MGD/outputs/*/final_recon/
+version6_BP-MGD/outputs/*/ground_truth/
+version6_BP-MGD/outputs/*/candidates/
+version6_BP-MGD/feature_cache/
+
+# Version 7: all training outputs (feature tensors covered by *.pt, checkpoints by *.pth)
+version7_VED_plus_EVNet/output/
