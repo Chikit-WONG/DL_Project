@@ -243,12 +243,27 @@ def _data_rel_key(data_type: str) -> str:
     return "things_eeg_rel"
 
 
+def _auto_data_root() -> Path | None:
+    """Auto-detect data_root from image-eeg-data/converted_for_cogcappro relative to DL_Project root."""
+    dl_project = REPO_ROOT.parent  # task2/ → DL_Project/
+    candidate = dl_project / "image-eeg-data" / "converted_for_cogcappro"
+    return candidate if candidate.exists() else None
+
+
 def resolve_base_data_dir(config: Any, data_type: str) -> str:
-    data_root = _require_path(
-        config,
-        "data_root",
-        "Missing data root. Set configs/local.yaml or COGCAPPRO_DATA_ROOT.",
-    )
+    ensure_paths_section(config)
+    data_root_val = config.paths.get("data_root")
+    if not data_root_val:
+        auto = _auto_data_root()
+        if auto is not None:
+            data_root_val = str(auto)
+    if not data_root_val:
+        raise ValueError(
+            "Missing data root. Place image-eeg-data/ in the DL_Project root, "
+            "or set paths.data_root in task2/configs/local.yaml, "
+            "or set COGCAPPRO_DATA_ROOT env var."
+        )
+    data_root = Path(data_root_val).expanduser()
     rel_key = _data_rel_key(data_type)
     rel_value = config.paths.get(rel_key)
     if not rel_value:

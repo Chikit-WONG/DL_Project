@@ -25,38 +25,21 @@ from torchvision.models.feature_extraction import create_feature_extractor
 from tqdm import tqdm
 
 
-DEFAULT_CLIP_CANDIDATES = [
-    (
-        "ViT-L-14",
-        "/hpc2hdd/home/ckwong627/workdir/models/CLIP-ViT-L-14-laion2B-s32B-b82K/open_clip_pytorch_model.bin",
-    ),
-    (
-        "ViT-L-14",
-        "/hpc2hdd/home/ckwong627/workdir/models/CLIP-ViT-L-14-laion2B-s32B-b82K/model.safetensors",
-    ),
-    (
-        "ViT-H-14",
-        "/hpc2hdd/home/ckwong627/workdir/models/CLIP-ViT-H-14-laion2B-s32B-b79K/open_clip_pytorch_model.bin",
-    ),
-    (
-        "ViT-H-14",
-        "/hpc2hdd/home/ckwong627/workdir/models/CLIP-ViT-H-14-laion2B-s32B-b79K/model.safetensors",
-    ),
-]
+DEFAULT_CLIP_CANDIDATES: list = []  # pass --clip-pretrained explicitly
 
 
-def resolve_clip_weights(clip_model_name: str, clip_pretrained: str) -> tuple[str, str]:
-    requested_path = Path(clip_pretrained)
-    if requested_path.exists():
-        return clip_model_name, str(requested_path)
+def resolve_clip_weights(clip_model_name: str, clip_pretrained: str | None) -> tuple[str, str]:
+    if clip_pretrained is not None:
+        requested_path = Path(clip_pretrained)
+        if requested_path.exists():
+            return clip_model_name, str(requested_path)
 
     for candidate_model_name, candidate_path in DEFAULT_CLIP_CANDIDATES:
         if Path(candidate_path).exists():
             return candidate_model_name, candidate_path
 
     raise FileNotFoundError(
-        f"No usable CLIP checkpoint found. Requested: {clip_pretrained}. "
-        f"Checked: {[path for _, path in DEFAULT_CLIP_CANDIDATES]}"
+        "No CLIP checkpoint found. Pass --clip-pretrained /path/to/open_clip_pytorch_model.bin"
     )
 
 
@@ -253,7 +236,8 @@ def main() -> None:
     parser.add_argument(
         "--clip-pretrained",
         type=str,
-        default="/hpc2hdd/home/ckwong627/workdir/models/CLIP-ViT-H-14-laion2B-s32B-b79K/open_clip_pytorch_model.bin",
+        default=None,
+        help="Path to open_clip_pytorch_model.bin for the CLIP model used in scoring",
     )
     args = parser.parse_args()
 

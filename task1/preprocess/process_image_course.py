@@ -21,7 +21,11 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
 REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_PATH = os.path.join(REPO_DIR, "data", "things-eeg", "Image_set")
+_DL_PROJECT_ROOT = os.path.dirname(REPO_DIR)
+_AUTO_BASE_PATH = os.path.join(
+    _DL_PROJECT_ROOT, "image-eeg-data", "converted_for_cogcappro", "ThingsEEG", "Image_set_Resize"
+)
+BASE_PATH = _AUTO_BASE_PATH if os.path.isdir(_AUTO_BASE_PATH) else os.path.join(REPO_DIR, "data", "things-eeg", "Image_set")
 DEFAULT_RN50_WEIGHTS = os.environ.get(
     "VED_RN50_WEIGHTS",
     os.path.join(REPO_DIR, "data", "weights", "open_clip_pytorch_model.bin"),

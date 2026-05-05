@@ -1,19 +1,20 @@
 #!/bin/bash
 # Submit from the repository root:
-#   sbatch task2/slurm_scripts/09d_generate_fixed.sh
+#   sbatch --dependency=afterok:<align_job_id> task2/slurm_scripts/08_multiseed_generate.sh
+#
+# batch_generate auto-discovers all sub-01_seed* directories under base_dir.
 #
 #SBATCH -p emergency_gpu
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks-per-node=8
-#SBATCH --time=08:00:00
-#SBATCH -J cogcap_gen_fixed
+#SBATCH --time=12:00:00
+#SBATCH -J t2_generate_all
 #SBATCH -o task2/slurm_scripts/logs/%x-%j.out
 #SBATCH -e task2/slurm_scripts/logs/%x-%j.err
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TASK2_DIR="$(dirname "$SCRIPT_DIR")"
-RUN_DIR="$TASK2_DIR/runs/full_v2/intra-subject_cogcappro_EEGProjectLayer_multimodal_cogcap_list_ViT-H-14/sub-01_seed0"
-BASE_DIR="$TASK2_DIR/runs/full_v2"
+BASE_DIR="$TASK2_DIR/runs/multiseed"
 mkdir -p "$SCRIPT_DIR/logs"
 cd "$TASK2_DIR"
 
@@ -26,11 +27,8 @@ module load cuda/12.6
 
 echo "Job started at $(date)"
 
-rm -f "$RUN_DIR/generated_image/all_before/"*.jpg
-rm -f "$RUN_DIR/generated_image/all/"*.jpg
-
-echo "Generating pre-alignment images (all_before)..."
-python -u -m src.cogcappro.generate_image.batch_generate \
+echo "=== Generating pre-alignment images (all_before) for all seeds ==="
+python -m src.cogcappro.generate_image.batch_generate \
   --base_dir "$BASE_DIR" \
   --config configs/cogcappro.yaml \
   --data_type EEG \
@@ -39,8 +37,8 @@ python -u -m src.cogcappro.generate_image.batch_generate \
   --subjects sub-01 \
   --use_before_align
 
-echo "Generating post-alignment images (all)..."
-python -u -m src.cogcappro.generate_image.batch_generate \
+echo "=== Generating post-alignment images (all) for all seeds ==="
+python -m src.cogcappro.generate_image.batch_generate \
   --base_dir "$BASE_DIR" \
   --config configs/cogcappro.yaml \
   --data_type EEG \

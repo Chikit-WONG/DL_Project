@@ -28,12 +28,9 @@ BLUR_PRESETS = {
     '8':  ['l_1', 'l_3', 'l_15', 'l_21', 'l_33', 'l_45', 'l_57', 'l_63'],
 }
 
-# Default EEG data directory for the course dataset
-DEFAULT_EEG_DATA_DIR = (
-    '/hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/'
-    'Assignments/Project/DL_Project/image-eeg-data/'
-    'converted_for_cogcappro/ThingsEEG/Preprocessed_data_250Hz_whiten/sub-01'
-)
+_DL_PROJECT_ROOT = os.path.dirname(root_dir)
+_AUTO_EEG_DATA_DIR = os.path.join(_DL_PROJECT_ROOT, "image-eeg-data")
+DEFAULT_EEG_DATA_DIR = _AUTO_EEG_DATA_DIR if os.path.isdir(_AUTO_EEG_DATA_DIR) else None
 
 
 def butter_bandpass(lowcut, highcut, fs, order=5):

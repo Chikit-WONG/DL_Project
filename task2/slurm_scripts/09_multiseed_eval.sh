@@ -1,20 +1,23 @@
 #!/bin/bash
 # Submit from the repository root:
-#   sbatch task2/slurm_scripts/10e_eval_full_both.sh
+#   sbatch --dependency=afterok:<gen_job_id> task2/slurm_scripts/09_multiseed_eval.sh
 #
 # Reads data_root and weights_root from task2/configs/local.yaml.
 #
 #SBATCH -p emergency_gpu
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks-per-node=8
-#SBATCH --time=08:00:00
-#SBATCH -J cogcap_eval_full_both
+#SBATCH --time=10:00:00
+#SBATCH -J t2_eval_s%a
+#SBATCH --array=0-4
 #SBATCH -o task2/slurm_scripts/logs/%x-%j.out
 #SBATCH -e task2/slurm_scripts/logs/%x-%j.err
 
+SEED=$SLURM_ARRAY_TASK_ID
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TASK2_DIR="$(dirname "$SCRIPT_DIR")"
-RUN_DIR="$TASK2_DIR/runs/full_v2/intra-subject_cogcappro_EEGProjectLayer_multimodal_cogcap_list_ViT-H-14/sub-01_seed0"
+EXP_NAME="intra-subject_cogcappro_EEGProjectLayer_multimodal_cogcap_list_ViT-H-14"
+RUN_DIR="$TASK2_DIR/runs/multiseed/$EXP_NAME/sub-01_seed${SEED}"
 mkdir -p "$SCRIPT_DIR/logs"
 cd "$TASK2_DIR"
 
@@ -30,7 +33,7 @@ WEIGHTS_ROOT=$(python -c "import yaml; c=yaml.safe_load(open('configs/local.yaml
 REAL_ROOT="$DATA_ROOT/ThingsEEG/Image_set_Resize/test_images"
 CLIP_H14="$WEIGHTS_ROOT/CLIP-ViT-H-14-laion2B-s32B-b79K/open_clip_pytorch_model.bin"
 
-echo "Job started at $(date)"
+echo "Job started at $(date) — seed ${SEED}"
 
 echo "=== Evaluating all_before ==="
 python scripts/evaluate_reconstruction.py \

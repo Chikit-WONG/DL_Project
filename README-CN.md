@@ -9,11 +9,42 @@
 
 ---
 
+## 环境配置
+
+任务 1 和任务 2 共享同一个 conda 环境。任务 2 的固定依赖（`torch==2.5.0`、`open-clip-torch==3.2.0`、`numpy==2.0.2`）满足任务 1 的宽松要求，因此一个环境可以同时满足两个任务的需求。
+
+```bash
+# 1. 创建并激活环境（需要 Python 3.10）
+conda create -n DL_Project python=3.10 -y
+conda activate DL_Project
+
+# 2. 安装支持 CUDA 的 PyTorch
+#    请根据您的 CUDA 版本调整 cu121（如 cu118、cu124 等）
+pip install torch==2.5.0 torchvision==0.20.0 --index-url https://download.pytorch.org/whl/cu121
+
+# 3. 安装其余依赖
+pip install -r requirements.txt
+```
+
+EVNet（任务 1）已内置于 `task1/evnet/`，无需单独安装。
+
+**所需外部模型（需自行下载）：**
+
+| 模型 | 大小 | 用途 |
+|------|------|------|
+| OpenCLIP RN50 (`open_clip_pytorch_model.bin`) | ~102 MB | 任务 1 模糊特征与 EVNet 图像编码器 |
+| OpenCLIP ViT-H-14 LAION-2B (`open_clip_pytorch_model.bin`) | ~4.4 GB | 任务 2 多模态监督编码器 |
+| SDXL-Turbo | ~6 GB | 任务 2 图像生成主干 |
+| IP-Adapter (`ip-adapter-plus_sdxl_vit-h`) | ~1 GB | 任务 2 图像条件控制 |
+
+---
+
 ## 仓库结构
 
 ```text
-main/
-├── task1/          # 任务 1：EEG 图像检索（VED + EVNet）
+DL_Project/
+├── requirements.txt                # 任务 1 和任务 2 共享依赖
+├── task1/                          # 任务 1：EEG 图像检索（VED + EVNet）
 │   ├── main_eeg_course.py          # 训练与评估入口
 │   ├── preprocess/
 │   │   └── process_image_course.py # 离线图像特征提取
@@ -22,7 +53,7 @@ main/
 │   │   └── evaluate_course_metrics.py
 │   ├── evnet/                      # 内置 EVNet 库
 │   └── slurm_scripts/              # HPC 作业脚本
-└── task2/          # 任务 2：EEG 图像重建（CognitionCapturerPro）
+└── task2/                          # 任务 2：EEG 图像重建（CognitionCapturerPro）
     ├── main.py                     # 训练入口
     ├── smoke_test.py               # 13 项验证脚本
     ├── configs/                    # YAML 配置文件
@@ -78,33 +109,22 @@ EEG 输入 [B, 63 通道, 250 时间步]
 **模糊级别预设（8 级，最终提交使用）：**
 `σ ∈ {l_1, l_3, l_15, l_21, l_33, l_45, l_57, l_63}`
 
-### 环境配置
-
-Python 3.9+，需要支持 CUDA 的 GPU。
-
-```bash
-pip install torch torchvision open-clip-torch numpy scipy pandas tqdm opencv-python Pillow
-```
-
-EVNet 库已内置于 `task1/evnet/`，无需单独安装。`process_image_course.py` 会自动将其加入 `sys.path`。
-
-**所需外部模型（需自行下载）：**
-
-| 模型 | 大小 | 用途 |
-|------|------|------|
-| OpenCLIP RN50 (`open_clip_pytorch_model.bin`) | ~102 MB | 模糊特征与 EVNet 图像编码器 |
-
 ### 数据结构
 
-预处理后的 EEG 数据（250 Hz，白化）需位于：
+将课程提供的 `image-eeg-data/` 文件夹直接放在 `DL_Project/` 根目录下：
 
 ```text
-/path/to/Preprocessed_data_250Hz_whiten/sub-01/
-    train.pt    # 字典：{'eeg': Tensor[N,1,63,250], 'img': array[N,k,path]}
-    test.pt
+DL_Project/
+├── image-eeg-data/          ← 将数据集文件夹放在这里
+│   ├── train.pt
+│   ├── test.pt
+│   ├── training_images/
+│   ├── test_images/
+│   └── converted_for_cogcappro/   ← 已预先构建，无需额外操作
+└── task1/
 ```
 
-通过 `--eeg_data_dir` 参数指定路径。图像目录通过 `task1/data/things-eeg/Image_set/train_images` 和 `test_images` 访问（HPC 上已预配置软链接）。
+`main_eeg_course.py` 和 `process_image_course.py` 均会从该位置自动探测 `image-eeg-data/`，无需传递 `--eeg_data_dir` 参数或手动创建软链接。
 
 ### 运行步骤
 
@@ -120,7 +140,7 @@ python preprocess/process_image_course.py \
     --batch_size 128
 ```
 
-输出文件保存至 `output/Image_feature/`：`MultiBlur_RN50_train.pt`、`MultiBlur_RN50_test.pt`、`EVNet_RN50_train.pt`、`EVNet_RN50_test.pt`。
+输出文件保存至 `task1/output/Image_feature/`：`MultiBlur_RN50_train.pt`、`MultiBlur_RN50_test.pt`、`EVNet_RN50_train.pt`、`EVNet_RN50_test.pt`。
 
 **步骤 2 — 训练 EEG 检索模型**（10 个种子，200 轮，A40 上约 8–16 小时）：
 
@@ -163,9 +183,13 @@ python scripts/evaluate_course_metrics.py \
 | `--feature_path` | `output/Image_feature` | `.pt` 特征文件目录 |
 | `--output_dir` | `output/logs/main_eeg_course` | 输出目录 |
 
-**SLURM（HPC）：** 已预配置脚本位于 `task1/slurm_scripts/`。
+**SLURM（HPC）：** 已预配置脚本位于 `task1/slurm_scripts/`。提交前需先设置 `CLIP_RN50`（未设置时脚本立即报错退出）。`EEG_DATA_DIR` 会从 `image-eeg-data/` 自动探测，仅在数据不在默认位置时才需手动指定。
 
 ```bash
+export CLIP_RN50=/path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin
+# export EEG_DATA_DIR=/path/to/Preprocessed_data_250Hz_whiten/sub-01  # 仅在非默认位置时设置
+
+sbatch task1/slurm_scripts/01_gen_evnet_features.sh       # 生成特征（仅需一次）
 sbatch task1/slurm_scripts/04_full_train_8blur_evnet.sh   # 全量训练，最优结果
 ```
 
@@ -265,48 +289,26 @@ SimpleAlignPipe：MLP(1024→1024)，以 IP-Adapter 图像编码器输出为监�
 生成：SDXL-Turbo + IP-Adapter（IP-Adapter-Plus-Face 变体）
 ```
 
-### 环境配置
-
-推荐 Python 3.10（兼容 PyTorch-Lightning 2.6 + diffusers 0.36）。
-
-```bash
-cd task2
-pip install -r requirements.txt
-```
-
-主要依赖：`torch==2.5.0`、`pytorch-lightning==2.6.0`、`diffusers==0.36.0`、`open-clip-torch==3.2.0`。
-
-**所需外部模型（需自行下载）：**
-
-| 模型 | 用途 |
-|------|------|
-| CLIP ViT-H-14（LAION-2B） | 多模态监督编码器 |
-| SDXL-Turbo | 图像生成主干 |
-| IP-Adapter（ip-adapter-plus_sdxl_vit-h） | 图像条件控制 |
-
 ### 配置
 
-复制本地路径模板并填写实际路径：
+`local.example.yaml` 是提交到仓库的模板文件。将其复制为 `local.yaml`（已在 `.gitignore` 中，仅保存在本地），然后填写预训练模型权重路径：
 
 ```bash
 cp task2/configs/local.example.yaml task2/configs/local.yaml
-# 编辑 local.yaml，填写 data_root、weights_root、sdxl_root、ip_adapter_root
+# 编辑 local.yaml，填写 weights_root、sdxl_root、ip_adapter_root
 ```
 
-`data_root` 应指向 CognitionCapturerPro 格式的数据集（`converted_for_cogcappro/`），可通过以下命令生成：
-
-```bash
-python task2/scripts/prepare_course_data.py
-```
+**`data_root` 为可选项** — 若 `image-eeg-data/` 放在 `DL_Project/` 根目录（默认布局），代码会自动探测 `image-eeg-data/converted_for_cogcappro/`，无需任何数据准备步骤。仅在数据集不在默认位置时才需显式设置 `data_root`。
 
 ### 运行步骤
 
 **步骤 0 — 验证环境**（无需 GPU）：
 
 ```bash
-cd task2
-python smoke_test.py
+cd task2 && python smoke_test.py && cd ..
 ```
+
+> 以下所有 `sbatch` 命令必须在**仓库根目录**（即包含 `task1/` 和 `task2/` 的目录）下提交，而非在 `task2/` 内部。
 
 **步骤 1 — 准备扩散嵌入**（运行一次）：
 
@@ -353,6 +355,29 @@ sbatch task2/slurm_scripts/09d_generate_fixed.sh
 sbatch task2/slurm_scripts/10e_eval_full_both.sh
 python task2/scripts/summarize_results.py
 ```
+
+#### 多种子运行（5 个种子，推荐用于稳定结果）
+
+每个阶段均为 SLURM array 作业（`--array=0-4`），5 个种子并行运行。各阶段通过作业依赖顺序提交：
+
+```bash
+# 步骤 1：并行训练种子 0–4（每个约 24 小时）
+JID_TRAIN=$(sbatch --parsable task2/slurm_scripts/06_multiseed_train.sh)
+
+# 步骤 2：训练全部完成后，并行运行对齐
+JID_ALIGN=$(sbatch --parsable --dependency=afterok:${JID_TRAIN} task2/slurm_scripts/07_multiseed_align.sh)
+
+# 步骤 3：一个作业生成所有种子的图像
+JID_GEN=$(sbatch --parsable --dependency=afterok:${JID_ALIGN} task2/slurm_scripts/08_multiseed_generate.sh)
+
+# 步骤 4：并行评估所有种子
+JID_EVAL=$(sbatch --parsable --dependency=afterok:${JID_GEN} task2/slurm_scripts/09_multiseed_eval.sh)
+
+# 步骤 5：汇总，输出各指标的均值 ± 标准差
+sbatch --dependency=afterok:${JID_EVAL} task2/slurm_scripts/10_multiseed_summary.sh
+```
+
+结果保存至 `task2/runs/multiseed/summary.json`。
 
 **`main.py` 主要参数说明：**
 
@@ -414,7 +439,7 @@ SimpleAlignPipe 消除了 EEG 派生的 CLIP 嵌入与图像空间 CLIP 嵌入�
 - 基于 ViT 的 CLIP 编码器与 EVNet 的空间化预处理不兼容。
 
 **任务 2：**
-- 单受试者，单次运行，未报告多种子方差。
+- 仅限单受试者（sub-01）。多种子运行（5 个种子）已通过 `task2/slurm_scripts/06–10_multiseed_*.sh` 支持，详见上方多种子运行章节。
 - 重建以从训练集检索到的图像作为 IP-Adapter 条件，而非直接从 EEG 解码图像内容。语义相近但结构不同的训练图像可能导致生成结果偏离目标。
 - SDXL-Turbo（1–4 步去噪）以速度换取生成质量。
 - 未使用文本提示；引入类别文本提示可能改善语义保真度。

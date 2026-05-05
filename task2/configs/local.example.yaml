@@ -1,8 +1,22 @@
 paths:
-  data_root: /path/to/dataset_root
+  # data_root: path to the converted_for_cogcappro/ directory.
+  # If image-eeg-data/ is placed in the DL_Project root (sibling of task2/),
+  # this field can be left unset — it will be auto-detected automatically.
+  # Only set this if your data is in a non-standard location.
+  # data_root: /path/to/image-eeg-data/converted_for_cogcappro
+
+  # weights_root: directory containing pretrained model weights.
+  # Required for training (CLIP ViT-H-14) and generation (SDXL-Turbo, IP-Adapter).
   weights_root: /path/to/model_weights
+
   runs_root: runs
-  diffusion_embeddings_root: /optional/path/to/diffusion_embeddings
-  sdxl_root: /optional/path/to/sdxl-turbo
-  ip_adapter_root: /optional/path/to/ip_adapter
-  things_meg_image_description_root: /optional/path/to/meg_blip2_texts
+
+  # Optional: override diffusion embedding cache location.
+  # Defaults to data_root/ThingsEEG/Image_feature_new/data_features
+  # diffusion_embeddings_root: /optional/path/to/diffusion_embeddings
+
+  # Required for image generation (Task 2 Step 4):
+  sdxl_root: /path/to/sdxl-turbo
+  ip_adapter_root: /path/to/ip_adapter
+
+  # things_meg_image_description_root: /optional/path/to/meg_blip2_texts

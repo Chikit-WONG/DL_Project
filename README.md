@@ -9,11 +9,42 @@ This repository implements a complete EEG-to-image system on the THINGS-EEG data
 
 ---
 
+## Environment Setup
+
+Task 1 and Task 2 share one conda environment. Task 2's pinned dependencies (`torch==2.5.0`, `open-clip-torch==3.2.0`, `numpy==2.0.2`) satisfy Task 1's looser requirements, so a single environment covers both tasks.
+
+```bash
+# 1. Create and activate the environment (Python 3.10 required)
+conda create -n DL_Project python=3.10 -y
+conda activate DL_Project
+
+# 2. Install PyTorch with CUDA support
+#    Adjust cu121 to match your CUDA version (e.g. cu118, cu124)
+pip install torch==2.5.0 torchvision==0.20.0 --index-url https://download.pytorch.org/whl/cu121
+
+# 3. Install remaining dependencies
+pip install -r requirements.txt
+```
+
+EVNet (Task 1) is bundled in `task1/evnet/` — no separate install is needed.
+
+**Required external models (download separately):**
+
+| Model | Size | Purpose |
+|-------|------|---------|
+| OpenCLIP RN50 (`open_clip_pytorch_model.bin`) | ~102 MB | Task 1 blur and EVNet image encoder |
+| OpenCLIP ViT-H-14 LAION-2B (`open_clip_pytorch_model.bin`) | ~4.4 GB | Task 2 multi-modal supervision encoder |
+| SDXL-Turbo | ~6 GB | Task 2 image generation backbone |
+| IP-Adapter (`ip-adapter-plus_sdxl_vit-h`) | ~1 GB | Task 2 image conditioning |
+
+---
+
 ## Repository Layout
 
 ```text
-main/
-├── task1/          # Task 1: EEG-to-image retrieval (VED + EVNet)
+DL_Project/
+├── requirements.txt                # Shared dependencies for Task 1 and Task 2
+├── task1/                          # Task 1: EEG-to-image retrieval (VED + EVNet)
 │   ├── main_eeg_course.py          # Training & evaluation entry point
 │   ├── preprocess/
 │   │   └── process_image_course.py # Offline image feature extraction
@@ -22,7 +53,7 @@ main/
 │   │   └── evaluate_course_metrics.py
 │   ├── evnet/                      # Bundled EVNet library
 │   └── slurm_scripts/              # HPC job scripts
-└── task2/          # Task 2: EEG-to-image reconstruction (CognitionCapturerPro)
+└── task2/                          # Task 2: EEG-to-image reconstruction (CognitionCapturerPro)
     ├── main.py                     # Training entry point
     ├── smoke_test.py               # 13-check validation script
     ├── configs/                    # YAML configs
@@ -78,33 +109,22 @@ Loss: InfoNCE(EEG_emb, img_emb)
 **Blur level preset (8-level, used for final submission):**
 `σ ∈ {l_1, l_3, l_15, l_21, l_33, l_45, l_57, l_63}`
 
-### Environment Setup
-
-Python 3.9+, CUDA-capable GPU.
-
-```bash
-pip install torch torchvision open-clip-torch numpy scipy pandas tqdm opencv-python Pillow
-```
-
-EVNet is bundled in `task1/evnet/` — no separate install is needed. `process_image_course.py` adds it to `sys.path` automatically.
-
-**Required external model (download separately):**
-
-| Model | Size | Purpose |
-|-------|------|---------|
-| OpenCLIP RN50 (`open_clip_pytorch_model.bin`) | ~102 MB | Blur and EVNet image encoder |
-
 ### Data Layout
 
-The EEG data (preprocessed, 250 Hz, whitened) must be accessible at:
+Place the course-provided `image-eeg-data/` folder directly inside `DL_Project/`:
 
 ```text
-/path/to/Preprocessed_data_250Hz_whiten/sub-01/
-    train.pt    # dict: {'eeg': Tensor[N,1,63,250], 'img': array[N,k,path]}
-    test.pt
+DL_Project/
+├── image-eeg-data/          ← drop the dataset folder here
+│   ├── train.pt
+│   ├── test.pt
+│   ├── training_images/
+│   ├── test_images/
+│   └── converted_for_cogcappro/   ← pre-built, no extra steps needed
+└── task1/
 ```
 
-Pass the path via `--eeg_data_dir`. Image directories are read from `task1/data/things-eeg/Image_set/train_images` and `test_images` (symlinks are pre-configured on the HPC).
+Both `main_eeg_course.py` and `process_image_course.py` auto-detect `image-eeg-data/` from this location. No `--eeg_data_dir` flag or manual symlinks are needed.
 
 ### Step-by-Step: Running Task 1
 
@@ -120,7 +140,7 @@ python preprocess/process_image_course.py \
     --batch_size 128
 ```
 
-Outputs `MultiBlur_RN50_train.pt`, `MultiBlur_RN50_test.pt`, `EVNet_RN50_train.pt`, `EVNet_RN50_test.pt` into `output/Image_feature/`.
+Outputs `MultiBlur_RN50_train.pt`, `MultiBlur_RN50_test.pt`, `EVNet_RN50_train.pt`, `EVNet_RN50_test.pt` into `task1/output/Image_feature/`.
 
 **Step 2 — Train the EEG retrieval model** (10 seeds, 200 epochs, ~8–16 h on A40):
 
@@ -163,9 +183,13 @@ python scripts/evaluate_course_metrics.py \
 | `--feature_path` | `output/Image_feature` | Directory containing `.pt` feature files |
 | `--output_dir` | `output/logs/main_eeg_course` | Output directory |
 
-**SLURM (HPC):** pre-configured scripts are in `task1/slurm_scripts/`.
+**SLURM (HPC):** pre-configured scripts are in `task1/slurm_scripts/`. Set `CLIP_RN50` before submitting (the script fails immediately if unset). `EEG_DATA_DIR` is auto-detected from `image-eeg-data/` and is only needed if your data is in a non-standard location.
 
 ```bash
+export CLIP_RN50=/path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin
+# export EEG_DATA_DIR=/path/to/Preprocessed_data_250Hz_whiten/sub-01  # only if not using default layout
+
+sbatch task1/slurm_scripts/01_gen_evnet_features.sh       # generate features (once)
 sbatch task1/slurm_scripts/04_full_train_8blur_evnet.sh   # full train, best result
 ```
 
@@ -265,49 +289,26 @@ SimpleAlignPipe: MLP(1024→1024) supervised by IP-Adapter image encoder output
 Generation: SDXL-Turbo + IP-Adapter (IP-Adapter-Plus-Face variant)
 ```
 
-### Environment Setup
-
-Python 3.10 recommended (required for PyTorch-Lightning 2.6 + diffusers 0.36).
-
-```bash
-cd task2
-pip install -r requirements.txt
-```
-
-Key dependencies: `torch==2.5.0`, `pytorch-lightning==2.6.0`, `diffusers==0.36.0`, `open-clip-torch==3.2.0`.
-
-**Required external models (download separately):**
-
-| Model | Purpose |
-|-------|---------|
-| CLIP ViT-H-14 (LAION-2B) | Multi-modal supervision encoder |
-| SDXL-Turbo | Image generation backbone |
-| IP-Adapter (ip-adapter-plus_sdxl_vit-h) | Image conditioning |
-
 ### Configuration
 
-Copy and fill in the local paths template:
+`local.example.yaml` is a template committed to the repository. Copy it to `local.yaml` (which is gitignored) and fill in the paths to your pretrained model weights:
 
 ```bash
 cp task2/configs/local.example.yaml task2/configs/local.yaml
-# Edit local.yaml with your actual paths:
-#   data_root, weights_root, sdxl_root, ip_adapter_root
+# Edit local.yaml — set weights_root, sdxl_root, ip_adapter_root
 ```
 
-The data root should point to the CognitionCapturerPro-format dataset (`converted_for_cogcappro/`), which can be prepared with:
-
-```bash
-python task2/scripts/prepare_course_data.py
-```
+**`data_root` is optional** — if `image-eeg-data/` is placed in the `DL_Project/` root (the default layout), the code auto-detects `image-eeg-data/converted_for_cogcappro/` and no extra data preparation step is needed. Only set `data_root` explicitly if your dataset is in a non-standard location.
 
 ### Step-by-Step: Running Task 2
 
 **Step 0 — Validate environment** (no GPU needed):
 
 ```bash
-cd task2
-python smoke_test.py
+cd task2 && python smoke_test.py && cd ..
 ```
+
+> All `sbatch` commands below must be submitted from the **repository root** (the directory containing `task1/` and `task2/`), not from inside `task2/`.
 
 **Step 1 — Prepare diffusion embeddings** (run once):
 
@@ -354,6 +355,29 @@ sbatch task2/slurm_scripts/09d_generate_fixed.sh
 sbatch task2/slurm_scripts/10e_eval_full_both.sh
 python task2/scripts/summarize_results.py
 ```
+
+#### Multi-seed Run (5 seeds, recommended for reliable results)
+
+Each stage is a SLURM array job (`--array=0-4`) so all 5 seeds run in parallel. Submit stages sequentially using job dependencies:
+
+```bash
+# Step 1: train seeds 0–4 in parallel (~24 h each)
+JID_TRAIN=$(sbatch --parsable task2/slurm_scripts/06_multiseed_train.sh)
+
+# Step 2: align seeds 0–4 in parallel, start after all training jobs finish
+JID_ALIGN=$(sbatch --parsable --dependency=afterok:${JID_TRAIN} task2/slurm_scripts/07_multiseed_align.sh)
+
+# Step 3: generate images for all seeds in one job
+JID_GEN=$(sbatch --parsable --dependency=afterok:${JID_ALIGN} task2/slurm_scripts/08_multiseed_generate.sh)
+
+# Step 4: evaluate seeds 0–4 in parallel
+JID_EVAL=$(sbatch --parsable --dependency=afterok:${JID_GEN} task2/slurm_scripts/09_multiseed_eval.sh)
+
+# Step 5: summarise — prints mean ± std across all seeds
+sbatch --dependency=afterok:${JID_EVAL} task2/slurm_scripts/10_multiseed_summary.sh
+```
+
+Results are written to `task2/runs/multiseed/summary.json`.
 
 **Key CLI arguments for `main.py`:**
 
@@ -415,7 +439,7 @@ The following pretrained models and open-source codebases are used:
 - ViT-based CLIP encoders are incompatible with EVNet's spatial preprocessing.
 
 **Task 2:**
-- Single subject, single seed; multi-seed variance not reported.
+- Single subject (sub-01). Multi-seed runs (5 seeds) are supported via `task2/slurm_scripts/06–10_multiseed_*.sh` — see the multi-seed section above.
 - Reconstruction is conditioned on a retrieved training image (via IP-Adapter), not on a direct EEG-to-image decoding. Semantically nearby but structurally different training images may produce off-target reconstructions.
 - SDXL-Turbo generation (1–4 denoising steps) trades sample quality for speed.
 - No text prompt is used; adding a class-level text prompt could improve semantic fidelity.
