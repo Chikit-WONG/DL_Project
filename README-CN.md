@@ -85,7 +85,8 @@ DL_Project/
 │   │   └── process_image_course.py # 离线图像特征提取
 │   ├── models/                     # EEG 编码器定义
 │   ├── scripts/
-│   │   └── evaluate_course_metrics.py
+│   │   ├── evaluate_course_metrics.py
+│   │   └── make_greybg_images.py   # 灰背景消融图像生成脚本
 │   ├── evnet/                      # 内置 EVNet 库
 │   └── slurm_scripts/              # HPC 作业脚本
 └── task2/                          # 任务 2：EEG 图像重建（CognitionCapturerPro）
@@ -206,7 +207,7 @@ python scripts/evaluate_course_metrics.py \
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `--blur_config` | `8` | 模糊级别预设：`8` 或 `12` |
+| `--blur_config` | `8` | 模糊级别预设：`1`（无 blur）、`8` 或 `12` |
 | `--use_evnet` | 关闭 | 启用 EVNet 特征融合 |
 | `--use_full_train` | 关闭 | 使用全量训练集（不划分验证集） |
 | `--epoch` | `200` | 训练轮数 |
@@ -225,6 +226,8 @@ python scripts/evaluate_course_metrics.py \
 sbatch task1/slurm_scripts/01_gen_evnet_features.sh       # 生成特征（仅需一次）
 sbatch task1/slurm_scripts/04_full_train_8blur_evnet.sh   # 全量训练，最优结果
 ```
+
+**可选消融作业：** 仓库中还提供了 `05a_ablation_train.sh`、`05b_greybg_features.sh` 和 `05c_greybg_train.sh`，用于 `EVNet / blur / 灰背景` 的消融实验。
 
 ### 任务 1 实验结果
 
@@ -248,35 +251,26 @@ sbatch task1/slurm_scripts/04_full_train_8blur_evnet.sh   # 全量训练，最�
 
 #### 消融实验
 
-所有消融均使用 8-blur、RN50 主干、95/5 划分。
+下表汇总了任务 1 的消融结果。除特别说明外，所有设置均采用 10 个种子、RN50 主干和 95/5 划分。
 
-| 消融方案 | 验证选 Top-1 | 最佳测试 Top-1 | 相对基准 |
-|---|---|---|---|
-| **基准：EVNet 固定，Kaiming 初始化** | 0.8460 ± 0.0135 | 0.8715 ± 0.0091 | — |
-| Xavier 初始化适配层 | 0.8275 ± 0.0175 | 0.8495 ± 0.0086 | −0.019 |
-| GAP + 线性层（无 CLIP 主干） | 0.8285 ± 0.0173 | 0.8620 ± 0.0092 | −0.018 |
-| ViT-H/14 主干 | 0.7365 ± 0.0208 | 0.7790 ± 0.0115 | −0.110 |
+| 设置 | 验证选 Top-1 | 验证选 Top-5 | 最佳测试 Top-1 | 最佳测试 Top-5 |
+|---|---|---|---|---|
+| 12-blur | 0.8240 ± 0.0201 | 0.9780 ± 0.0054 | 0.8685 ± 0.0063 | 0.9810 ± 0.0052 |
+| 12-blur + EVNet | 0.8325 ± 0.0237 | 0.9825 ± 0.0040 | 0.8825 ± 0.0051 | 0.9820 ± 0.0060 |
+| 8-blur + EVNet | 0.8360 ± 0.0214 | 0.9820 ± 0.0046 | 0.8815 ± 0.0092 | 0.9825 ± 0.0056 |
+| **8-blur + EVNet fixed** | **0.8530 ± 0.0081** | **0.9845 ± 0.0035** | **0.8890 ± 0.0107** | **0.9855 ± 0.0035** |
+| 无 blur + EVNet | 0.7340 ± 0.0214 | 0.9565 ± 0.0090 | 0.7785 ± 0.0150 | 0.9660 ± 0.0080 |
+| 无 blur、无 EVNet | 0.6120 ± 0.0235 | 0.9060 ± 0.0176 | 0.6705 ± 0.0101 | 0.9110 ± 0.0170 |
+| 无 blur、无 EVNet、灰背景 | 0.6950 ± 0.0226 | 0.9205 ± 0.0079 | 0.7380 ± 0.0075 | 0.9230 ± 0.0114 |
+| 无 blur + EVNet、灰背景 | 0.7765 ± 0.0148 | 0.9590 ± 0.0092 | 0.8185 ± 0.0081 | 0.9630 ± 0.0078 |
+| 8-blur + EVNet、灰背景 | 0.8225 ± 0.0155 | 0.9750 ± 0.0067 | 0.8595 ± 0.0069 | 0.9735 ± 0.0055 |
+| 8-blur、灰背景 | 0.8105 ± 0.0106 | 0.9795 ± 0.0061 | 0.8415 ± 0.0125 | 0.9805 ± 0.0072 |
 
 **主要结论：**
-- **Kaiming 优于 Xavier**：Kaiming 正态初始化比 Xavier 均匀初始化高约 0.019 验证 Top-1。Xavier 产生的权重幅值较小，导致冻结后的适配层表达能力不足。
-- **GAP 消融效果出人意料地好**：完全去掉 CLIP 主干（改用全局平均池化 + 线性投影）后，验证 Top-1 仅下降约 0.018，说明 EVNet 的 V1 类特征本身已包含大量对 EEG 对齐有效的视觉信息。
-- **ViT-H/14 与 EVNet 不兼容**：ViT 基于分块注意力，依赖干净的像素分块输入；EVNet 的空间化预处理破坏了 token 结构，导致 Top-1 下降约 0.11。RN50 作为 CNN 主干，天然兼容 EVNet 的卷积输出。
-
-**消融实验运行命令：**
-
-```bash
-# Xavier 初始化
-python preprocess/process_image_course.py --evnet_mode xavier ...
-python main_eeg_course.py --evnet_prefix EVNet_xavier_RN50 ...
-
-# GAP + 线性层（无主干）
-python preprocess/process_image_course.py --evnet_mode gap ...
-python main_eeg_course.py --evnet_prefix EVNet_gap ...
-
-# ViT-H/14 主干
-python preprocess/process_image_course.py --backbone vit_h_14 --clip_checkpoint /path/to/ViT-H-14/...
-python main_eeg_course.py --blur_prefix MultiBlur_ViTH14 --evnet_prefix EVNet_ViTH14 ...
-```
+- **EVNet 在对应设置下始终有帮助**：在相同 blur 条件下，加入 EVNet 后，验证选和最佳测试 Top-1 都高于不加 EVNet 的对应基线。
+- **启用 EVNet 后，12-blur 与 8-blur 的差距很小**：`12-blur + EVNet` 与 `8-blur + EVNet` 的最佳测试 Top-1 仅差约 `0.001`。
+- **灰背景主要提升无 blur 场景**：相较于普通无 blur，灰背景使无 EVNet 的最佳测试 Top-1 从 `0.6705` 提升到 `0.7380`，使带 EVNet 的最佳测试 Top-1 从 `0.7785` 提升到 `0.8185`。
+- **`8-blur + EVNet fixed` 是这组参考 split-mode 消融里最强的设置。**
 
 ---
 
@@ -442,24 +436,24 @@ sbatch --dependency=afterok:${JID_EVAL} task2/slurm_scripts/10_multiseed_summary
 
 ### 任务 2 实验结果
 
-单次运行（sub-01，种子 0）。以下为 SimpleAlignPipe + SDXL-Turbo 生成（`all` 模式）的结果。
+以下结果为 5 个随机种子（sub-01，种子 0-4）的均值 ± 标准差，对比直接 EEG 条件生成（`all_before`）与经过 SimpleAlignPipe + SDXL-Turbo 的生成结果（`all` 模式）。
 
 #### SimpleAlignPipe 消融对比
 
 | 指标 | 不经过 SimpleAlignPipe | **经过 SimpleAlignPipe** | 变化 |
 |------|------------------------|--------------------------|------|
-| **SSIM** | 0.3106 | **0.3732** | +0.063 |
-| **CLIP Score（ViT-H-14）** | 0.7160 | **0.8981** | +0.182 |
-| PixCorr | 0.131 | 0.159 | +0.028 |
-| AlexNet-2 | 0.662 | 0.782 | +0.120 |
-| AlexNet-5 | 0.690 | 0.889 | +0.199 |
-| Inception | 0.621 | 0.810 | +0.189 |
-| EfficientNet | 0.941 | 0.835 | −0.106 |
-| SwAV | 0.695 | 0.533 | −0.162 |
+| **SSIM** | 0.2997 ± 0.0154 | **0.3564 ± 0.0083** | +0.057 |
+| **CLIP Score（ViT-H-14）** | 0.6940 ± 0.0261 | **0.8927 ± 0.0067** | +0.199 |
+| PixCorr | 0.1393 ± 0.0089 | 0.1477 ± 0.0157 | +0.008 |
+| AlexNet-2 | 0.6574 ± 0.0080 | 0.7621 ± 0.0133 | +0.105 |
+| AlexNet-5 | 0.6982 ± 0.0182 | 0.8826 ± 0.0100 | +0.184 |
+| Inception | 0.5982 ± 0.0100 | 0.8169 ± 0.0087 | +0.219 |
+| EfficientNet | 0.9517 ± 0.0065 | 0.8284 ± 0.0047 | −0.123 |
+| SwAV | 0.7060 ± 0.0089 | 0.5318 ± 0.0027 | −0.174 |
 
 SimpleAlignPipe 消除了 EEG 派生的 CLIP 嵌入与图像空间 CLIP 嵌入之间的分布差距。语义类指标（CLIP、Inception、AlexNet）显著提升；而 EfficientNet 和 SwAV——分别捕捉低级纹理特征和自监督特征——略有下降，说明对齐操作使生成结果向语义内容倾斜，而非像素级保真度。
 
-**检索（任意模态融合，作为辅助输出）：** Top-1 61.5%，Top-5 89.0%
+**检索（任意模态融合，5 个种子，作为辅助输出）：** Top-1 0.6370 ± 0.0258，Top-5 0.8730 ± 0.0125
 
 ---
 

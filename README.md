@@ -85,7 +85,8 @@ DL_Project/
 │   │   └── process_image_course.py # Offline image feature extraction
 │   ├── models/                     # EEG encoder definitions
 │   ├── scripts/
-│   │   └── evaluate_course_metrics.py
+│   │   ├── evaluate_course_metrics.py
+│   │   └── make_greybg_images.py   # Grey-background image generation for ablations
 │   ├── evnet/                      # Bundled EVNet library
 │   └── slurm_scripts/              # HPC job scripts
 └── task2/                          # Task 2: EEG-to-image reconstruction (CognitionCapturerPro)
@@ -206,7 +207,7 @@ python scripts/evaluate_course_metrics.py \
 
 | Argument | Default | Description |
 |----------|---------|-------------|
-| `--blur_config` | `8` | Blur level preset: `8` or `12` |
+| `--blur_config` | `8` | Blur level preset: `1` (no blur), `8`, or `12` |
 | `--use_evnet` | off | Enable EVNet feature fusion |
 | `--use_full_train` | off | Train on full set (no validation split) |
 | `--epoch` | `200` | Training epochs |
@@ -225,6 +226,8 @@ python scripts/evaluate_course_metrics.py \
 sbatch task1/slurm_scripts/01_gen_evnet_features.sh       # generate features (once)
 sbatch task1/slurm_scripts/04_full_train_8blur_evnet.sh   # full train, best result
 ```
+
+**Optional ablation jobs:** the repository also includes `05a_ablation_train.sh`, `05b_greybg_features.sh`, and `05c_greybg_train.sh` for the `EVNet / blur / grey background` ablation set.
 
 ### Task 1 Results
 
@@ -248,35 +251,26 @@ Using the full training set improves best-test Top-1 by ~0.007–0.010 over the 
 
 #### Ablation Studies
 
-All ablations use 8-blur, RN50 backbone, 95/5 split.
+The table below summarizes the Task 1 ablation results. All settings use 10 seeds, the RN50 backbone, and the 95/5 split protocol unless noted otherwise.
 
-| Ablation | Val-sel Top-1 | Best-test Top-1 | Δ vs Baseline |
-|---|---|---|---|
-| **Baseline: EVNet fixed, Kaiming init** | 0.8460 ± 0.0135 | 0.8715 ± 0.0091 | — |
-| Xavier init adapter | 0.8275 ± 0.0175 | 0.8495 ± 0.0086 | −0.019 |
-| GAP + Linear (no CLIP backbone) | 0.8285 ± 0.0173 | 0.8620 ± 0.0092 | −0.018 |
-| ViT-H/14 backbone | 0.7365 ± 0.0208 | 0.7790 ± 0.0115 | −0.110 |
+| Setting | Val-sel Top-1 | Val-sel Top-5 | Best-test Top-1 | Best-test Top-5 |
+|---|---|---|---|---|
+| 12-blur | 0.8240 ± 0.0201 | 0.9780 ± 0.0054 | 0.8685 ± 0.0063 | 0.9810 ± 0.0052 |
+| 12-blur + EVNet | 0.8325 ± 0.0237 | 0.9825 ± 0.0040 | 0.8825 ± 0.0051 | 0.9820 ± 0.0060 |
+| 8-blur + EVNet | 0.8360 ± 0.0214 | 0.9820 ± 0.0046 | 0.8815 ± 0.0092 | 0.9825 ± 0.0056 |
+| **8-blur + EVNet fixed** | **0.8530 ± 0.0081** | **0.9845 ± 0.0035** | **0.8890 ± 0.0107** | **0.9855 ± 0.0035** |
+| EVNet with no blur | 0.7340 ± 0.0214 | 0.9565 ± 0.0090 | 0.7785 ± 0.0150 | 0.9660 ± 0.0080 |
+| No blur and no EVNet | 0.6120 ± 0.0235 | 0.9060 ± 0.0176 | 0.6705 ± 0.0101 | 0.9110 ± 0.0170 |
+| No blur and no EVNet, grey background | 0.6950 ± 0.0226 | 0.9205 ± 0.0079 | 0.7380 ± 0.0075 | 0.9230 ± 0.0114 |
+| EVNet with no blur, grey background | 0.7765 ± 0.0148 | 0.9590 ± 0.0092 | 0.8185 ± 0.0081 | 0.9630 ± 0.0078 |
+| 8-blur + EVNet, grey background | 0.8225 ± 0.0155 | 0.9750 ± 0.0067 | 0.8595 ± 0.0069 | 0.9735 ± 0.0055 |
+| 8-blur, grey background | 0.8105 ± 0.0106 | 0.9795 ± 0.0061 | 0.8415 ± 0.0125 | 0.9805 ± 0.0072 |
 
 **Findings:**
-- **Kaiming > Xavier**: Kaiming normal init outperforms Xavier by ~0.019 val Top-1. Xavier's smaller initial weight magnitudes leave the frozen adapter in a less expressive state.
-- **GAP is surprisingly competitive**: removing the CLIP backbone entirely (replace with global average pooling + linear projection) only loses ~0.018 val Top-1, showing that EVNet's V1-like features alone carry substantial visual information useful for EEG alignment.
-- **ViT-H/14 is incompatible with EVNet**: ViT uses patch-based attention and expects clean pixel patches; EVNet's spatial preprocessing disrupts the token structure, causing a −0.11 drop. RN50 as a CNN is natively compatible with EVNet's convolutional output.
-
-**Running ablations:**
-
-```bash
-# Xavier init
-python preprocess/process_image_course.py --evnet_mode xavier ...
-python main_eeg_course.py --evnet_prefix EVNet_xavier_RN50 ...
-
-# GAP+Linear (no backbone)
-python preprocess/process_image_course.py --evnet_mode gap ...
-python main_eeg_course.py --evnet_prefix EVNet_gap ...
-
-# ViT-H/14
-python preprocess/process_image_course.py --backbone vit_h_14 --clip_checkpoint /path/to/ViT-H-14/...
-python main_eeg_course.py --blur_prefix MultiBlur_ViTH14 --evnet_prefix EVNet_ViTH14 ...
-```
+- **EVNet consistently helps**: at matched blur settings, EVNet improves both val-selected and best-test Top-1 over the corresponding non-EVNet baseline.
+- **12-blur and 8-blur are close once EVNet is enabled**: `12-blur + EVNet` and `8-blur + EVNet` differ by only about 0.001 in best-test Top-1.
+- **Grey background helps most in the no-blur regime**: compared with plain no-blur, grey background raises best-test Top-1 from `0.6705` to `0.7380` without EVNet, and from `0.7785` to `0.8185` with EVNet.
+- **The fixed 8-blur + EVNet setting is the strongest split-mode variant** in the supplied ablation set.
 
 ---
 
@@ -442,24 +436,24 @@ Results are written to `task2/runs/multiseed/summary.json`.
 
 ### Task 2 Results
 
-Single run (sub-01, seed 0). Results from the SimpleAlignPipe + SDXL-Turbo generation (`all` mode).
+Reported numbers are mean ± std across 5 seeds (sub-01, seeds 0-4). Results compare direct EEG-conditioned generation (`all_before`) against SimpleAlignPipe + SDXL-Turbo generation (`all` mode).
 
 #### Effect of SimpleAlignPipe (Ablation)
 
 | Metric | Without SimpleAlignPipe | **With SimpleAlignPipe** | Δ |
 |--------|------------------------|--------------------------|---|
-| **SSIM** | 0.3106 | **0.3732** | +0.063 |
-| **CLIP Score (ViT-H-14)** | 0.7160 | **0.8981** | +0.182 |
-| PixCorr | 0.131 | 0.159 | +0.028 |
-| AlexNet-2 | 0.662 | 0.782 | +0.120 |
-| AlexNet-5 | 0.690 | 0.889 | +0.199 |
-| Inception | 0.621 | 0.810 | +0.189 |
-| EfficientNet | 0.941 | 0.835 | −0.106 |
-| SwAV | 0.695 | 0.533 | −0.162 |
+| **SSIM** | 0.2997 ± 0.0154 | **0.3564 ± 0.0083** | +0.057 |
+| **CLIP Score (ViT-H-14)** | 0.6940 ± 0.0261 | **0.8927 ± 0.0067** | +0.199 |
+| PixCorr | 0.1393 ± 0.0089 | 0.1477 ± 0.0157 | +0.008 |
+| AlexNet-2 | 0.6574 ± 0.0080 | 0.7621 ± 0.0133 | +0.105 |
+| AlexNet-5 | 0.6982 ± 0.0182 | 0.8826 ± 0.0100 | +0.184 |
+| Inception | 0.5982 ± 0.0100 | 0.8169 ± 0.0087 | +0.219 |
+| EfficientNet | 0.9517 ± 0.0065 | 0.8284 ± 0.0047 | −0.123 |
+| SwAV | 0.7060 ± 0.0089 | 0.5318 ± 0.0027 | −0.174 |
 
 SimpleAlignPipe closes the distribution gap between EEG-derived CLIP embeddings and image-space CLIP embeddings. It substantially improves semantic metrics (CLIP, Inception, AlexNet), while EfficientNet and SwAV — which capture low-level texture and self-supervised features — decline slightly, consistent with the alignment shifting the generation toward semantic content over pixel-level fidelity.
 
-**Retrieval (any-modality fusion, as auxiliary output):** Top-1 61.5%, Top-5 89.0%
+**Retrieval (any-modality fusion, 5 seeds, auxiliary output):** Top-1 0.6370 ± 0.0258, Top-5 0.8730 ± 0.0125
 
 ---
 

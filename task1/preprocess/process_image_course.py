@@ -566,7 +566,18 @@ if __name__ == '__main__':
         choices=["rn50", "vit_h_14"],
         help="Visual backbone: 'rn50' (ResNet50, 1024-dim) or 'vit_h_14' (ViT-H/14, 1024-dim).",
     )
+    parser.add_argument(
+        "--image_set_dir",
+        default=None,
+        help="Override the image set root directory (BASE_PATH). "
+             "Use this for grey background or other preprocessed image variants. "
+             "The directory must contain train_images/ and test_images/ subdirectories.",
+    )
     args = parser.parse_args()
+
+    if args.image_set_dir:
+        BASE_PATH = os.path.abspath(args.image_set_dir)
+        print(f"Image set dir overridden: {BASE_PATH}")
 
     os.makedirs(args.save_dir, exist_ok=True)
 

@@ -5,6 +5,7 @@ Version 7 additions:
   --blur_config: choose '8' or '12' blur level preset
   --use_full_train: skip 95/5 split; train on full original training set
   --eeg_data_dir: direct path to the directory containing train.pt and test.pt
+  --run_name: explicit leaf directory name for split-per-seed job scheduling
 """
 import torch
 import torch.nn as nn
@@ -26,6 +27,7 @@ print('Using device:', device)
 BLUR_PRESETS = {
     '12': ['l_1', 'l_3', 'l_9', 'l_15', 'l_21', 'l_27', 'l_33', 'l_39', 'l_45', 'l_51', 'l_57', 'l_63'],
     '8':  ['l_1', 'l_3', 'l_15', 'l_21', 'l_33', 'l_45', 'l_57', 'l_63'],
+    '1':  ['l_1'],  # no blur (kernel=1, identity transform)
 }
 
 _DL_PROJECT_ROOT = os.path.dirname(root_dir)
@@ -464,8 +466,8 @@ if __name__ == "__main__":
                         help="Filename prefix for EVNet feature files (default: EVNet_RN50)")
     parser.add_argument('--blur_prefix',      type=str,   default='MultiBlur_RN50',
                         help="Filename prefix for blur feature files (default: MultiBlur_RN50)")
-    parser.add_argument('--blur_config',      type=str,   default='12', choices=['8', '12'],
-                        help="Blur level preset: '8' or '12' levels")
+    parser.add_argument('--blur_config',      type=str,   default='12', choices=['1', '8', '12'],
+                        help="Blur level preset: '1' (no blur), '8', or '12' levels")
     parser.add_argument('--use_full_train',   action='store_true', default=False,
                         help='Use full training set without 95/5 val split. '
                              'select checkpoint = last epoch; best checkpoint = best test epoch.')
@@ -475,6 +477,9 @@ if __name__ == "__main__":
                              'If set, overrides --data_path lookup.')
     parser.add_argument('--feature_path',     type=str,   default=os.path.join(root_dir, 'output', 'Image_feature'))
     parser.add_argument('--output_dir',       type=str,   default=os.path.join(root_dir, 'output', 'logs', 'main_eeg_course'))
+    parser.add_argument('--run_name',         type=str,   default=None,
+                        help='Explicit run directory name under output_dir/net_name. '
+                             'Use this to avoid timestamp collisions when one seed is run per Slurm task.')
     args = parser.parse_args()
 
     ALL_CHANNELS = ['Fp1', 'Fp2', 'AF7', 'AF3', 'AFz', 'AF4', 'AF8', 'F7', 'F5', 'F3',
@@ -488,8 +493,16 @@ if __name__ == "__main__":
     BLUR_LEVELS = BLUR_PRESETS[args.blur_config]
 
     mode_tag = f"{'full_' if args.use_full_train else ''}{args.blur_config}blur_{'EVNet_' if args.use_evnet else ''}"
-    save_path = os.path.join(args.output_dir, args.net_name,
-                             f"{mode_tag}{time.strftime('%Y-%m-%d-%H-%M')}")
+    if args.run_name:
+        run_leaf = args.run_name
+    else:
+        run_leaf = f"{mode_tag}{time.strftime('%Y-%m-%d-%H-%M')}"
+    save_path = os.path.join(args.output_dir, args.net_name, run_leaf)
+    if args.run_name and os.path.isdir(save_path) and os.listdir(save_path):
+        raise FileExistsError(
+            f"Run directory already exists and is non-empty: {save_path}. "
+            "Choose a different --run_name to avoid mixing multiple jobs."
+        )
     os.makedirs(save_path, exist_ok=True)
 
     params = {
