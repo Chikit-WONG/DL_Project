@@ -9,10 +9,10 @@
 #SBATCH -o task2/slurm_scripts/logs/%x-%j.out
 #SBATCH -e task2/slurm_scripts/logs/%x-%j.err
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TASK2_DIR="$(dirname "$SCRIPT_DIR")"
+REPO_ROOT="${SLURM_SUBMIT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+TASK2_DIR="$REPO_ROOT/task2"
 EXP_NAME="intra-subject_cogcappro_EEGProjectLayer_multimodal_cogcap_list_ViT-H-14"
-mkdir -p "$SCRIPT_DIR/logs"
+mkdir -p "$TASK2_DIR/slurm_scripts/logs"
 cd "$TASK2_DIR"
 
 for _conda in "$HOME/miniconda3" "$HOME/anaconda3" "/opt/conda"; do

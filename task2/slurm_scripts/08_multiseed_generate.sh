@@ -12,10 +12,10 @@
 #SBATCH -o task2/slurm_scripts/logs/%x-%j.out
 #SBATCH -e task2/slurm_scripts/logs/%x-%j.err
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TASK2_DIR="$(dirname "$SCRIPT_DIR")"
+REPO_ROOT="${SLURM_SUBMIT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+TASK2_DIR="$REPO_ROOT/task2"
 BASE_DIR="$TASK2_DIR/runs/multiseed"
-mkdir -p "$SCRIPT_DIR/logs"
+mkdir -p "$TASK2_DIR/slurm_scripts/logs"
 cd "$TASK2_DIR"
 
 set -euo pipefail

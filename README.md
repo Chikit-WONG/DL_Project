@@ -28,14 +28,49 @@ pip install -r requirements.txt
 
 EVNet (Task 1) is bundled in `task1/evnet/` — no separate install is needed.
 
-**Required external models (download separately):**
+**Required external models:**
 
 | Model | Size | Purpose |
 |-------|------|---------|
-| OpenCLIP RN50 (`open_clip_pytorch_model.bin`) | ~102 MB | Task 1 blur and EVNet image encoder |
-| OpenCLIP ViT-H-14 LAION-2B (`open_clip_pytorch_model.bin`) | ~4.4 GB | Task 2 multi-modal supervision encoder |
+| OpenCLIP RN50 (`open_clip_pytorch_model.bin`) | ~350 MB | Task 1 blur and EVNet image encoder |
+| OpenCLIP ViT-H-14 LAION-2B (`open_clip_pytorch_model.bin`) | ~2.5 GB | Task 2 multi-modal supervision encoder |
 | SDXL-Turbo | ~6 GB | Task 2 image generation backbone |
-| IP-Adapter (`ip-adapter-plus_sdxl_vit-h`) | ~1 GB | Task 2 image conditioning |
+| IP-Adapter (SDXL ViT-H variant + image encoder) | ~300 MB | Task 2 image conditioning |
+
+**Option A — One-click download script (recommended):**
+
+```bash
+# Interactive (on a node with internet access):
+python scripts/download_models.py
+
+# Slurm CPU job (can run in parallel with 00_setup_env.sh):
+sbatch task1/slurm_scripts/00b_download_models.sh
+
+# Custom destination or with HuggingFace token:
+python scripts/download_models.py --dest /path/to/models --hf-token hf_xxxx
+```
+
+Downloads all four models to `DL_Project/models/` and auto-updates `weights_root` in `task2/configs/local.yaml`.
+
+**Option B — Manual download:**
+
+Download each model from HuggingFace and place them under any directory (`<weights_root>`):
+
+```
+<weights_root>/
+├── CLIP-ViT-H-14-laion2B-s32B-b79K/   # laion/CLIP-ViT-H-14-laion2B-s32B-b79K
+│   └── open_clip_pytorch_model.bin
+├── CLIP-RN50-openai/                    # laion/CLIP-RN50-openai
+│   └── open_clip_pytorch_model.bin
+├── sdxl-turbo/                          # stabilityai/sdxl-turbo
+│   ├── model_index.json
+│   ├── unet/, vae/, text_encoder*/...
+└── IP-Adapter/                          # h94/IP-Adapter (sdxl subset only)
+    ├── models/image_encoder/
+    └── sdxl_models/ip-adapter_sdxl_vit-h.safetensors
+```
+
+Then set `weights_root: <weights_root>` in `task2/configs/local.yaml` (see [Configuration](#configuration) below).
 
 ---
 
@@ -183,12 +218,10 @@ python scripts/evaluate_course_metrics.py \
 | `--feature_path` | `output/Image_feature` | Directory containing `.pt` feature files |
 | `--output_dir` | `output/logs/main_eeg_course` | Output directory |
 
-**SLURM (HPC):** pre-configured scripts are in `task1/slurm_scripts/`. Set `CLIP_RN50` before submitting (the script fails immediately if unset). `EEG_DATA_DIR` is auto-detected from `image-eeg-data/` and is only needed if your data is in a non-standard location.
+**SLURM (HPC):** pre-configured scripts are in `task1/slurm_scripts/`. All paths are read automatically from `task2/configs/local.yaml` — set `weights_root` there once and no other configuration is needed. `EEG_DATA_DIR` is auto-detected from `image-eeg-data/` in the repo root.
 
 ```bash
-export CLIP_RN50=/path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin
-# export EEG_DATA_DIR=/path/to/Preprocessed_data_250Hz_whiten/sub-01  # only if not using default layout
-
+# No exports needed — just submit from the repository root:
 sbatch task1/slurm_scripts/01_gen_evnet_features.sh       # generate features (once)
 sbatch task1/slurm_scripts/04_full_train_8blur_evnet.sh   # full train, best result
 ```
@@ -291,14 +324,29 @@ Generation: SDXL-Turbo + IP-Adapter (IP-Adapter-Plus-Face variant)
 
 ### Configuration
 
-`local.example.yaml` is a template committed to the repository. Copy it to `local.yaml` (which is gitignored) and fill in the paths to your pretrained model weights:
+`local.example.yaml` is a template committed to the repository. It needs to be copied to `local.yaml` (gitignored, local-only) and have `weights_root` filled in.
+
+**If you used Option A (download script):** `local.yaml` is created and updated automatically — no manual steps needed.
+
+**If you used Option B (manual download):** copy the template and edit it yourself:
 
 ```bash
 cp task2/configs/local.example.yaml task2/configs/local.yaml
-# Edit local.yaml — set weights_root, sdxl_root, ip_adapter_root
+# Edit task2/configs/local.yaml — set weights_root to your model directory
 ```
 
-**`data_root` is optional** — if `image-eeg-data/` is placed in the `DL_Project/` root (the default layout), the code auto-detects `image-eeg-data/converted_for_cogcappro/` and no extra data preparation step is needed. Only set `data_root` explicitly if your dataset is in a non-standard location.
+**Only one line needs editing:** `weights_root: /path/to/model_weights`. All other paths (`clip_weights_rel`, `sdxl_rel`, `ip_adapter_rel`) are expressed relative to `weights_root` and work out of the box if your weights follow the default directory names. Task 1 slurm scripts also read `weights_root` from this file automatically.
+
+**`eeg_data_dir` is optional** — if `image-eeg-data/` is placed in the `DL_Project/` root (the default layout), both tasks auto-detect the data and no extra configuration is needed. Set `eeg_data_dir` only if your data is in a non-standard location:
+
+```yaml
+# task2/configs/local.yaml
+paths:
+  weights_root: /path/to/model_weights
+  eeg_data_dir: /path/to/image-eeg-data   # only if NOT in DL_Project root
+```
+
+Setting `eeg_data_dir` covers both tasks: Task 1 uses it directly as the EEG data directory, and Task 2 derives `converted_for_cogcappro/` from it automatically.
 
 ### Step-by-Step: Running Task 2
 

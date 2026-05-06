@@ -28,14 +28,49 @@ pip install -r requirements.txt
 
 EVNet（任务 1）已内置于 `task1/evnet/`，无需单独安装。
 
-**所需外部模型（需自行下载）：**
+**所需外部模型：**
 
 | 模型 | 大小 | 用途 |
 |------|------|------|
-| OpenCLIP RN50 (`open_clip_pytorch_model.bin`) | ~102 MB | 任务 1 模糊特征与 EVNet 图像编码器 |
-| OpenCLIP ViT-H-14 LAION-2B (`open_clip_pytorch_model.bin`) | ~4.4 GB | 任务 2 多模态监督编码器 |
+| OpenCLIP RN50 (`open_clip_pytorch_model.bin`) | ~350 MB | 任务 1 模糊特征与 EVNet 图像编码器 |
+| OpenCLIP ViT-H-14 LAION-2B (`open_clip_pytorch_model.bin`) | ~2.5 GB | 任务 2 多模态监督编码器 |
 | SDXL-Turbo | ~6 GB | 任务 2 图像生成主干 |
-| IP-Adapter (`ip-adapter-plus_sdxl_vit-h`) | ~1 GB | 任务 2 图像条件控制 |
+| IP-Adapter（SDXL ViT-H 权重 + 图像编码器） | ~300 MB | 任务 2 图像条件控制 |
+
+**方式 A — 一键下载脚本（推荐）：**
+
+```bash
+# 在有网络访问权限的节点上直接运行：
+python scripts/download_models.py
+
+# 或作为 Slurm CPU 作业提交（可与 00_setup_env.sh 并行运行）：
+sbatch task1/slurm_scripts/00b_download_models.sh
+
+# 指定下载路径或 HuggingFace token：
+python scripts/download_models.py --dest /path/to/models --hf-token hf_xxxx
+```
+
+脚本会将所有模型下载到 `DL_Project/models/`，并自动更新 `task2/configs/local.yaml` 中的 `weights_root`。
+
+**方式 B — 手动下载：**
+
+从 HuggingFace 下载各模型，放置到任意目录（`<weights_root>`）：
+
+```
+<weights_root>/
+├── CLIP-ViT-H-14-laion2B-s32B-b79K/   # laion/CLIP-ViT-H-14-laion2B-s32B-b79K
+│   └── open_clip_pytorch_model.bin
+├── CLIP-RN50-openai/                    # laion/CLIP-RN50-openai
+│   └── open_clip_pytorch_model.bin
+├── sdxl-turbo/                          # stabilityai/sdxl-turbo
+│   ├── model_index.json
+│   ├── unet/, vae/, text_encoder*/...
+└── IP-Adapter/                          # h94/IP-Adapter（仅需 sdxl 子集）
+    ├── models/image_encoder/
+    └── sdxl_models/ip-adapter_sdxl_vit-h.safetensors
+```
+
+下载完成后，在 `task2/configs/local.yaml` 中设置 `weights_root: <weights_root>`（详见下方[配置](#配置)部分）。
 
 ---
 
@@ -183,12 +218,10 @@ python scripts/evaluate_course_metrics.py \
 | `--feature_path` | `output/Image_feature` | `.pt` 特征文件目录 |
 | `--output_dir` | `output/logs/main_eeg_course` | 输出目录 |
 
-**SLURM（HPC）：** 已预配置脚本位于 `task1/slurm_scripts/`。提交前需先设置 `CLIP_RN50`（未设置时脚本立即报错退出）。`EEG_DATA_DIR` 会从 `image-eeg-data/` 自动探测，仅在数据不在默认位置时才需手动指定。
+**SLURM（HPC）：** 已预配置脚本位于 `task1/slurm_scripts/`。所有路径均自动从 `task2/configs/local.yaml` 读取 —— 只需在其中设置一次 `weights_root`，无需其他配置。`EEG_DATA_DIR` 会从仓库根目录下的 `image-eeg-data/` 自动探测。
 
 ```bash
-export CLIP_RN50=/path/to/CLIP-RN50-openai/open_clip_pytorch_model.bin
-# export EEG_DATA_DIR=/path/to/Preprocessed_data_250Hz_whiten/sub-01  # 仅在非默认位置时设置
-
+# 无需任何 export，直接从仓库根目录提交即可：
 sbatch task1/slurm_scripts/01_gen_evnet_features.sh       # 生成特征（仅需一次）
 sbatch task1/slurm_scripts/04_full_train_8blur_evnet.sh   # 全量训练，最优结果
 ```
@@ -291,14 +324,29 @@ SimpleAlignPipe：MLP(1024→1024)，以 IP-Adapter 图像编码器输出为监�
 
 ### 配置
 
-`local.example.yaml` 是提交到仓库的模板文件。将其复制为 `local.yaml`（已在 `.gitignore` 中，仅保存在本地），然后填写预训练模型权重路径：
+`local.example.yaml` 是提交到仓库的模板文件，需要复制为 `local.yaml`（已在 `.gitignore` 中，仅保存在本地）并填写 `weights_root`。
+
+**若使用方式 A（一键下载脚本）：** 脚本会自动创建并更新 `local.yaml`，无需手动操作。
+
+**若使用方式 B（手动下载）：** 手动复制模板并填写路径：
 
 ```bash
 cp task2/configs/local.example.yaml task2/configs/local.yaml
-# 编辑 local.yaml，填写 weights_root、sdxl_root、ip_adapter_root
+# 编辑 task2/configs/local.yaml，将 weights_root 改为你的模型目录
 ```
 
-**`data_root` 为可选项** — 若 `image-eeg-data/` 放在 `DL_Project/` 根目录（默认布局），代码会自动探测 `image-eeg-data/converted_for_cogcappro/`，无需任何数据准备步骤。仅在数据集不在默认位置时才需显式设置 `data_root`。
+**只需修改一行：** `weights_root: /path/to/model_weights`。其余所有路径（`clip_weights_rel`、`sdxl_rel`、`ip_adapter_rel`）均相对于 `weights_root`，只要权重目录结构符合默认命名即可直接使用。Task 1 的 Slurm 脚本也会自动从该文件读取 `weights_root`，无需单独配置。
+
+**`eeg_data_dir` 为可选项** — 若 `image-eeg-data/` 放在 `DL_Project/` 根目录（默认布局），两个任务均会自动探测数据，无需任何额外配置。仅当数据在非默认位置时才需设置：
+
+```yaml
+# task2/configs/local.yaml
+paths:
+  weights_root: /path/to/model_weights
+  eeg_data_dir: /path/to/image-eeg-data   # 仅在不位于 DL_Project 根目录时填写
+```
+
+设置 `eeg_data_dir` 即可覆盖两个任务：Task 1 直接将其作为 EEG 数据目录使用，Task 2 自动从中推导出 `converted_for_cogcappro/` 路径。
 
 ### 运行步骤
 

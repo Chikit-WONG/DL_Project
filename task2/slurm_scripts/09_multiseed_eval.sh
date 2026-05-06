@@ -14,11 +14,11 @@
 #SBATCH -e task2/slurm_scripts/logs/%x-%j.err
 
 SEED=$SLURM_ARRAY_TASK_ID
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TASK2_DIR="$(dirname "$SCRIPT_DIR")"
+REPO_ROOT="${SLURM_SUBMIT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+TASK2_DIR="$REPO_ROOT/task2"
 EXP_NAME="intra-subject_cogcappro_EEGProjectLayer_multimodal_cogcap_list_ViT-H-14"
 RUN_DIR="$TASK2_DIR/runs/multiseed/$EXP_NAME/sub-01_seed${SEED}"
-mkdir -p "$SCRIPT_DIR/logs"
+mkdir -p "$TASK2_DIR/slurm_scripts/logs"
 cd "$TASK2_DIR"
 
 set -euo pipefail

@@ -1,22 +1,19 @@
 paths:
-  # data_root: path to the converted_for_cogcappro/ directory.
-  # If image-eeg-data/ is placed in the DL_Project root (sibling of task2/),
-  # this field can be left unset — it will be auto-detected automatically.
-  # Only set this if your data is in a non-standard location.
-  # data_root: /path/to/image-eeg-data/converted_for_cogcappro
-
-  # weights_root: directory containing pretrained model weights.
-  # Required for training (CLIP ViT-H-14) and generation (SDXL-Turbo, IP-Adapter).
+  # ────────────────────────────────────────────────────────────────────────────
+  # EDIT THIS ONE LINE — set it to the directory that contains all pre-trained
+  # model weights (CLIP, SDXL-Turbo, IP-Adapter).
+  # ────────────────────────────────────────────────────────────────────────────
   weights_root: /path/to/model_weights
 
-  runs_root: runs
+  # Paths below are all relative to weights_root.
+  # Edit only if your weight files are organised differently from the defaults.
+  clip_weights_rel:
+    ViT-H-14: CLIP-ViT-H-14-laion2B-s32B-b79K/open_clip_pytorch_model.bin
+    RN50: CLIP-RN50-openai/open_clip_pytorch_model.bin
+  sdxl_rel: sdxl-turbo
+  ip_adapter_rel: IP-Adapter
 
-  # Optional: override diffusion embedding cache location.
-  # Defaults to data_root/ThingsEEG/Image_feature_new/data_features
-  # diffusion_embeddings_root: /optional/path/to/diffusion_embeddings
-
-  # Required for image generation (Task 2 Step 4):
-  sdxl_root: /path/to/sdxl-turbo
-  ip_adapter_root: /path/to/ip_adapter
-
-  # things_meg_image_description_root: /optional/path/to/meg_blip2_texts
+  # eeg_data_dir: path to the image-eeg-data/ directory (used by both tasks).
+  # Not needed when image-eeg-data/ is placed in the DL_Project root.
+  # Set this if your data lives somewhere else on the cluster:
+  # eeg_data_dir: /path/to/image-eeg-data

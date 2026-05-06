@@ -10,9 +10,9 @@
 #SBATCH --mem=64G
 #SBATCH --time=16:00:00
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TASK1_DIR="$(dirname "$SCRIPT_DIR")"
-mkdir -p "$SCRIPT_DIR/logs"
+REPO_ROOT="${SLURM_SUBMIT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+TASK1_DIR="$REPO_ROOT/task1"
+mkdir -p "$REPO_ROOT/task1/slurm_scripts/logs"
 cd "$TASK1_DIR"
 
 set -eo pipefail
@@ -29,9 +29,18 @@ echo "Node: $(hostname)"
 nvidia-smi
 
 # Phase B: 8-blur + EVNet fixed, full train (best result)
-# Set EEG_DATA_DIR to your preprocessed EEG data path before submitting:
-#   export EEG_DATA_DIR=/path/to/Preprocessed_data_250Hz_whiten/sub-01
-: "${EEG_DATA_DIR:?ERROR: set EEG_DATA_DIR to Preprocessed_data_250Hz_whiten/sub-01}"
+# EEG_DATA_DIR: directory containing train.pt and test.pt (= image-eeg-data/).
+# Resolution order: env var → paths.eeg_data_dir in task2/configs/local.yaml → repo default.
+if [ -z "$EEG_DATA_DIR" ]; then
+    _yaml_eeg=$(python -c "
+import yaml, sys
+c = yaml.safe_load(open('$REPO_ROOT/task2/configs/local.yaml'))
+v = (c.get('paths') or {}).get('eeg_data_dir', '')
+print(v)
+" 2>/dev/null)
+    EEG_DATA_DIR="${_yaml_eeg:-$TASK1_DIR/../image-eeg-data}"
+fi
+echo "Using EEG_DATA_DIR=$EEG_DATA_DIR"
 
 python main_eeg_course.py \
     --blur_config 8 --use_evnet --use_full_train --epoch 200 --train_batch_size 1024 --lr 0.001 --n_seeds 10 --first_seed 21 --feature_path output/Image_feature --output_dir output/logs/8blur_evnet_full \

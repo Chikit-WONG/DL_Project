@@ -39,3 +39,6 @@ temp/
 
 # report
 report/
+
+# logs
+logs/

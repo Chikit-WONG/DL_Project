@@ -3,8 +3,9 @@
 
 Resolution order:
   1. paths.data_root in task2/configs/local.yaml
-  2. COGCAPPRO_DATA_ROOT environment variable
-  3. Auto-detect: DL_Project/image-eeg-data/converted_for_cogcappro/
+  2. paths.eeg_data_dir in task2/configs/local.yaml  (appends converted_for_cogcappro/)
+  3. COGCAPPRO_DATA_ROOT environment variable
+  4. Auto-detect: DL_Project/image-eeg-data/converted_for_cogcappro/
 
 Exit 1 if none of the above resolves to an existing directory.
 """
@@ -22,7 +23,12 @@ if local_yaml.exists():
     try:
         import yaml
         c = yaml.safe_load(local_yaml.read_text()) or {}
-        data_root = (c.get("paths") or {}).get("data_root") or None
+        paths = c.get("paths") or {}
+        data_root = paths.get("data_root") or None
+        if not data_root and paths.get("eeg_data_dir"):
+            candidate = Path(paths["eeg_data_dir"]) / "converted_for_cogcappro"
+            if candidate.exists():
+                data_root = str(candidate)
     except Exception:
         pass
 
@@ -38,7 +44,7 @@ if not data_root:
     print(
         "ERROR: Cannot resolve data_root.\n"
         "  Place image-eeg-data/ in the DL_Project root, or\n"
-        "  set paths.data_root in task2/configs/local.yaml.",
+        "  set paths.eeg_data_dir in task2/configs/local.yaml.",
         file=sys.stderr,
     )
     sys.exit(1)

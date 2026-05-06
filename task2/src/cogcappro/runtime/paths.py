@@ -175,7 +175,7 @@ def resolve_clip_weight_paths(config: Any) -> dict[str, str]:
 def resolve_diffusion_embeddings_root(config: Any, required: bool = True) -> Path | None:
     ensure_paths_section(config)
     weights_root = optional_root(config, "weights_root")
-    data_root = optional_root(config, "data_root")
+    data_root = optional_root(config, "data_root") or _eeg_data_dir_as_data_root(config) or _auto_data_root()
     configured = _path_from_value(config.paths.get("diffusion_embeddings_root"))
     configured_rel = _path_from_value(
         config.paths.get("diffusion_embeddings_rel", DEFAULT_DIFFUSION_EMBEDDINGS_REL),
@@ -250,17 +250,26 @@ def _auto_data_root() -> Path | None:
     return candidate if candidate.exists() else None
 
 
+def _eeg_data_dir_as_data_root(config: Any) -> Path | None:
+    """Derive data_root from paths.eeg_data_dir (the image-eeg-data/ parent)."""
+    eeg_dir = optional_root(config, "eeg_data_dir")
+    if eeg_dir is None:
+        return None
+    candidate = eeg_dir / "converted_for_cogcappro"
+    return candidate if candidate.exists() else None
+
+
 def resolve_base_data_dir(config: Any, data_type: str) -> str:
     ensure_paths_section(config)
     data_root_val = config.paths.get("data_root")
     if not data_root_val:
-        auto = _auto_data_root()
-        if auto is not None:
-            data_root_val = str(auto)
+        derived = _eeg_data_dir_as_data_root(config) or _auto_data_root()
+        if derived is not None:
+            data_root_val = str(derived)
     if not data_root_val:
         raise ValueError(
             "Missing data root. Place image-eeg-data/ in the DL_Project root, "
-            "or set paths.data_root in task2/configs/local.yaml, "
+            "or set paths.eeg_data_dir in task2/configs/local.yaml, "
             "or set COGCAPPRO_DATA_ROOT env var."
         )
     data_root = Path(data_root_val).expanduser()
