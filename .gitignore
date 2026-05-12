@@ -53,3 +53,6 @@ report/
 
 # logs
 logs/
+
+# External dependencies
+external/
