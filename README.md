@@ -12,6 +12,10 @@ Best test checkpoint            0.8705 ± 0.0085     0.9790 ± 0.0049
 Validation-selected checkpoint  0.8530 ± 0.0081     0.9845 ± 0.0035  
 Best test checkpoint            0.8890 ± 0.0107     0.9855 ± 0.0035  
 
+#### 8 blur level + EVNet, Hungarian:  
+Validation-selected checkpoint  0.9730 ± 0.0105     1.0000 ± 0.0000  
+Best test checkpoint            0.9705 ± 0.0042     1.0000 ± 0.0000  
+
 #### EVNet with no blur:  
 Validation-selected checkpoint  0.7075 ± 0.0211     0.9350 ± 0.0095  
 Best test checkpoint            0.7565 ± 0.0084     0.9415 ± 0.0147

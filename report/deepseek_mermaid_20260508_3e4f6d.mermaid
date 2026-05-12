@@ -1,0 +1,46 @@
+flowchart TD
+    A[EEG Signal] --> B[Modality Expert Encoders]
+
+    subgraph B [Modality Expert Encoders]
+        B1[EEG Encoder]
+        B2[Text Encoder]
+        B3[Depth Encoder]
+        B4[Edge Encoder]
+    end
+
+    B1 --> C[Fusion Encoder<br>Cross-modal Transformer]
+    B2 --> C
+    B3 --> C
+    B4 --> C
+
+    C --> D[STH-Align<br>Shared Trunk + Modality Heads]
+
+    subgraph D [STH-Align]
+        D1[Shared MLP Trunk]
+        D2[Image Projection Head]
+        D3[Depth Projection Head]
+        D4[Edge Projection Head]
+    end
+
+    D2 --> E[Aligned Embeddings]
+    D3 --> E
+    D4 --> E
+
+    subgraph G [SDXL-Turbo + IP-Adapter Generation]
+        G1[IP-Adapter<br>Image Branch]
+        G2[IP-Adapter<br>Depth Branch]
+        G3[IP-Adapter<br>Edge Branch]
+        G4[U-Net<br>Cross-Attention Fusion]
+        G5[Denoising Process]
+    end
+
+    E --> G1
+    E --> G2
+    E --> G3
+
+    G1 --> G4
+    G2 --> G4
+    G3 --> G4
+
+    G4 --> G5
+    G5 --> H[Reconstructed Image]
