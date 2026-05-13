@@ -305,7 +305,7 @@ EEG → EEGProjectLayer → CLIP embedding
 
 **Key stages:**
 
-1. **EEG encoder training** (80 epochs): `EEGProjectLayer` maps EEG [63 ch × 250 t] → 1024-dim CLIP space. It is supervised by contrastive loss against four modality embeddings (image, text, depth map, edge map) simultaneously. Uncertainty-aware modality masking is used to prevent the model from memorising a single modality.
+1. **EEG encoder training** (80 epochs): `EEGProjectLayer` maps EEG [63 ch × 250 t] → 1024-dim CLIP space. It is supervised by contrastive loss against four modality embeddings (image, text, depth map, edge map) simultaneously. Uncertainty-aware modality masking is supported as an optional training mode, but the reported multi-seed results use joint training without this flag.
 
 2. **Alignment** (100 epochs): `SimpleAlignPipe` (lightweight MLP) aligns the EEG-derived image, depth, and edge embeddings to the embedding distributions expected by the generation pipeline.
 
@@ -500,5 +500,5 @@ The following pretrained models and open-source codebases are used:
 **Task 2:**
 - Single subject (sub-01). Multi-seed runs (5 seeds) are supported via `task2/slurm_scripts/06–10_multiseed_*.sh` — see the multi-seed section above.
 - Reconstruction is conditioned on a retrieved training image (via IP-Adapter), not on a direct EEG-to-image decoding. Semantically nearby but structurally different training images may produce off-target reconstructions.
-- SDXL-Turbo generation (1–4 denoising steps) trades sample quality for speed.
+- In the batch generation script, SDXL-Turbo is run with 15 denoising steps, trading generation speed against sample quality.
 - No text prompt is used; adding a class-level text prompt could improve semantic fidelity.
