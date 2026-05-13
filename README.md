@@ -234,43 +234,57 @@ sbatch task1/slurm_scripts/04_full_train_8blur_evnet.sh   # full train, best res
 All experiments: 10 random seeds (seeds 21–30), 200 epochs, batch size 1024, lr 0.001, single subject (sub-01), 200-way retrieval.
 
 **Val-selected**: checkpoint selected by best validation Top-1 (from 5% held-out split).
-**Best-test**: highest test Top-1 observed across all epochs.
+**Final epoch**: test performance at the last training epoch.
+**Best-test**: highest test Top-1 observed across all epochs; kept as a diagnostic reference only.
+
+**Primary sources:**
+- Report-aligned full-train run: `task1/output/logs/8blur_evnet_full/Brain_Visual_Encoder_EEG/full_8blur_EVNet_2026-05-05-20-57/all_metrics.csv`
+- Version7 comparison and backbone summary: `task1/output/task1_version7_evnet_results_summary.md`
+- Blur / EVNet / grey-background ablations: `report/git_overleaf/temp/task1_ablation_summary_yliu674.md`
 
 #### Main Experiments
 
-| Setting | Val-sel Top-1 | Val-sel Top-5 | Best-test Top-1 | Best-test Top-5 |
-|---|---|---|---|---|
-| 8-blur + EVNet, 95/5 split | 0.8460 ± 0.0135 | 0.9870 ± 0.0059 | 0.8715 ± 0.0091 | 0.9860 ± 0.0081 |
-| 12-blur + EVNet, 95/5 split | 0.8400 ± 0.0186 | 0.9860 ± 0.0046 | 0.8715 ± 0.0111 | 0.9855 ± 0.0028 |
-| **8-blur + EVNet, full train** | **0.8530 ± 0.0136** | **0.9860 ± 0.0046** | **0.8785 ± 0.0082** | **0.9855 ± 0.0037** |
-| 12-blur + EVNet, full train | 0.8505 ± 0.0169 | 0.9845 ± 0.0037 | 0.8810 ± 0.0074 | 0.9850 ± 0.0041 |
+| Setting | Val-sel Top-1 | Val-sel Top-5 | Final Epoch Top-1 | Final Epoch Top-5 | Best-test Top-1 | Best-test Top-5 |
+|---|---|---|---|---|---|---|
+| 8-blur + EVNet, 95/5 split | 0.8460 ± 0.0128 | 0.9870 ± 0.0056 | 0.8480 ± 0.0173 | 0.9890 ± 0.0030 | 0.8715 ± 0.0087 | 0.9860 ± 0.0077 |
+| 12-blur + EVNet, 95/5 split | 0.8400 ± 0.0176 | 0.9860 ± 0.0044 | 0.8520 ± 0.0150 | 0.9850 ± 0.0045 | 0.8715 ± 0.0105 | 0.9855 ± 0.0027 |
+| **8-blur + EVNet, full train (report-aligned run)** | N/A | N/A | **0.8630 ± 0.0200** | **0.9855 ± 0.0042** | **0.8935 ± 0.0095** | **0.9880 ± 0.0040** |
+| 12-blur + EVNet, full train (version7) | N/A | N/A | 0.8505 ± 0.0160 | 0.9845 ± 0.0035 | 0.8810 ± 0.0070 | 0.9850 ± 0.0039 |
 
-**Chosen submission: 8-blur + EVNet, full train — Best-test Top-1 = 87.85%, Top-5 = 98.55%.**
-
-Using the full training set improves best-test Top-1 by ~0.007–0.010 over the 95/5 split.
+The primary reported Task 1 result, matching the report, is the **full-train 8-blur + EVNet final-epoch metric**: Top-1 `86.30% ± 2.00%`, Top-5 `98.55% ± 0.42%`.
+Best-test numbers are retained for diagnostic comparison only and are not used as the main reported metric.
 
 #### Ablation Studies
 
-The table below summarizes the Task 1 ablation results. All settings use 10 seeds, the RN50 backbone, and the 95/5 split protocol unless noted otherwise.
+The table below summarizes the source-verified Task 1 ablation results. All settings use 10 seeds, the RN50 backbone, and the 95/5 split protocol unless noted otherwise.
 
-| Setting | Val-sel Top-1 | Val-sel Top-5 | Best-test Top-1 | Best-test Top-5 |
-|---|---|---|---|---|
-| 12-blur | 0.8240 ± 0.0201 | 0.9780 ± 0.0054 | 0.8685 ± 0.0063 | 0.9810 ± 0.0052 |
-| 12-blur + EVNet | 0.8325 ± 0.0237 | 0.9825 ± 0.0040 | 0.8825 ± 0.0051 | 0.9820 ± 0.0060 |
-| 8-blur + EVNet | 0.8360 ± 0.0214 | 0.9820 ± 0.0046 | 0.8815 ± 0.0092 | 0.9825 ± 0.0056 |
-| **8-blur + EVNet fixed** | **0.8530 ± 0.0081** | **0.9845 ± 0.0035** | **0.8890 ± 0.0107** | **0.9855 ± 0.0035** |
-| EVNet with no blur | 0.7340 ± 0.0214 | 0.9565 ± 0.0090 | 0.7785 ± 0.0150 | 0.9660 ± 0.0080 |
-| No blur and no EVNet | 0.6120 ± 0.0235 | 0.9060 ± 0.0176 | 0.6705 ± 0.0101 | 0.9110 ± 0.0170 |
-| No blur and no EVNet, grey background | 0.6950 ± 0.0226 | 0.9205 ± 0.0079 | 0.7380 ± 0.0075 | 0.9230 ± 0.0114 |
-| EVNet with no blur, grey background | 0.7765 ± 0.0148 | 0.9590 ± 0.0092 | 0.8185 ± 0.0081 | 0.9630 ± 0.0078 |
-| 8-blur + EVNet, grey background | 0.8225 ± 0.0155 | 0.9750 ± 0.0067 | 0.8595 ± 0.0069 | 0.9735 ± 0.0055 |
-| 8-blur, grey background | 0.8105 ± 0.0106 | 0.9795 ± 0.0061 | 0.8415 ± 0.0125 | 0.9805 ± 0.0072 |
+| Setting | Val-sel Top-1 | Val-sel Top-5 | Final Epoch Top-1 | Final Epoch Top-5 | Best-test Top-1 | Best-test Top-5 |
+|---|---|---|---|---|---|---|
+| 12-blur | 0.8240 ± 0.0191 | 0.9780 ± 0.0051 | 0.8455 ± 0.0123 | 0.9765 ± 0.0067 | 0.8685 ± 0.0059 | 0.9810 ± 0.0049 |
+| 12-blur + EVNet | 0.8325 ± 0.0237 | 0.9825 ± 0.0040 | 0.8525 ± 0.0136 | 0.9810 ± 0.0037 | 0.8825 ± 0.0051 | 0.9820 ± 0.0060 |
+| 8-blur + EVNet | 0.8360 ± 0.0214 | 0.9820 ± 0.0046 | 0.8535 ± 0.0169 | 0.9795 ± 0.0047 | 0.8815 ± 0.0092 | 0.9825 ± 0.0056 |
+| EVNet with no blur | 0.7340 ± 0.0214 | 0.9565 ± 0.0090 | 0.7350 ± 0.0204 | 0.9575 ± 0.0075 | 0.7785 ± 0.0150 | 0.9660 ± 0.0080 |
+| No blur and no EVNet | 0.6120 ± 0.0235 | 0.9060 ± 0.0176 | 0.6430 ± 0.0183 | 0.9100 ± 0.0112 | 0.6705 ± 0.0101 | 0.9110 ± 0.0170 |
+| No blur and no EVNet, grey background | 0.6950 ± 0.0226 | 0.9205 ± 0.0079 | 0.6960 ± 0.0203 | 0.9185 ± 0.0063 | 0.7380 ± 0.0075 | 0.9230 ± 0.0114 |
+| EVNet with no blur, grey background | 0.7765 ± 0.0148 | 0.9590 ± 0.0092 | 0.7695 ± 0.0154 | 0.9555 ± 0.0088 | 0.8185 ± 0.0081 | 0.9630 ± 0.0078 |
+| 8-blur + EVNet, grey background | 0.8225 ± 0.0155 | 0.9750 ± 0.0067 | 0.8315 ± 0.0145 | 0.9710 ± 0.0073 | 0.8595 ± 0.0069 | 0.9735 ± 0.0055 |
+| 8-blur, grey background | 0.8105 ± 0.0106 | 0.9795 ± 0.0061 | 0.8165 ± 0.0114 | 0.9815 ± 0.0045 | 0.8415 ± 0.0125 | 0.9805 ± 0.0072 |
 
 **Findings:**
 - **EVNet consistently helps**: at matched blur settings, EVNet improves both val-selected and best-test Top-1 over the corresponding non-EVNet baseline.
-- **12-blur and 8-blur are close once EVNet is enabled**: `12-blur + EVNet` and `8-blur + EVNet` differ by only about 0.001 in best-test Top-1.
+- **12-blur and 8-blur are close once EVNet is enabled**: `12-blur + EVNet` and `8-blur + EVNet` remain close across both final-epoch and best-test Top-1.
 - **Grey background helps most in the no-blur regime**: compared with plain no-blur, grey background raises best-test Top-1 from `0.6705` to `0.7380` without EVNet, and from `0.7785` to `0.8185` with EVNet.
-- **The fixed 8-blur + EVNet setting is the strongest split-mode variant** in the supplied ablation set.
+
+#### Backbone / EVNet Initialisation Ablation
+
+These rows correspond to the backbone ablation table used in the report.
+
+| Setting | Val-sel Top-1 | Final Epoch Top-1 | Best-test Top-1 |
+|---|---|---|---|
+| RN50 + EVNet, Kaiming init | 0.8460 ± 0.0128 | 0.8480 ± 0.0173 | 0.8715 ± 0.0087 |
+| RN50 + EVNet, Xavier init | 0.8275 ± 0.0166 | 0.8190 ± 0.0130 | 0.8495 ± 0.0082 |
+| RN50 + GAP (no CLIP backbone) | 0.8285 ± 0.0164 | 0.8315 ± 0.0160 | 0.8620 ± 0.0087 |
+| ViT-H/14 + EVNet | 0.7365 ± 0.0198 | 0.7360 ± 0.0197 | 0.7790 ± 0.0109 |
 
 ---
 
@@ -291,7 +305,7 @@ EEG → EEGProjectLayer → CLIP embedding
 
 **Key stages:**
 
-1. **EEG encoder training** (80 epochs): `EEGProjectLayer` maps EEG [63 ch × 250 t] → 1024-dim CLIP space. It is supervised by contrastive loss against four modality embeddings (image, text caption, Fovea-blurred image, edge map) simultaneously. Uncertainty-aware modality masking is used to prevent the model from memorising a single modality.
+1. **EEG encoder training** (80 epochs): `EEGProjectLayer` maps EEG [63 ch × 250 t] → 1024-dim CLIP space. It is supervised by contrastive loss against four modality embeddings (image, text, depth map, edge map) simultaneously. Uncertainty-aware modality masking is used to prevent the model from memorising a single modality.
 
 2. **Alignment** (100 epochs): `SimpleAlignPipe` (lightweight MLP) maps the EEG CLIP embedding into the CLIP image embedding sub-space, using a frozen IP-Adapter image encoder as the target. This removes the distribution gap between EEG-derived and image-derived CLIP embeddings.
 
@@ -308,7 +322,7 @@ EEG [B, 63, 250]
 Multi-modal supervision (four parallel encoders, all frozen):
   image    → CLIP ViT-H-14 → z_image  [1024]
   text     → CLIP ViT-H-14 → z_text   [1024]
-  depth    → CLIP ViT-H-14 → z_depth  [1024]  (FoveaBlur augmented)
+  depth    → CLIP ViT-H-14 → z_depth  [1024]
   edge     → CLIP ViT-H-14 → z_edge   [1024]
 
 SimpleAlignPipe: MLP(1024→1024) supervised by IP-Adapter image encoder output
@@ -437,6 +451,7 @@ Results are written to `task2/runs/multiseed/summary.json`.
 ### Task 2 Results
 
 Reported numbers are mean ± std across 5 seeds (sub-01, seeds 0-4). Results compare direct EEG-conditioned generation (`all_before`) against SimpleAlignPipe + SDXL-Turbo generation (`all` mode).
+Source: `task2/runs/multiseed/summary.json`.
 
 #### Effect of SimpleAlignPipe (Ablation)
 
@@ -445,13 +460,14 @@ Reported numbers are mean ± std across 5 seeds (sub-01, seeds 0-4). Results com
 | **SSIM** | 0.2997 ± 0.0154 | **0.3564 ± 0.0083** | +0.057 |
 | **CLIP Score (ViT-H-14)** | 0.6940 ± 0.0261 | **0.8927 ± 0.0067** | +0.199 |
 | PixCorr | 0.1393 ± 0.0089 | 0.1477 ± 0.0157 | +0.008 |
-| AlexNet-2 | 0.6574 ± 0.0080 | 0.7621 ± 0.0133 | +0.105 |
-| AlexNet-5 | 0.6982 ± 0.0182 | 0.8826 ± 0.0100 | +0.184 |
-| Inception | 0.5982 ± 0.0100 | 0.8169 ± 0.0087 | +0.219 |
-| EfficientNet | 0.9517 ± 0.0065 | 0.8284 ± 0.0047 | −0.123 |
-| SwAV | 0.7060 ± 0.0089 | 0.5318 ± 0.0027 | −0.174 |
+| AlexNet-2 two-way ID | 0.6574 ± 0.0080 | 0.7621 ± 0.0133 | +0.105 |
+| AlexNet-5 two-way ID | 0.6982 ± 0.0182 | 0.8826 ± 0.0100 | +0.184 |
+| Inception two-way ID | 0.5982 ± 0.0100 | 0.8169 ± 0.0087 | +0.219 |
+| EfficientNet corr. dist. | 0.9517 ± 0.0065 | **0.8284 ± 0.0047** | −0.123 |
+| SwAV corr. dist. | 0.7060 ± 0.0089 | **0.5318 ± 0.0027** | −0.174 |
 
-SimpleAlignPipe closes the distribution gap between EEG-derived CLIP embeddings and image-space CLIP embeddings. It substantially improves semantic metrics (CLIP, Inception, AlexNet), while EfficientNet and SwAV — which capture low-level texture and self-supervised features — decline slightly, consistent with the alignment shifting the generation toward semantic content over pixel-level fidelity.
+SimpleAlignPipe closes the distribution gap between EEG-derived CLIP embeddings and image-space CLIP embeddings.
+It substantially improves semantic metrics (CLIP, Inception, AlexNet) and also reduces EfficientNet and SwAV correlation distance, where lower values are better.
 
 **Retrieval (any-modality fusion, 5 seeds, auxiliary output):** Top-1 0.6370 ± 0.0258, Top-5 0.8730 ± 0.0125
 
