@@ -309,7 +309,7 @@ EEG → EEGProjectLayer → CLIP embedding
 
 2. **Alignment** (100 epochs): `SimpleAlignPipe` (lightweight MLP) aligns the EEG-derived image, depth, and edge embeddings to the embedding distributions expected by the generation pipeline.
 
-3. **Image generation**: the aligned image, depth, and edge embeddings are passed to SDXL-Turbo through IP-Adapter as conditioning signals. No text prompt is used. Output resolution: 512 × 512.
+3. **Image generation**: the aligned image, depth, and edge embeddings are passed to SDXL-Turbo through IP-Adapter as conditioning signals. No text prompt is used. In the current implementation, the code does not explicitly override `height` or `width`, so generation follows the loaded SDXL-Turbo pipeline default; in our setup and saved outputs, this produces 512 × 512 images.
 
 ### Architecture
 

@@ -309,7 +309,7 @@ EEG → EEGProjectLayer → CLIP 嵌入
 
 2. **对齐训练**（100 轮）：`SimpleAlignPipe`（轻量 MLP）对齐 EEG 预测得到的 image、depth、edge 三种嵌入，使其匹配生成管线所期望的条件嵌入分布。
 
-3. **图像生成**：将对齐后的 image、depth、edge 嵌入作为 IP-Adapter 的条件信号输入 SDXL-Turbo 生成图像（不使用文本提示，输出分辨率 512×512）。
+3. **图像生成**：将对齐后的 image、depth、edge 嵌入作为 IP-Adapter 的条件信号输入 SDXL-Turbo 生成图像。当前实现中，代码没有显式覆盖 `height` 或 `width`，因此输出尺寸沿用已加载 SDXL-Turbo 管线的默认分辨率；在我们当前环境和已保存结果中，这对应为 512×512。不使用文本提示。
 
 ### 模型架构
 
