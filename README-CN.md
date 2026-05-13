@@ -115,10 +115,10 @@ DL_Project/
 
 ```
 fused_img = softmax([w_blur, w_evnet]) · [blur_agg, evnet_feat]
-img_emb   = fusion_adapter(fused_img)    # MLP 1152→768→1152
+img_emb   = fusion_adapter(fused_img)    # MLP 1024→768→1024
 ```
 
-EEG 编码器将原始信号映射到相同的 1152 维空间，使用 **InfoNCE（对称对比损失）** 训练。
+在当前报告对应的 Task 1 实验中，EEG 编码器将原始信号映射到相同的 1024 维空间，并使用 **InfoNCE（对称对比损失）** 训练。
 
 ### 模型架构
 
@@ -128,8 +128,8 @@ EEG 输入 [B, 63 通道, 250 时间步]
   └─ BatchNorm2d
   └─ Linear(250→200) + ELU + Dropout(0.25)
   └─ Linear(200→200) + ELU + Dropout(0.65)
-  └─ Linear(25×200→1152)
-  └─ EEG 嵌入向量 [B, 1152]
+  └─ Linear(25×200→1024)
+  └─ EEG 嵌入向量 [B, 1024]
 
 图像输入（离线预计算）
   ├─ 多尺度模糊：CLIP RN50 × 8 级 → [B, 8, 1024]
@@ -137,7 +137,7 @@ EEG 输入 [B, 63 通道, 250 时间步]
   └─ EVNet：SubcorticalBlock → VOneBlock → Conv2d 适配层 → CLIP RN50 → [B, 1024]
        └─ evnet_feat [B, 1024]
 
-融合：softmax([w0, w1]) · [blur_agg, evnet_feat] → MLP → img_emb [B, 1152]
+融合：softmax([w0, w1]) · [blur_agg, evnet_feat] → MLP → img_emb [B, 1024]
 
 损失：InfoNCE(EEG_emb, img_emb)
 ```
@@ -299,7 +299,7 @@ sbatch task1/slurm_scripts/04_full_train_8blur_evnet.sh   # 全量训练，最�
 ```
 EEG → EEGProjectLayer → CLIP 嵌入
   ├─ [检索] 与图像/文本/深度/边缘 CLIP 嵌入做余弦相似度匹配
-  └─ [重建] SimpleAlignPipe（MLP 扩散先验）→ CLIP 图像嵌入
+  └─ [重建] SimpleAlignPipe → 对齐后的 image/depth/edge 嵌入
                 └─ SDXL-Turbo + IP-Adapter → 生成图像
 ```
 
@@ -307,9 +307,9 @@ EEG → EEGProjectLayer → CLIP 嵌入
 
 1. **EEG 编码器训练**（80 轮）：`EEGProjectLayer` 将 EEG [63 通道 × 250 时间步] 映射为 1024 维 CLIP 空间。同时以图像、文本、深度图、边缘图四种模态嵌入为对比学习目标，并使用不确定性感知的模态掩码，防止模型记忆单一模态。
 
-2. **对齐训练**（100 轮）：`SimpleAlignPipe`（轻量 MLP）将 EEG-derived CLIP 嵌入对齐到 CLIP 图像嵌入子空间，以冻结的 IP-Adapter 图像编码器输出为对齐目标，消除两者之间的分布差异。
+2. **对齐训练**（100 轮）：`SimpleAlignPipe`（轻量 MLP）对齐 EEG 预测得到的 image、depth、edge 三种嵌入，使其匹配生成管线所期望的条件嵌入分布。
 
-3. **图像生成**：将对齐后的 CLIP 嵌入作为 IP-Adapter 的条件信号，输入 SDXL-Turbo 生成图像（不使用文本提示，输出分辨率 512×512）。
+3. **图像生成**：将对齐后的 image、depth、edge 嵌入作为 IP-Adapter 的条件信号输入 SDXL-Turbo 生成图像（不使用文本提示，输出分辨率 512×512）。
 
 ### 模型架构
 
@@ -325,9 +325,9 @@ EEG [B, 63, 250]
   深度图  → CLIP ViT-H-14 → z_depth  [1024]
   边缘图  → CLIP ViT-H-14 → z_edge   [1024]
 
-SimpleAlignPipe：MLP(1024→1024)，以 IP-Adapter 图像编码器输出为监督目标
+SimpleAlignPipe：将各模态嵌入对齐到 IP-Adapter 条件空间
 
-生成：SDXL-Turbo + IP-Adapter（IP-Adapter-Plus-Face 变体）
+生成：SDXL-Turbo + IP-Adapter（SDXL ViT-H 版本）
 ```
 
 ### 配置
@@ -382,10 +382,11 @@ python task2/main.py \
     --subjects sub-01 \
     --epoch 80 \
     --lr 1e-4 \
-    --staged_training \
     --vision_backbone ViT-H-14 \
     --devices 0
 ```
+
+添加 `--staged_training` 可启用可选的 3 阶段训练流程。本文报告的多种子结果以 multiseed 脚本为准，默认使用 joint training。
 
 或通过 SLURM：
 

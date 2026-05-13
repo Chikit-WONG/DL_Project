@@ -115,10 +115,10 @@ The two sources are blended by learnable softmax weights (initialised 0.7 / 0.3)
 
 ```
 fused_img = softmax([w_blur, w_evnet]) · [blur_agg, evnet_feat]
-img_emb   = fusion_adapter(fused_img)    # MLP 1152→768→1152
+img_emb   = fusion_adapter(fused_img)    # MLP 1024→768→1024
 ```
 
-The EEG encoder maps raw signals to the same 1152-dimensional space, and the model is trained with **InfoNCE (symmetric contrastive loss)**.
+In the reported Task 1 runs, the EEG encoder maps raw signals to the same 1024-dimensional space, and the model is trained with **InfoNCE (symmetric contrastive loss)**.
 
 ### Architecture
 
@@ -128,8 +128,8 @@ EEG input [B, 63 ch, 250 t]
   └─ BatchNorm2d
   └─ Linear(250→200) + ELU + Dropout(0.25)
   └─ Linear(200→200) + ELU + Dropout(0.65)
-  └─ Linear(25×200→1152)
-  └─ EEG embedding [B, 1152]
+  └─ Linear(25×200→1024)
+  └─ EEG embedding [B, 1024]
 
 Image input (offline, pre-computed)
   ├─ Multi-blur: CLIP RN50 × 8 levels → [B, 8, 1024]
@@ -137,7 +137,7 @@ Image input (offline, pre-computed)
   └─ EVNet: SubcorticalBlock → VOneBlock → Conv2d adapter → CLIP RN50 → [B, 1024]
        └─ evnet_feat [B, 1024]
 
-Fusion: softmax([w0, w1]) · [blur_agg, evnet_feat] → MLP → img_emb [B, 1152]
+Fusion: softmax([w0, w1]) · [blur_agg, evnet_feat] → MLP → img_emb [B, 1024]
 
 Loss: InfoNCE(EEG_emb, img_emb)
 ```
@@ -299,7 +299,7 @@ The reconstruction pipeline is adapted from CognitionCapturerPro. It trains a mu
 ```
 EEG → EEGProjectLayer → CLIP embedding
   ├─ [Retrieval] cosine similarity against image/text/depth/edge CLIP embeddings
-  └─ [Reconstruction] SimpleAlignPipe (MLP diffusion prior) → CLIP image embedding
+  └─ [Reconstruction] SimpleAlignPipe → aligned image/depth/edge embeddings
                        └─ SDXL-Turbo + IP-Adapter → Generated image
 ```
 
@@ -307,9 +307,9 @@ EEG → EEGProjectLayer → CLIP embedding
 
 1. **EEG encoder training** (80 epochs): `EEGProjectLayer` maps EEG [63 ch × 250 t] → 1024-dim CLIP space. It is supervised by contrastive loss against four modality embeddings (image, text, depth map, edge map) simultaneously. Uncertainty-aware modality masking is used to prevent the model from memorising a single modality.
 
-2. **Alignment** (100 epochs): `SimpleAlignPipe` (lightweight MLP) maps the EEG CLIP embedding into the CLIP image embedding sub-space, using a frozen IP-Adapter image encoder as the target. This removes the distribution gap between EEG-derived and image-derived CLIP embeddings.
+2. **Alignment** (100 epochs): `SimpleAlignPipe` (lightweight MLP) aligns the EEG-derived image, depth, and edge embeddings to the embedding distributions expected by the generation pipeline.
 
-3. **Image generation**: the aligned CLIP embedding is passed to SDXL-Turbo as the IP-Adapter conditioning signal. No text prompt is used. Output resolution: 512 × 512.
+3. **Image generation**: the aligned image, depth, and edge embeddings are passed to SDXL-Turbo through IP-Adapter as conditioning signals. No text prompt is used. Output resolution: 512 × 512.
 
 ### Architecture
 
@@ -325,9 +325,9 @@ Multi-modal supervision (four parallel encoders, all frozen):
   depth    → CLIP ViT-H-14 → z_depth  [1024]
   edge     → CLIP ViT-H-14 → z_edge   [1024]
 
-SimpleAlignPipe: MLP(1024→1024) supervised by IP-Adapter image encoder output
+SimpleAlignPipe: modality-wise alignment into the IP-Adapter conditioning space
 
-Generation: SDXL-Turbo + IP-Adapter (IP-Adapter-Plus-Face variant)
+Generation: SDXL-Turbo + IP-Adapter (SDXL ViT-H variant)
 ```
 
 ### Configuration
@@ -382,10 +382,11 @@ python task2/main.py \
     --subjects sub-01 \
     --epoch 80 \
     --lr 1e-4 \
-    --staged_training \
     --vision_backbone ViT-H-14 \
     --devices 0
 ```
+
+Add `--staged_training` to enable the optional 3-stage curriculum. The reported multi-seed results use the multiseed scripts and joint training by default.
 
 Or via SLURM:
 
