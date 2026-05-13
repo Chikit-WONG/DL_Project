@@ -499,6 +499,6 @@ The following pretrained models and open-source codebases are used:
 
 **Task 2:**
 - Single subject (sub-01). Multi-seed runs (5 seeds) are supported via `task2/slurm_scripts/06–10_multiseed_*.sh` — see the multi-seed section above.
-- Reconstruction is conditioned on a retrieved training image (via IP-Adapter), not on a direct EEG-to-image decoding. Semantically nearby but structurally different training images may produce off-target reconstructions.
+- Reconstruction is indirect: EEG embeddings are first aligned to the IP-Adapter conditioning space before image generation. Errors in this alignment can produce semantically nearby but structurally off-target reconstructions.
 - In the batch generation script, SDXL-Turbo is run with 15 denoising steps, trading generation speed against sample quality.
 - No text prompt is used; adding a class-level text prompt could improve semantic fidelity.
