@@ -467,7 +467,7 @@ sbatch --dependency=afterok:${JID_EVAL} task2/slurm_scripts/10_multiseed_summary
 | EfficientNet corr. dist. | 0.9517 ± 0.0065 | **0.8284 ± 0.0047** | −0.123 |
 | SwAV corr. dist. | 0.7060 ± 0.0089 | **0.5318 ± 0.0027** | −0.174 |
 
-SimpleAlignPipe 消除了 EEG 派生 CLIP 嵌入与图像空间 CLIP 嵌入之间的分布差距。
+SimpleAlignPipe 消除了 EEG 派生嵌入与生成管线所期望的 IP-Adapter 条件嵌入之间的分布差距。
 它显著提升了语义类指标（CLIP、Inception、AlexNet），同时也降低了 EfficientNet 和 SwAV 的 correlation distance；这两个指标都是数值越低越好。
 
 **检索（任意模态融合，5 个种子，作为辅助输出）：** Top-1 0.6370 ± 0.0258，Top-5 0.8730 ± 0.0125

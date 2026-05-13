@@ -467,7 +467,7 @@ Source: `task2/runs/multiseed/summary.json`.
 | EfficientNet corr. dist. | 0.9517 ± 0.0065 | **0.8284 ± 0.0047** | −0.123 |
 | SwAV corr. dist. | 0.7060 ± 0.0089 | **0.5318 ± 0.0027** | −0.174 |
 
-SimpleAlignPipe closes the distribution gap between EEG-derived CLIP embeddings and image-space CLIP embeddings.
+SimpleAlignPipe closes the distribution gap between EEG-derived embeddings and the IP-Adapter conditioning embeddings expected by the generation pipeline.
 It substantially improves semantic metrics (CLIP, Inception, AlexNet) and also reduces EfficientNet and SwAV correlation distance, where lower values are better.
 
 **Retrieval (any-modality fusion, 5 seeds, auxiliary output):** Top-1 0.6370 ± 0.0258, Top-5 0.8730 ± 0.0125
