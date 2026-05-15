@@ -210,6 +210,7 @@ python scripts/evaluate_course_metrics.py \
 | `--blur_config` | `8` | Blur level preset: `1` (no blur), `8`, or `12` |
 | `--use_evnet` | off | Enable EVNet feature fusion |
 | `--use_full_train` | off | Train on full set (no validation split) |
+| `--hungarian` | off | Enable Hungarian Retrieval (This will make the top-1 and top-5 quite high) |
 | `--epoch` | `200` | Training epochs |
 | `--train_batch_size` | `1024` | Batch size |
 | `--lr` | `0.001` | Learning rate |
@@ -249,6 +250,7 @@ All experiments: 10 random seeds (seeds 21–30), 200 epochs, batch size 1024, l
 | 8-blur + EVNet, 95/5 split | 0.8460 ± 0.0128 | 0.9870 ± 0.0056 | 0.8480 ± 0.0173 | 0.9890 ± 0.0030 | 0.8715 ± 0.0087 | 0.9860 ± 0.0077 |
 | 12-blur + EVNet, 95/5 split | 0.8400 ± 0.0176 | 0.9860 ± 0.0044 | 0.8520 ± 0.0150 | 0.9850 ± 0.0045 | 0.8715 ± 0.0105 | 0.9855 ± 0.0027 |
 | **8-blur + EVNet, full train (report-aligned run)** | N/A | N/A | **0.8630 ± 0.0200** | **0.9855 ± 0.0042** | **0.8935 ± 0.0095** | **0.9880 ± 0.0040** |
+| 8-blur + EVNet, full train, Hungarian Retrieval | N/A | N/A | 0.9695 ± 0.0079 | 0.9920 ± 0.0033 | 0.9860 ± 0.0070 | 0.9940 ± 0.0037 |
 | 12-blur + EVNet, full train (version7) | N/A | N/A | 0.8505 ± 0.0160 | 0.9845 ± 0.0035 | 0.8810 ± 0.0070 | 0.9850 ± 0.0039 |
 
 The primary reported Task 1 result, matching the report, is the **full-train 8-blur + EVNet final-epoch metric**: Top-1 `86.30% ± 2.00%`, Top-5 `98.55% ± 0.42%`.

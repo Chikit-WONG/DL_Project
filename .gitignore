@@ -37,17 +37,6 @@ image-eeg-data/
 # temp
 temp/
 
-# Local-only Task 1 ablation helpers
-task1/reference/
-task1/scripts/extract_task1_ablation_reference_metrics.py
-task1/scripts/merge_seed_metrics.py
-task1/slurm_scripts/05_submit_debug_ablation_pipeline.sh
-task1/slurm_scripts/05a_ablation_train_debug.sh
-task1/slurm_scripts/05b1_make_greybg_images_debug.sh
-task1/slurm_scripts/05b2_greybg_features_debug.sh
-task1/slurm_scripts/05c_greybg_train_debug.sh
-task1/slurm_scripts/05d_merge_ablation_metrics_debug.sh
-
 # report
 report/
 
@@ -56,3 +45,5 @@ logs/
 
 # External dependencies
 external/
+
+TODO.txt

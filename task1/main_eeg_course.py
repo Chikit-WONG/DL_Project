@@ -19,6 +19,7 @@ import tqdm
 import torch.nn.functional as F
 import pandas as pd
 import scipy.signal as signal
+from scipy.optimize import linear_sum_assignment
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print('Using device:', device)
@@ -264,33 +265,73 @@ class ClipLoss(nn.Module):
         return eeg_loss, image_loss
 
 
-def get_test_accu(model, params, test_dataloader, device):
-    total = top1 = top3 = top5 = 0
+def hungarian_topk(sim_np, k=5):
+    """对 N×N 相似度矩阵运行 k 轮匈牙利算法（禁止边），返回每行是否在 k 轮内被匹配正确。"""
+    N = sim_np.shape[0]
+    cost = -sim_np.astype(np.float64)
+    correct_matched = np.zeros(N, dtype=bool)
+    forbidden = np.zeros_like(cost, dtype=bool)
+
+    for _ in range(min(k, N)):
+        current_cost = np.where(forbidden, 1e10, cost)
+        row_ind, col_ind = linear_sum_assignment(current_cost)
+        for i in range(len(row_ind)):
+            r, c = row_ind[i], col_ind[i]
+            if r == c:
+                correct_matched[r] = True
+            forbidden[r, c] = True
+
+    return correct_matched
+
+
+def get_test_accu(model, params, test_dataloader, device, hungarian=False):
     model.eval()
+    all_tfea = []
+    all_embed = []
+    total_samples = 0
+
     with torch.no_grad():
         for data in test_dataloader:
             teeg = data['eeg'].to(device)
-
             img_list = torch.cat([data[k][:, None].to(device) for k in params['blur_level']], 1)
-
             evnet_feat = None
             if params['use_evnet'] and 'evnet' in data:
                 evnet_feat = data['evnet'].to(device)
 
             tfea = model(teeg)
-            tfea = tfea / tfea.norm(dim=-1, keepdim=True)
+            tfea = F.normalize(tfea, dim=-1)
             embed = model.get_image_feature(img_list, evnet_feat)
-            embed = embed / embed.norm(dim=-1, keepdim=True)
+            embed = F.normalize(embed, dim=-1)
 
-            sim = tfea @ embed.transpose(-1, -2)
-            _, indices = sim.topk(5)
-            indices = indices.cpu()
-            label = torch.arange(teeg.shape[0])
-            top1 += (label[:, None] == indices[:, :1]).sum()
-            top3 += (label[:, None].expand(-1, 3) == indices[:, :3]).any(1).sum()
-            top5 += (label[:, None].expand(-1, 5) == indices).any(1).sum()
-            total += teeg.shape[0]
-    return float(top1) / total, float(top3) / total, float(top5) / total
+            all_tfea.append(tfea)
+            all_embed.append(embed)
+            total_samples += teeg.shape[0]
+
+    tfea = torch.cat(all_tfea, dim=0)
+    embed = torch.cat(all_embed, dim=0)
+    sim = tfea @ embed.T
+    sim_np = sim.cpu().numpy().astype(np.float64)
+
+    _, indices = sim.topk(5)
+    indices = indices.cpu()
+    label = torch.arange(total_samples)
+    top1 = (label[:, None] == indices[:, :1]).sum().item()
+    top3 = (label[:, None].expand(-1, 3) == indices[:, :3]).any(1).sum().item()
+    top5 = (label[:, None].expand(-1, 5) == indices).any(1).sum().item()
+
+    result = {
+        'top1': float(top1) / total_samples,
+        'top3': float(top3) / total_samples,
+        'top5': float(top5) / total_samples,
+    }
+
+    if hungarian:
+        correct_top1 = hungarian_topk(sim_np, k=1)
+        correct_top5 = hungarian_topk(sim_np, k=5)
+        result['hung_top1'] = float(correct_top1.mean())
+        result['hung_top5'] = float(correct_top5.mean())
+
+    return result
 
 
 def train(params, logger):
@@ -307,12 +348,13 @@ def train(params, logger):
     )
 
     use_full_train = params['use_full_train']
+    use_hungarian = params.get('hungarian', False)
     val_way  = len(val_dataset) if val_dataset is not None else 0
     test_way = len(test_dataset)
 
     train_size_str = len(train_dataset)
     logger.info(f"Dataset sizes: train={train_size_str}, val={val_way}, test={test_way}")
-    logger.info(f"Using EVNet: {params['use_evnet']}, Full-train mode: {use_full_train}")
+    logger.info(f"Using EVNet: {params['use_evnet']}, Full-train mode: {use_full_train}, Hungarian: {use_hungarian}")
     if val_dataset is not None:
         logger.info(
             f"Retrieval candidate pools: VAL={val_way}-way, TEST={test_way}-way."
@@ -345,11 +387,14 @@ def train(params, logger):
         'test_way':      test_way,
         'use_evnet':     params['use_evnet'],
         'use_full_train': use_full_train,
+        'hungarian':     use_hungarian,
     }
     loss_points = []
     accu_top1 = []
     accu_top3 = []
     accu_top5 = []
+    accu_hung_top1 = []
+    accu_hung_top5 = []
     fusion_weights_history = []
 
     for e in range(params['epoch']):
@@ -390,14 +435,17 @@ def train(params, logger):
 
         # Val evaluation (split mode only)
         if val_loader is not None:
-            val_top1, val_top3, val_top5 = get_test_accu(model, params, val_loader, device)
+            val_res = get_test_accu(model, params, val_loader, device, hungarian=use_hungarian)
         else:
-            val_top1 = val_top3 = val_top5 = float('nan')
+            val_res = {'top1': float('nan'), 'top3': float('nan'), 'top5': float('nan')}
 
-        test_top1, test_top3, test_top5 = get_test_accu(model, params, test_loader, device)
-        accu_top1.append(test_top1)
-        accu_top3.append(test_top3)
-        accu_top5.append(test_top5)
+        test_res = get_test_accu(model, params, test_loader, device, hungarian=use_hungarian)
+        accu_top1.append(test_res['top1'])
+        accu_top3.append(test_res['top3'])
+        accu_top5.append(test_res['top5'])
+        if use_hungarian:
+            accu_hung_top1.append(test_res['hung_top1'])
+            accu_hung_top5.append(test_res['hung_top5'])
 
         if hasattr(model, 'get_fusion_weights'):
             fusion_weights_history.append({
@@ -407,28 +455,67 @@ def train(params, logger):
             })
 
         # Checkpoint selection
+        val_sel_key   = 'hung_top1' if use_hungarian else 'top1'
+        test_sel_key  = 'hung_top1' if use_hungarian else 'top1'
+
         if val_loader is not None:
             # Split mode: select by validation accuracy
-            if best_val_accu < val_top1:
+            if best_val_accu < val_res[val_sel_key]:
                 select_model = copy.deepcopy(model.state_dict())
-                best_val_accu = val_top1
-                saved_metric.update({'test_top1_acc': test_top1, 'test_top3_acc': test_top3, 'test_top5_acc': test_top5})
+                best_val_accu = val_res[val_sel_key]
+                saved_metric.update({
+                    'test_top1_acc': test_res['top1'],
+                    'test_top3_acc': test_res['top3'],
+                    'test_top5_acc': test_res['top5'],
+                })
+                if use_hungarian:
+                    saved_metric.update({
+                        'test_hung_top1_acc': test_res['hung_top1'],
+                        'test_hung_top5_acc': test_res['hung_top5'],
+                    })
         else:
             # Full-train mode: select = last epoch (overwrite every epoch)
             select_model = copy.deepcopy(model.state_dict())
-            saved_metric.update({'test_top1_acc': test_top1, 'test_top3_acc': test_top3, 'test_top5_acc': test_top5})
+            saved_metric.update({
+                'test_top1_acc': test_res['top1'],
+                'test_top3_acc': test_res['top3'],
+                'test_top5_acc': test_res['top5'],
+            })
+            if use_hungarian:
+                saved_metric.update({
+                    'test_hung_top1_acc': test_res['hung_top1'],
+                    'test_hung_top5_acc': test_res['hung_top5'],
+                })
 
         # Best-test checkpoint tracked in both modes
-        if best_test_accu < test_top1:
-            best_test_accu = test_top1
+        if best_test_accu < test_res[test_sel_key]:
+            best_test_accu = test_res[test_sel_key]
             best_model = copy.deepcopy(model.state_dict())
-            saved_metric.update({'best_test_top1_acc': test_top1, 'best_test_top3_acc': test_top3, 'best_test_top5_acc': test_top5})
+            saved_metric.update({
+                'best_test_top1_acc': test_res['top1'],
+                'best_test_top3_acc': test_res['top3'],
+                'best_test_top5_acc': test_res['top5'],
+            })
+            if use_hungarian:
+                saved_metric.update({
+                    'best_test_hung_top1_acc': test_res['hung_top1'],
+                    'best_test_hung_top5_acc': test_res['hung_top5'],
+                })
 
+        def _fmt(r, keys):
+            parts = []
+            for k in keys:
+                if k in r:
+                    parts.append(f"{k}:{r[k]:.4f}")
+            return ' '.join(parts)
+
+        val_keys = ['top1', 'top3', 'top5'] + (['hung_top1', 'hung_top5'] if use_hungarian else [])
+        test_keys = ['top1', 'top3', 'top5'] + (['hung_top1', 'hung_top5'] if use_hungarian else [])
         if val_loader is not None:
-            logger.info(f'VAL  ({val_way}-way) epoch:{e} loss:{train_loss:.4f} top1:{val_top1:.4f} top3:{val_top3:.4f} top5:{val_top5:.4f}')
+            logger.info(f'VAL  ({val_way}-way) epoch:{e} loss:{train_loss:.4f} {_fmt(val_res, val_keys)}')
         else:
             logger.info(f'FULL-TRAIN epoch:{e} loss:{train_loss:.4f} (no val)')
-        logger.info(f'TEST ({test_way}-way) epoch:{e} loss:{train_loss:.4f} top1:{test_top1:.4f} top3:{test_top3:.4f} top5:{test_top5:.4f}')
+        logger.info(f'TEST ({test_way}-way) epoch:{e} loss:{train_loss:.4f} {_fmt(test_res, test_keys)}')
 
         if hasattr(model, 'get_fusion_weights'):
             w_blur, w_evnet = model.get_fusion_weights()
@@ -438,6 +525,9 @@ def train(params, logger):
     saved_metric['test_top1_acc_points'] = accu_top1
     saved_metric['test_top3_acc_points'] = accu_top3
     saved_metric['test_top5_acc_points'] = accu_top5
+    if use_hungarian:
+        saved_metric['test_hung_top1_acc_points'] = accu_hung_top1
+        saved_metric['test_hung_top5_acc_points'] = accu_hung_top5
     saved_metric['fusion_weights_history'] = fusion_weights_history
 
     prefix = f"{params['net_name']}_sub{params['sub']}_seed{params['seed']}"
@@ -480,6 +570,8 @@ if __name__ == "__main__":
     parser.add_argument('--run_name',         type=str,   default=None,
                         help='Explicit run directory name under output_dir/net_name. '
                              'Use this to avoid timestamp collisions when one seed is run per Slurm task.')
+    parser.add_argument('--hungarian',        action='store_true', default=False,
+                        help='Use Hungarian algorithm for evaluation and model selection')
     args = parser.parse_args()
 
     ALL_CHANNELS = ['Fp1', 'Fp2', 'AF7', 'AF3', 'AFz', 'AF4', 'AF8', 'F7', 'F5', 'F3',
@@ -492,7 +584,7 @@ if __name__ == "__main__":
 
     BLUR_LEVELS = BLUR_PRESETS[args.blur_config]
 
-    mode_tag = f"{'full_' if args.use_full_train else ''}{args.blur_config}blur_{'EVNet_' if args.use_evnet else ''}"
+    mode_tag = f"{'full_' if args.use_full_train else ''}{args.blur_config}blur_{'EVNet_' if args.use_evnet else ''}{'_hungarian' if args.hungarian else ''}"
     if args.run_name:
         run_leaf = args.run_name
     else:
@@ -528,6 +620,7 @@ if __name__ == "__main__":
         'use_full_train':   args.use_full_train,
         'evnet_prefix':     args.evnet_prefix,
         'blur_prefix':      args.blur_prefix,
+        'hungarian':        args.hungarian,
     }
 
     with open(os.path.join(save_path, "config.json"), "w") as f:
@@ -554,15 +647,23 @@ if __name__ == "__main__":
     top1_best = [m['best_test_top1_acc'] for m in all_metrics]
     top5_best = [m['best_test_top5_acc'] for m in all_metrics]
 
+    def _stat(vals):
+        return f"{np.mean(vals):.4f} ± {np.std(vals):.4f}"
+
     mode_label = 'last-epoch' if args.use_full_train else 'val-selected'
     logger.info('='*60)
-    logger.info(f'Config: blur={args.blur_config}, EVNet={args.use_evnet}, full_train={args.use_full_train}')
-    logger.info(f'Results ({mode_label} model):')
-    logger.info(f'  Top-1: {np.mean(top1_sel):.4f} ± {np.std(top1_sel):.4f}')
-    logger.info(f'  Top-5: {np.mean(top5_sel):.4f} ± {np.std(top5_sel):.4f}')
-    logger.info('Results (best test model):')
-    logger.info(f'  Top-1: {np.mean(top1_best):.4f} ± {np.std(top1_best):.4f}')
-    logger.info(f'  Top-5: {np.mean(top5_best):.4f} ± {np.std(top5_best):.4f}')
+    logger.info(f'Config: blur={args.blur_config}, EVNet={args.use_evnet}, full_train={args.use_full_train}, Hungarian={args.hungarian}')
+    logger.info(f'  {"":>20s}  {"val-sel":>22s}  {"best-test":>22s}')
+    logger.info(f'  {"Top-1":>20s}  {_stat(top1_sel):>22s}  {_stat(top1_best):>22s}')
+    logger.info(f'  {"Top-5":>20s}  {_stat(top5_sel):>22s}  {_stat(top5_best):>22s}')
+
+    if args.hungarian:
+        hung_top1_sel  = [m.get('test_hung_top1_acc', np.nan) for m in all_metrics]
+        hung_top5_sel  = [m.get('test_hung_top5_acc', np.nan) for m in all_metrics]
+        hung_top1_best = [m.get('best_test_hung_top1_acc', np.nan) for m in all_metrics]
+        hung_top5_best = [m.get('best_test_hung_top5_acc', np.nan) for m in all_metrics]
+        logger.info(f'  {"Hun-Top-1":>20s}  {_stat(hung_top1_sel):>22s}  {_stat(hung_top1_best):>22s}')
+        logger.info(f'  {"Hun-Top-5":>20s}  {_stat(hung_top5_sel):>22s}  {_stat(hung_top5_best):>22s}')
 
     df = pd.DataFrame(all_metrics)
     df.to_csv(os.path.join(save_path, "all_metrics.csv"), index=False)
