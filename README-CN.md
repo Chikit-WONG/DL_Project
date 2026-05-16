@@ -311,7 +311,7 @@ EEG → EEGProjectLayer → CLIP 嵌入
 
 2. **对齐训练**（100 轮）：`SimpleAlignPipe`（轻量 MLP）对齐 EEG 预测得到的 image、depth、edge 三种嵌入，使其匹配生成管线所期望的条件嵌入分布。
 
-3. **图像生成**：将对齐后的 image、depth、edge 嵌入作为 IP-Adapter 的条件信号输入 SDXL-Turbo 生成图像。当前实现中，代码没有显式覆盖 `height` 或 `width`，因此输出尺寸沿用已加载 SDXL-Turbo 管线的默认分辨率；在我们当前环境和已保存结果中，这对应为 512×512。不使用文本提示。
+3. **图像生成**：将对齐后的 image、depth、edge 嵌入作为 IP-Adapter 的条件信号输入 SDXL-Turbo 生成图像。当前实现中，代码没有显式覆盖 `height` 或 `width`，因此输出尺寸沿用已加载 SDXL-Turbo 管线的默认分辨率；在我们当前环境和已保存结果中，这对应为 512×512。不使用文本提示。报告 Section 5.3 的 `gen_steps5` 复盘使用 SDXL-Turbo 原生的 5 个去噪步数，并将 `guidance_scale` 设为 0.0。
 
 ### 模型架构
 
@@ -405,22 +405,26 @@ sbatch task2/slurm_scripts/08d_simple_align.sh
 **步骤 4 — 生成重建图像：**
 
 ```bash
-sbatch task2/slurm_scripts/09d_generate_fixed.sh
+sbatch task2/slurm_scripts/09f_generate_fixed_2xa40.sh
 ```
+
+当前 `09f_generate_fixed_2xa40.sh` 未显式传入 `--num_inference_steps`，因此会沿用 `batch_generate.py` 默认的 `num_inference_steps=15`、`guidance_scale=0.0`。报告 Section 5.3 的 `gen_steps5` 结果对应 `num_inference_steps=5`、`guidance_scale=0.0`，需要修改或覆盖脚本参数后重跑。
 
 **步骤 5 — 评估：**
 
 ```bash
-sbatch task2/slurm_scripts/10e_eval_full_both.sh
+sbatch task2/slurm_scripts/10f_eval_full_both_2xa40.sh
 python task2/scripts/summarize_results.py
 ```
 
-#### 多种子运行（5 个种子，推荐用于稳定结果）
+当前评估脚本同时报告 OpenAI ViT-L/14（课程标准）和 open_clip ViT-H-14（与原始 CogCapPro 论文一致）两套 CLIP 分数。
 
-每个阶段均为 SLURM array 作业（`--array=0-4`），5 个种子并行运行。各阶段通过作业依赖顺序提交：
+#### 多种子运行（10 个种子，推荐用于稳定结果）
+
+每个阶段均为 SLURM array 作业（`--array=0-9`），10 个种子并行运行。各阶段通过作业依赖顺序提交：
 
 ```bash
-# 步骤 1：并行训练种子 0–4（每个约 24 小时）
+# 步骤 1：并行训练种子 0–9（每个约 24 小时）
 JID_TRAIN=$(sbatch --parsable task2/slurm_scripts/06_multiseed_train.sh)
 
 # 步骤 2：训练全部完成后，并行运行对齐
@@ -472,6 +476,24 @@ sbatch --dependency=afterok:${JID_EVAL} task2/slurm_scripts/10_multiseed_summary
 SimpleAlignPipe 消除了 EEG 派生嵌入与生成管线所期望的 IP-Adapter 条件嵌入之间的分布差距。
 它显著提升了语义类指标（CLIP、Inception、AlexNet），同时也降低了 EfficientNet 和 SwAV 的 correlation distance；这两个指标都是数值越低越好。
 
+#### 10 种子复盘（gen_steps5 配置）
+
+后续在不改动检索/对齐阶段的前提下，针对生成阶段做了超参精修，并扩展到 10 个种子（0–9）重新评估。详见报告 Section 5.3。
+
+| 指标 | 不经过 SimpleAlignPipe | **经过 SimpleAlignPipe** |
+|---|---|---|
+| SSIM | 0.361 ± 0.012 | **0.409 ± 0.005** |
+| CLIP（ViT-L/14，课程标准） | 0.665 ± 0.010 | **0.870 ± 0.012** |
+| CLIP（ViT-H-14，与论文对比） | 0.755 ± 0.014 | **0.903 ± 0.009** |
+| PixCorr | 0.158 ± 0.009 | **0.166 ± 0.013** |
+| AlexNet-2 | 0.738 ± 0.019 | **0.818 ± 0.012** |
+| AlexNet-5 | 0.776 ± 0.019 | **0.913 ± 0.011** |
+| Inception | 0.654 ± 0.025 | **0.831 ± 0.010** |
+| EfficientNet corr. dist. ↓ | 0.922 ± 0.006 | **0.794 ± 0.004** |
+| SwAV corr. dist. ↓ | 0.643 ± 0.010 | **0.489 ± 0.005** |
+
+主要改动：SDXL 推理步数 30→5，guidance 1.5→0.0，modality 由 `ssim_all30` 切换为 `all`，关闭 `ssim_smooth` 后处理。检索与对齐阶段未做改动。
+
 **检索（任意模态融合，5 个种子，作为辅助输出）：** Top-1 0.6370 ± 0.0258，Top-5 0.8730 ± 0.0125
 
 ---
@@ -500,7 +522,7 @@ SimpleAlignPipe 消除了 EEG 派生嵌入与生成管线所期望的 IP-Adapter
 - 基于 ViT 的 CLIP 编码器与 EVNet 的空间化预处理不兼容。
 
 **任务 2：**
-- 仅限单受试者（sub-01）。多种子运行（5 个种子）已通过 `task2/slurm_scripts/06–10_multiseed_*.sh` 支持，详见上方多种子运行章节。
+- 仅限单受试者（sub-01）。多种子运行（10 个种子）已通过 `task2/slurm_scripts/06–10_multiseed_*.sh` 支持，详见上方多种子运行章节。
 - 重建过程是间接的：EEG 嵌入需要先对齐到 IP-Adapter 的条件空间，再用于图像生成。因此，嵌入对齐误差可能导致生成结果在语义上接近，但结构上偏离目标图像。
-- 在批量生成脚本中，SDXL-Turbo 使用 15 个去噪步数，在生成速度和图像质量之间做折中。
+- 在批量生成脚本中，SDXL-Turbo 使用 15 个去噪步数，在生成速度和图像质量之间做折中；后续在 `gen_steps5` 实验中调整为 5 步（SDXL-Turbo 原生），详见报告 Section 5.3。
 - 未使用文本提示；引入类别文本提示可能改善语义保真度。
