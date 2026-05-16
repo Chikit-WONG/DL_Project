@@ -7,6 +7,7 @@ import logging
 import os
 from pathlib import Path
 
+from PIL import ImageEnhance, ImageFilter
 import torch
 from tqdm import tqdm
 
@@ -21,6 +22,19 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 
+def _postprocess_for_ssim(image, mode: str):
+    if mode == "none":
+        return image
+    if mode == "ssim_smooth":
+        # Mild denoise then restore contrast/sharpness. This targets SSIM's
+        # local structure term without changing the generated semantics much.
+        image = image.filter(ImageFilter.GaussianBlur(radius=0.35))
+        image = ImageEnhance.Contrast(image).enhance(1.04)
+        image = ImageEnhance.Sharpness(image).enhance(1.08)
+        return image
+    raise ValueError(f"Unsupported postprocess mode: {mode}")
+
+
 def generate_images_from_pt_file(
     generator,
     pt_file_path,
@@ -28,6 +42,8 @@ def generate_images_from_pt_file(
     modalities=None,
     use_before_align=False,
     resume_generation=False,
+    postprocess="none",
+    negative_prompt="deformed, ugly, wrong proportion, low res, bad anatomy, worst quality, low quality",
 ):
     """Generate images from one generated_embeddings*.pt file."""
     modalities = modalities or ["image", "depth", "edge"]
@@ -66,8 +82,9 @@ def generate_images_from_pt_file(
                 generated_image = generator.generate(
                     input_data_dict=input_data_dict,
                     prompt="",
-                    negative_prompt="deformed, ugly, wrong proportion, low res, bad anatomy, worst quality, low quality",
+                    negative_prompt=negative_prompt,
                 )
+                generated_image = _postprocess_for_ssim(generated_image, postprocess)
                 generated_image.save(image_output_path)
                 processed_count += 1
             except Exception as exc:
@@ -97,6 +114,10 @@ def batch_generate_images(
     resume_generation=False,
     config_path="configs/cogcappro.yaml",
     data_type="EEG",
+    num_inference_steps=15,
+    guidance_scale=0.0,
+    postprocess="none",
+    negative_prompt="deformed, ugly, wrong proportion, low res, bad anatomy, worst quality, low quality",
 ):
     """Batch-generate images for all matching subject runs under one experiment root."""
     _, resolved_sd_path, resolved_ip_adapter_path = resolve_generator_model_paths(
@@ -108,6 +129,8 @@ def batch_generate_images(
 
     modality_configs = {
         "all": ["image", "depth", "edge"],
+        "ssim_boost": ["image", "depth", "edge"],
+        "ssim_all30": ["image", "depth", "edge"],
         "image": ["image"],
         "depth": ["depth"],
         "edge": ["edge"],
@@ -122,7 +145,15 @@ def batch_generate_images(
     if modality_scales is None:
         modality_scales = {}
         for mode_key in ["image", "depth", "edge"]:
-            if modality_mode == "all":
+            if modality_mode == "ssim_boost":
+                # SSIM rewards structural fidelity more than broad semantics. Keep image
+                # dominant, let edge guide contours, and keep noisy depth weak.
+                modality_scales[mode_key] = {
+                    "image": {"down": {"block_2": [1.15, 1.15]}, "up": {"block_0": [1.0, 1.0, 1.0]}},
+                    "depth": {"down": {"block_2": [0.0, 0.2]}, "up": {"block_0": [0.0, 0.0, 0.0]}},
+                    "edge": {"down": {"block_2": [0.0, 0.75]}, "up": {"block_0": [0.0, 0.0, 0.0]}},
+                }[mode_key]
+            elif modality_mode in {"all", "ssim_all30"}:
                 modality_scales[mode_key] = IPAdapterGenerator._MODALITY_SCALES[mode_key]
             elif mode_key in modalities:
                 modality_scales[mode_key] = {"down": {"block_2": [1.0, 1.0]}, "up": {"block_0": [1.0, 1.0, 1.0]}}
@@ -165,8 +196,8 @@ def batch_generate_images(
                 ip_adapter_path=resolved_ip_adapter_path,
                 device=device,
                 seed=seed,
-                num_inference_steps=15,
-                guidance_scale=0.0,
+                num_inference_steps=num_inference_steps,
+                guidance_scale=guidance_scale,
                 modalities=modalities,
                 modality_scales=modality_scales,
             )
@@ -191,6 +222,8 @@ def batch_generate_images(
                 modalities,
                 use_before_align,
                 resume_generation,
+                postprocess,
+                negative_prompt,
             )
             logger.info("Finished processing %s", sub_dir)
 
@@ -205,7 +238,7 @@ def main():
     parser.add_argument(
         "--modality_mode",
         type=str,
-        choices=["all", "image", "depth", "edge", "image_depth", "image_edge", "depth_edge"],
+        choices=["all", "ssim_boost", "ssim_all30", "image", "depth", "edge", "image_depth", "image_edge", "depth_edge"],
         default="all",
         help="Modality mode to use",
     )
@@ -221,6 +254,21 @@ def main():
         type=str,
         default="cuda" if torch.cuda.is_available() else "cpu",
         help="Device type",
+    )
+    parser.add_argument("--num_inference_steps", type=int, default=15, help="SDXL denoising steps per image")
+    parser.add_argument("--guidance_scale", type=float, default=0.0, help="Classifier-free guidance scale")
+    parser.add_argument(
+        "--postprocess",
+        type=str,
+        choices=["none", "ssim_smooth"],
+        default="none",
+        help="Optional output postprocessing before saving generated images",
+    )
+    parser.add_argument(
+        "--negative_prompt",
+        type=str,
+        default="deformed, ugly, wrong proportion, low res, bad anatomy, worst quality, low quality",
+        help="Negative prompt used by SDXL generation",
     )
     parser.add_argument(
         "--subjects",
@@ -255,6 +303,10 @@ def main():
         resume_generation=args.resume,
         config_path=args.config,
         data_type=args.data_type,
+        num_inference_steps=args.num_inference_steps,
+        guidance_scale=args.guidance_scale,
+        postprocess=args.postprocess,
+        negative_prompt=args.negative_prompt,
     )
 
 

@@ -19,7 +19,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--exp_setting", type=str, default="intra-subject", help="the exp_setting")
     parser.add_argument("--epoch", type=int, default=80, help="train epoch")
     parser.add_argument("--lr", type=float, default=1e-4, help="lr")
-    parser.add_argument("--brain_backbone", type=str, help="brain_backbone")
+    parser.add_argument(
+        "--brain_backbone",
+        type=str,
+        default="EEGProjectLayer_multimodal_cogcap_list",
+        help="brain_backbone",
+    )
     parser.add_argument("--vision_backbone", default="RN50", type=str, help="vision_backbone")
     parser.add_argument("--c", type=int, default=6, help="c")
     parser.add_argument("--selected_region", type=str, default=None, help="Select channels from a specific brain region")

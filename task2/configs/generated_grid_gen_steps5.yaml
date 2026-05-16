@@ -1,0 +1,64 @@
+timesteps:
+- 0
+- 250
+blur_kernel_size: 31
+system_g: 2
+modality_num: 4
+name: ${exp_setting}_cogcappro_${vision_backbone}
+models:
+  brain:
+    target: cogcappro.models.brain_backbone.${brain_backbone}
+    params:
+      c_num: 63
+      z_dim: ${z_dim}
+      timesteps: ${timesteps}
+      modality_num: ${modality_num}
+      data_type: ${data_type}
+data:
+  data_dir: null
+  selected_ch: false
+  model_type: ${vision_backbone}
+  train_batch_size: 1024
+  val_batch_size: 200
+  test_batch_size: 200
+  uncertainty_aware: true
+  blur_type:
+    target: cogcappro.models.inpainting_data.FoveaBlur
+    params:
+      h: 224
+      w: 224
+      blur_kernel_size: ${blur_kernel_size}
+      curve_type: exp
+      system_g: ${system_g}
+  train_avg: true
+  test_avg: true
+  timesteps: ${timesteps}
+paths:
+  data_root: /hpc2hdd/home/dsaa2012_042/project/image-eeg-data/converted_for_cogcappro
+  weights_root: /hpc2hdd/home/dsaa2012_042/project/models
+  runs_root: /hpc2hdd/home/dsaa2012_042/project/task2-version4_CCP/runs
+  things_eeg_rel: ThingsEEG/Preprocessed_data_250Hz_whiten
+  things_meg_rel: THINGS-MEG/preprocessed_data
+  diffusion_embeddings_root: /hpc2hdd/home/dsaa2012_042/project/models/diffusion_embeddings
+  diffusion_embeddings_rel: diffusion_embeddings
+  sdxl_root: null
+  sdxl_rel: Things_dataset/model_pretrained/sdxl-turbo
+  ip_adapter_root: null
+  ip_adapter_rel: Things_dataset/model_pretrained/ip_adapter
+  things_meg_image_description_root: null
+  things_meg_image_description_rel: THINGS-MEG/Image_text_description
+  clip_weights_rel:
+    RN50: CLIPRN50/RN50.pt
+    ViT-H-14: Things_dataset/model_pretrained/clip/open_clip_pytorch_model.bin
+train:
+  epoch: ${epoch}
+  text_max_epochs: 30
+  staged_training: ${staged_training}
+  stage1_epochs: 20
+  stage2_epochs: 40
+  stage3_epochs: 20
+  optimizer: AdamW
+  lr: ${lr}
+save_dir: null
+devices:
+- 0

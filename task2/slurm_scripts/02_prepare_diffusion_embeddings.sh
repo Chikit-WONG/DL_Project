@@ -3,13 +3,9 @@
 #SBATCH --gres=gpu:1
 #SBATCH -n 8
 #SBATCH --time=04:00:00
-#SBATCH -J cogcap_embed_v2
+#SBATCH -J cogcap_embed
 #SBATCH -o /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/version4_CCP/slurm_scripts/logs/%x-%j.out
 #SBATCH -e /hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/version4_CCP/slurm_scripts/logs/%x-%j.err
-
-# Re-prepare diffusion embeddings using class_name/filename keys to avoid basename collision.
-# Fix: generator.py now keys embeddings as class_name/basename instead of basename only.
-# Verify success: job log should show zero "Duplicate filename" warnings.
 
 REPO=/hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/version4_CCP
 OUTPUT_DIR=/hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/ChiKitWONG/Assignments/Project/DL_Project/image-eeg-data/converted_for_cogcappro/ThingsEEG/Image_feature_new/data_features
@@ -30,4 +26,3 @@ python scripts/prepare_diffusion_embeddings.py \
   --device cuda:0 \
   --output-dir "$OUTPUT_DIR"
 echo "Job ended at $(date)"
-echo "Verify: grep 'Duplicate filename' above — should be zero matches."

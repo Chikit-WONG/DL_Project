@@ -77,9 +77,17 @@ def resolve_generator_model_paths(
     ip_adapter_path: str | None = None,
 ):
     config = load_generation_config(config_path=config_path, data_type=data_type)
-    resolved_sd_path = resolve_sdxl_root(config, override=sd_path)
-    resolved_ip_adapter_path = resolve_ip_adapter_root(config, override=ip_adapter_path)
-    return config, str(resolved_sd_path), str(resolved_ip_adapter_path)
+    if sd_path:
+        resolved_sd_path = sd_path
+    else:
+        resolved_sd_path = str(resolve_sdxl_root(config))
+
+    if ip_adapter_path:
+        resolved_ip_adapter_path = ip_adapter_path
+    else:
+        resolved_ip_adapter_path = str(resolve_ip_adapter_root(config))
+
+    return config, resolved_sd_path, resolved_ip_adapter_path
 
 
 class IPAdapterGenerator:

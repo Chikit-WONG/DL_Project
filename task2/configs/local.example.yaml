@@ -1,19 +1,8 @@
 paths:
-  # ────────────────────────────────────────────────────────────────────────────
-  # EDIT THIS ONE LINE — set it to the directory that contains all pre-trained
-  # model weights (CLIP, SDXL-Turbo, IP-Adapter).
-  # ────────────────────────────────────────────────────────────────────────────
+  data_root: /path/to/dataset_root
   weights_root: /path/to/model_weights
-
-  # Paths below are all relative to weights_root.
-  # Edit only if your weight files are organised differently from the defaults.
-  clip_weights_rel:
-    ViT-H-14: CLIP-ViT-H-14-laion2B-s32B-b79K/open_clip_pytorch_model.bin
-    RN50: CLIP-RN50-openai/open_clip_pytorch_model.bin
-  sdxl_rel: sdxl-turbo
-  ip_adapter_rel: IP-Adapter
-
-  # eeg_data_dir: path to the image-eeg-data/ directory (used by both tasks).
-  # Not needed when image-eeg-data/ is placed in the DL_Project root.
-  # Set this if your data lives somewhere else on the cluster:
-  # eeg_data_dir: /path/to/image-eeg-data
+  runs_root: runs
+  diffusion_embeddings_root: /optional/path/to/diffusion_embeddings
+  sdxl_root: /optional/path/to/sdxl-turbo
+  ip_adapter_root: /optional/path/to/ip_adapter
+  things_meg_image_description_root: /optional/path/to/meg_blip2_texts

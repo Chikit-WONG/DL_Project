@@ -362,6 +362,18 @@ def main():
         default="",
         help="Output file suffix, e.g. '_original' will produce diffusion_model_best_original.pth and generated_embeddings_original.pt",
     )
+    parser.add_argument(
+        "--embedding_inference_steps",
+        type=int,
+        default=50,
+        help="Number of denoising steps when generating aligned diffusion embeddings",
+    )
+    parser.add_argument(
+        "--embedding_guidance_scale",
+        type=float,
+        default=5.0,
+        help="Guidance scale when generating aligned diffusion embeddings",
+    )
     opt = parser.parse_args()
 
     exp_setting, subject, run_seed = parse_exp_dir(opt.exp_dir)
@@ -472,8 +484,8 @@ def main():
         img_paths=img_paths,
         device=device,
         save_dir=save_dir,
-        num_inference_steps=50,
-        guidance_scale=5.0,
+        num_inference_steps=opt.embedding_inference_steps,
+        guidance_scale=opt.embedding_guidance_scale,
         output_suffix=opt.output_suffix,
     )
 

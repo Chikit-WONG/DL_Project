@@ -202,6 +202,7 @@ class EEGDataset(Dataset):
             'edge': np.ones(self.trial_all_subjects, dtype=int),
         }
         self._global_fallback_image_paths = {}
+        self._missing_modality_warnings = set()
 
         if features_filename.exists():
             saved_features = torch.load(features_filename, map_location='cpu', weights_only=False)
@@ -341,6 +342,16 @@ class EEGDataset(Dataset):
         blank_image = Image.new('RGB', (224, 224), color=(0, 0, 0))
         for img_path in img_paths:
             base_dir = self.data_path.parent / f'Image_{modality}set_Resize'
+            if modality in {'depth_', 'edge_'} and not base_dir.exists():
+                warning_key = (modality, str(base_dir))
+                if warning_key not in self._missing_modality_warnings:
+                    logging.warning(
+                        '%s does not exist; using RGB images from Image_set_Resize for %s features.',
+                        base_dir,
+                        modality.rstrip('_'),
+                    )
+                    self._missing_modality_warnings.add(warning_key)
+                base_dir = self.data_path.parent / 'Image_set_Resize'
             normalized_img_path = str(img_path)
             candidate_paths = [base_dir / normalized_img_path]
             if normalized_img_path.startswith('train_images/'):

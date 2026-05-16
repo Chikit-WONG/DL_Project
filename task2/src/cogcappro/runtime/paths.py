@@ -167,7 +167,13 @@ def resolve_clip_weight_paths(config: Any) -> dict[str, str]:
     resolved = {}
     for name, rel in _clip_weights_rel(config).items():
         rel_path = Path(rel)
-        resolved[name] = str(rel_path if rel_path.is_absolute() else weights_root / rel_path)
+        candidate = rel_path if rel_path.is_absolute() else weights_root / rel_path
+        if candidate.exists():
+            resolved[name] = str(candidate)
+        elif name in PRETRAIN_MAP:
+            resolved[name] = PRETRAIN_MAP[name]["pretrained"]
+        else:
+            resolved[name] = str(candidate)
     config.paths.clip_weights = OmegaConf.create(resolved)
     return resolved
 
@@ -175,7 +181,7 @@ def resolve_clip_weight_paths(config: Any) -> dict[str, str]:
 def resolve_diffusion_embeddings_root(config: Any, required: bool = True) -> Path | None:
     ensure_paths_section(config)
     weights_root = optional_root(config, "weights_root")
-    data_root = optional_root(config, "data_root") or _eeg_data_dir_as_data_root(config) or _auto_data_root()
+    data_root = optional_root(config, "data_root")
     configured = _path_from_value(config.paths.get("diffusion_embeddings_root"))
     configured_rel = _path_from_value(
         config.paths.get("diffusion_embeddings_rel", DEFAULT_DIFFUSION_EMBEDDINGS_REL),
@@ -243,36 +249,12 @@ def _data_rel_key(data_type: str) -> str:
     return "things_eeg_rel"
 
 
-def _auto_data_root() -> Path | None:
-    """Auto-detect data_root from image-eeg-data/converted_for_cogcappro relative to DL_Project root."""
-    dl_project = REPO_ROOT.parent  # task2/ → DL_Project/
-    candidate = dl_project / "image-eeg-data" / "converted_for_cogcappro"
-    return candidate if candidate.exists() else None
-
-
-def _eeg_data_dir_as_data_root(config: Any) -> Path | None:
-    """Derive data_root from paths.eeg_data_dir (the image-eeg-data/ parent)."""
-    eeg_dir = optional_root(config, "eeg_data_dir")
-    if eeg_dir is None:
-        return None
-    candidate = eeg_dir / "converted_for_cogcappro"
-    return candidate if candidate.exists() else None
-
-
 def resolve_base_data_dir(config: Any, data_type: str) -> str:
-    ensure_paths_section(config)
-    data_root_val = config.paths.get("data_root")
-    if not data_root_val:
-        derived = _eeg_data_dir_as_data_root(config) or _auto_data_root()
-        if derived is not None:
-            data_root_val = str(derived)
-    if not data_root_val:
-        raise ValueError(
-            "Missing data root. Place image-eeg-data/ in the DL_Project root, "
-            "or set paths.eeg_data_dir in task2/configs/local.yaml, "
-            "or set COGCAPPRO_DATA_ROOT env var."
-        )
-    data_root = Path(data_root_val).expanduser()
+    data_root = _require_path(
+        config,
+        "data_root",
+        "Missing data root. Set configs/local.yaml or COGCAPPRO_DATA_ROOT.",
+    )
     rel_key = _data_rel_key(data_type)
     rel_value = config.paths.get(rel_key)
     if not rel_value:

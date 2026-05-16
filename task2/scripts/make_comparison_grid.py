@@ -2,37 +2,30 @@
 Create 3-way comparison grids: Ground Truth | all_before | all.
 
 Outputs:
-  <generated_image_dir>/comparison/grid_all200.png
-  <generated_image_dir>/comparison/grid_page01.png …
-  <generated_image_dir>/comparison/single/<stem>.png …
+  comparison/grid_all200.png          — full 200-triplet overview grid
+  comparison/grid_page01.png …        — page grids (20 triplets each, 4 cols)
+  comparison/single/banana_09s.png …  — one image per test item (3 panels)
 Usage:
-    python scripts/make_comparison_grid.py \
-        --generated-dir runs/multiseed/.../sub-01_seed0/generated_image \
-        --real-root /path/to/test_images
+    python scripts/make_comparison_grid.py
 """
 
-import argparse
 import math
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
-
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--generated-dir", required=True,
-        help="Path to the generated_image/ directory (contains all/ and all_before/)",
-    )
-    parser.add_argument(
-        "--real-root", required=True,
-        help="Path to the ground-truth test images root",
-    )
-    return parser.parse_args()
-
-
-args = parse_args()
-BASE = Path(args.generated_dir)
-REAL_ROOT = Path(args.real_root)
+# ── paths ────────────────────────────────────────────────────────────────────
+BASE = Path(
+    "/hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/"
+    "ChiKitWONG/Assignments/Project/DL_Project/references/repository/"
+    "CognitionCapturerPro/runs/full_v2/"
+    "intra-subject_cogcappro_EEGProjectLayer_multimodal_cogcap_list_ViT-H-14/"
+    "sub-01_seed0/generated_image"
+)
+REAL_ROOT = Path(
+    "/hpc2hdd/home/ckwong627/workdir/Class/DSAA2012-Deep_Learning/"
+    "ChiKitWONG/Assignments/Project/DL_Project/image-eeg-data/"
+    "converted_for_cogcappro/ThingsEEG/Image_set_Resize/test_images"
+)
 BEFORE_ROOT = BASE / "all_before"
 AFTER_ROOT  = BASE / "all"
 OUT_DIR     = BASE / "comparison"

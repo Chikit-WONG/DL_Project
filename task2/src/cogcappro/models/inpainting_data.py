@@ -74,7 +74,10 @@ class FoveaBlur:
         if img.shape[2] == 3:
             img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         blured = cv2.GaussianBlur(img, (blur_kernel_size,blur_kernel_size), 0)
-        blended = self.alphaBlend(img, blured, 1- self.mask)
+        mask = self.mask
+        if mask.shape != img.shape[:2]:
+            mask = cv2.resize(mask, (img.shape[1], img.shape[0]), interpolation=cv2.INTER_LINEAR)
+        blended = self.alphaBlend(img, blured, 1 - mask)
         blended = cv2.cvtColor(blended, cv2.COLOR_BGR2RGB)
         return Image.fromarray(blended)
     

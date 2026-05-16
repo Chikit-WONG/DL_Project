@@ -12,6 +12,8 @@ def _safe_symlink(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     if dst.is_symlink() or dst.exists():
         return
+    if not src.exists():
+        return
     dst.symlink_to(src)
 
 
@@ -20,7 +22,11 @@ def _safe_alias(root: Path, src_name: str, alias_name: str) -> None:
     alias = root / alias_name
     if not src.exists() or alias.exists() or alias.is_symlink():
         return
-    alias.symlink_to(src.name)
+    try:
+        alias.symlink_to(src.name)
+    except FileExistsError:
+        # Another process may create the alias concurrently.
+        return
 
 
 def _iter_images(split_root: Path):
@@ -49,7 +55,12 @@ def _make_edge_image(src_path: Path, dst_path: Path) -> None:
 
 def _prepare_split(source_root: Path, depth_root: Path, edge_root: Path, split_name: str) -> dict[str, int]:
     image_count = 0
-    for src_path in _iter_images(source_root / split_name):
+    split_root = source_root / split_name
+    if not split_root.exists() and split_name == "training_images":
+        split_root = source_root / "train_images"
+    if not split_root.exists():
+        return {"images": 0}
+    for src_path in _iter_images(split_root):
         relative_path = src_path.relative_to(source_root)
         depth_path = depth_root / relative_path
         edge_path = edge_root / relative_path
@@ -81,8 +92,10 @@ def main() -> None:
     _safe_symlink(course_data_root / "train.pt", preprocessed_root / "train.pt")
     _safe_symlink(course_data_root / "test.pt", preprocessed_root / "test.pt")
     _safe_symlink(course_data_root / "training_images", image_root / "training_images")
+    _safe_symlink(course_data_root / "train_images", image_root / "train_images")
     _safe_symlink(course_data_root / "test_images", image_root / "test_images")
     _safe_alias(image_root, "training_images", "train_images")
+    _safe_alias(image_root, "train_images", "training_images")
 
     summary = {
         "subject": args.subject,
@@ -94,7 +107,9 @@ def main() -> None:
         summary["splits"][split_name] = _prepare_split(image_root, depth_root, edge_root, split_name)
 
     _safe_alias(depth_root, "training_images", "train_images")
+    _safe_alias(depth_root, "train_images", "training_images")
     _safe_alias(edge_root, "training_images", "train_images")
+    _safe_alias(edge_root, "train_images", "training_images")
 
     summary_path = output_root / "prepare_course_data_summary.json"
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")

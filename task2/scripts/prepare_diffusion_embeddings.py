@@ -1,8 +1,19 @@
 from __future__ import annotations
 
 import argparse
+import os
+import sys
 
-from src.cogcappro.generate_image.generator import IPAdapterGenerator, prepare_embedding
+# Allow `python scripts/prepare_diffusion_embeddings.py` from repo root (same as main.py).
+REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if REPO not in sys.path:
+    sys.path.insert(0, REPO)
+
+from src.cogcappro.generate_image.generator import (
+    IPAdapterGenerator,
+    prepare_embedding,
+    resolve_generator_model_paths,
+)
 
 
 def main() -> None:
@@ -15,9 +26,15 @@ def main() -> None:
     parser.add_argument("--output-dir", type=str, default=None)
     args = parser.parse_args()
 
-    generator = IPAdapterGenerator(
+    _, sd_path, ip_adapter_path = resolve_generator_model_paths(
+        config_path=args.config,
+        data_type=args.data_type,
         sd_path=args.sd_path,
         ip_adapter_path=args.ip_adapter_path,
+    )
+    generator = IPAdapterGenerator(
+        sd_path=sd_path,
+        ip_adapter_path=ip_adapter_path,
         device=args.device,
         seed=42,
         num_inference_steps=5,
