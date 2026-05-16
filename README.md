@@ -311,7 +311,7 @@ EEG → EEGProjectLayer → CLIP embedding
 
 2. **Alignment** (100 epochs): `SimpleAlignPipe` (lightweight MLP) aligns the EEG-derived image, depth, and edge embeddings to the embedding distributions expected by the generation pipeline.
 
-3. **Image generation**: the aligned image, depth, and edge embeddings are passed to SDXL-Turbo through IP-Adapter as conditioning signals. No text prompt is used. In the current implementation, the code does not explicitly override `height` or `width`, so generation follows the loaded SDXL-Turbo pipeline default; in our setup and saved outputs, this produces 512 × 512 images.
+3. **Image generation**: the aligned image, depth, and edge embeddings are passed to SDXL-Turbo through IP-Adapter as conditioning signals. No text prompt is used. In the current implementation, the code does not explicitly override `height` or `width`, so generation follows the loaded SDXL-Turbo pipeline default; in our setup and saved outputs, this produces 512 × 512 images. The `gen_steps5` rerun in report Section 5.3 uses SDXL-Turbo's native 5 denoising steps with `guidance_scale=0.0`.
 
 ### Architecture
 
@@ -405,31 +405,35 @@ sbatch task2/slurm_scripts/08d_simple_align.sh
 **Step 4 — Generate reconstructed images:**
 
 ```bash
-sbatch task2/slurm_scripts/09d_generate_fixed.sh
+sbatch task2/slurm_scripts/09f_generate_fixed_2xa40.sh
 ```
+
+The current `09f_generate_fixed_2xa40.sh` script does not explicitly pass `--num_inference_steps`, so it falls back to `batch_generate.py` defaults: `num_inference_steps=15` and `guidance_scale=0.0`. The report Section 5.3 `gen_steps5` results correspond to `num_inference_steps=5` and `guidance_scale=0.0`; override or edit the script parameters before rerunning that setting.
 
 **Step 5 — Evaluate:**
 
 ```bash
-sbatch task2/slurm_scripts/10e_eval_full_both.sh
+sbatch task2/slurm_scripts/10f_eval_full_both_2xa40.sh
 python task2/scripts/summarize_results.py
 ```
 
-#### Multi-seed Run (5 seeds, recommended for reliable results)
+The current evaluation script reports both OpenAI ViT-L/14 CLIP scores (course standard) and open_clip ViT-H-14 CLIP scores (matching the original CogCapPro paper).
 
-Each stage is a SLURM array job (`--array=0-4`) so all 5 seeds run in parallel. Submit stages sequentially using job dependencies:
+#### Multi-seed Run (10 seeds, recommended for reliable results)
+
+Each stage is a SLURM array job (`--array=0-9`) so all 10 seeds run in parallel. Submit stages sequentially using job dependencies:
 
 ```bash
-# Step 1: train seeds 0–4 in parallel (~24 h each)
+# Step 1: train seeds 0–9 in parallel (~24 h each)
 JID_TRAIN=$(sbatch --parsable task2/slurm_scripts/06_multiseed_train.sh)
 
-# Step 2: align seeds 0–4 in parallel, start after all training jobs finish
+# Step 2: align seeds 0–9 in parallel, start after all training jobs finish
 JID_ALIGN=$(sbatch --parsable --dependency=afterok:${JID_TRAIN} task2/slurm_scripts/07_multiseed_align.sh)
 
 # Step 3: generate images for all seeds in one job
 JID_GEN=$(sbatch --parsable --dependency=afterok:${JID_ALIGN} task2/slurm_scripts/08_multiseed_generate.sh)
 
-# Step 4: evaluate seeds 0–4 in parallel
+# Step 4: evaluate seeds 0–9 in parallel
 JID_EVAL=$(sbatch --parsable --dependency=afterok:${JID_GEN} task2/slurm_scripts/09_multiseed_eval.sh)
 
 # Step 5: summarise — prints mean ± std across all seeds
@@ -472,6 +476,24 @@ Source: `task2/runs/multiseed/summary.json`.
 SimpleAlignPipe closes the distribution gap between EEG-derived embeddings and the IP-Adapter conditioning embeddings expected by the generation pipeline.
 It substantially improves semantic metrics (CLIP, Inception, AlexNet) and also reduces EfficientNet and SwAV correlation distance, where lower values are better.
 
+#### 10-Seed Refinement (`gen_steps5` configuration)
+
+We later refined only the generation-stage hyperparameters and expanded evaluation to 10 seeds (0–9), without changing the retrieval or alignment stages. See report Section 5.3 for details.
+
+| Metric | Without SimpleAlignPipe | **With SimpleAlignPipe** |
+|---|---|---|
+| SSIM | 0.361 ± 0.012 | **0.409 ± 0.005** |
+| CLIP (ViT-L/14, course standard) | 0.665 ± 0.010 | **0.870 ± 0.012** |
+| CLIP (ViT-H-14, paper comparison) | 0.755 ± 0.014 | **0.903 ± 0.009** |
+| PixCorr | 0.158 ± 0.009 | **0.166 ± 0.013** |
+| AlexNet-2 | 0.738 ± 0.019 | **0.818 ± 0.012** |
+| AlexNet-5 | 0.776 ± 0.019 | **0.913 ± 0.011** |
+| Inception | 0.654 ± 0.025 | **0.831 ± 0.010** |
+| EfficientNet corr. dist. ↓ | 0.922 ± 0.006 | **0.794 ± 0.004** |
+| SwAV corr. dist. ↓ | 0.643 ± 0.010 | **0.489 ± 0.005** |
+
+Main changes: SDXL inference steps 30→5, guidance 1.5→0.0, modality switched from `ssim_all30` to `all`, and `ssim_smooth` post-processing disabled. Retrieval and alignment were left unchanged.
+
 **Retrieval (any-modality fusion, 5 seeds, auxiliary output):** Top-1 0.6370 ± 0.0258, Top-5 0.8730 ± 0.0125
 
 ---
@@ -500,7 +522,7 @@ The following pretrained models and open-source codebases are used:
 - ViT-based CLIP encoders are incompatible with EVNet's spatial preprocessing.
 
 **Task 2:**
-- Single subject (sub-01). Multi-seed runs (5 seeds) are supported via `task2/slurm_scripts/06–10_multiseed_*.sh` — see the multi-seed section above.
+- Single subject (sub-01). Multi-seed runs (10 seeds) are supported via `task2/slurm_scripts/06–10_multiseed_*.sh` — see the multi-seed section above.
 - Reconstruction is indirect: EEG embeddings are first aligned to the IP-Adapter conditioning space before image generation. Errors in this alignment can produce semantically nearby but structurally off-target reconstructions.
-- In the batch generation script, SDXL-Turbo is run with 15 denoising steps, trading generation speed against sample quality.
+- In the batch generation script, SDXL-Turbo is run with 15 denoising steps, trading generation speed against sample quality; the later `gen_steps5` experiment uses 5 steps (SDXL-Turbo native), as discussed in report Section 5.3.
 - No text prompt is used; adding a class-level text prompt could improve semantic fidelity.
