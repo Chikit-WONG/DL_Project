@@ -8,9 +8,9 @@ The "**task1_eval.py**" takes in generated similarity matrices and calculate the
 
 For fast evaluation:  
 ```cmd
-python task1_eval.py --run_dir ./result_task1
+python ./TA_Evaluation/task1_eval.py --run_dir ./task1/output/main_results
 
-python task1_eval.py --run_dir ./result_task1 --checkpoint best
+python ./TA_Evaluation/task1_eval.py --run_dir ./task1/output/main_results --checkpoint best
 ```
 
 The parameter "**--checkpoint**" chooses which class of result to use, either "**select**" (default, use the final epoch or validation selected (if capable) to give the result) or "**best**" (use the test-selected matrices to give the result, **for reference only**).  
