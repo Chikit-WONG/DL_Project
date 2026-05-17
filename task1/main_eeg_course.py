@@ -284,7 +284,7 @@ def hungarian_topk(sim_np, k=5):
     return correct_matched
 
 
-def get_test_accu(model, params, test_dataloader, device, hungarian=False):
+def get_test_accu(model, params, test_dataloader, device, hungarian=False, return_sim=False):
     model.eval()
     all_tfea = []
     all_embed = []
@@ -331,6 +331,8 @@ def get_test_accu(model, params, test_dataloader, device, hungarian=False):
         result['hung_top1'] = float(correct_top1.mean())
         result['hung_top5'] = float(correct_top5.mean())
 
+    if return_sim:
+        return result, sim
     return result
 
 
@@ -533,6 +535,16 @@ def train(params, logger):
     prefix = f"{params['net_name']}_sub{params['sub']}_seed{params['seed']}"
     torch.save(select_model, os.path.join(params['save_path'], f"{prefix}_select.pth"))
     torch.save(best_model,   os.path.join(params['save_path'], f"{prefix}_best.pth"))
+
+    # --- Save similarity matrices for TA evaluation (select + best) ---
+    for ckpt_tag, ckpt_state in [('select', select_model), ('best', best_model)]:
+        model.load_state_dict(ckpt_state)
+        _, ckpt_sim = get_test_accu(model, params, test_loader, device,
+                                     hungarian=use_hungarian, return_sim=True)
+        sim_save_path = os.path.join(params['save_path'], f"{prefix}_{ckpt_tag}_sim_matrix.pt")
+        torch.save({'sim_matrix': ckpt_sim.cpu(), 'seed': params['seed'],
+                     'checkpoint': ckpt_tag}, sim_save_path)
+        logger.info(f"Saved {ckpt_tag} similarity matrix [{ckpt_sim.shape[0]}x{ckpt_sim.shape[1]}] to {sim_save_path}")
 
     return saved_metric
 

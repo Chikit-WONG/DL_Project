@@ -79,6 +79,16 @@ python scripts/download_models.py --dest /path/to/models --hf-token hf_xxxx
 ```text
 DL_Project/
 ├── requirements.txt                # 任务 1 和任务 2 共享依赖
+├── scripts/
+│   └── download_models.py          # 一键下载所有外部模型
+├── sample_codes/                   # TA 提供的示例代码（未修改）
+│   ├── eeg_project_sample_code.ipynb
+│   └── eeg_project_sample_code_done.ipynb
+├── TA_Evaluation/                  # TA 评估脚本（任务 1 / 任务 2）
+│   ├── README.md                   # 评估使用说明
+│   ├── task1_eval.py               # 任务 1 检索评估脚本
+│   ├── task2_eval.ipynb            # 任务 2 重建评估 Notebook
+│   └── result_task1/               # 任务 1 预存相似度矩阵结果
 ├── task1/                          # 任务 1：EEG 图像检索（VED + EVNet）
 │   ├── main_eeg_course.py          # 训练与评估入口
 │   ├── preprocess/
@@ -94,6 +104,7 @@ DL_Project/
     ├── smoke_test.py               # 13 项验证脚本
     ├── configs/                    # YAML 配置文件
     ├── src/cogcappro/              # 核心包
+    ├── scripts/                    # 数据准备 / 评估辅助脚本
     └── slurm_scripts/              # HPC 作业脚本
 ```
 
@@ -249,8 +260,8 @@ sbatch task1/slurm_scripts/04_full_train_8blur_evnet.sh   # 全量训练，最�
 |---|---|---|---|---|---|---|
 | 8-blur + EVNet，95/5 划分 | 0.8460 ± 0.0128 | 0.9870 ± 0.0056 | 0.8480 ± 0.0173 | 0.9890 ± 0.0030 | 0.8715 ± 0.0087 | 0.9860 ± 0.0077 |
 | 12-blur + EVNet，95/5 划分 | 0.8400 ± 0.0176 | 0.9860 ± 0.0044 | 0.8520 ± 0.0150 | 0.9850 ± 0.0045 | 0.8715 ± 0.0105 | 0.9855 ± 0.0027 |
-| **8-blur + EVNet，全量训练（与 report 对齐）** | N/A | N/A | **0.8630 ± 0.0200** | **0.9855 ± 0.0042** | **0.8935 ± 0.0095** | **0.9880 ± 0.0040** |
-| 8-blur + EVNet，全量训练，匈牙利算法 | N/A | N/A | 0.9695 ± 0.0079 | 0.9920 ± 0.0033 | 0.9860 ± 0.0070 | 0.9940 ± 0.0037 |
+| **8-blur + EVNet，全量训练（与 report 对齐）** | N/A | N/A | **0.8660 ± 0.0180** | **0.9870 ± 0.0033** | **0.8960 ± 0.0077** | **0.9890 ± 0.0058** |
+| 8-blur + EVNet，全量训练，匈牙利算法 | N/A | N/A | 0.9635 ± 0.0103 | 0.9920 ± 0.0051 | 0.9875 ± 0.0046 | 0.9965 ± 0.0023 |
 | 12-blur + EVNet，全量训练（version7） | N/A | N/A | 0.8505 ± 0.0160 | 0.9845 ± 0.0035 | 0.8810 ± 0.0070 | 0.9850 ± 0.0039 |
 
 与 report 保持一致的 Task 1 主结果是 **8-blur + EVNet 全量训练的 final-epoch 指标**：Top-1 `86.30% ± 2.00%`，Top-5 `98.55% ± 0.42%`。
@@ -506,7 +517,7 @@ SimpleAlignPipe 消除了 EEG 派生嵌入与生成管线所期望的 IP-Adapter
 |------|------|
 | OpenCLIP RN50（OpenAI） | 任务 1 图像特征提取 |
 | OpenCLIP ViT-H-14（LAION-2B） | 任务 2 多模态监督 |
-| EVNet（Ponce et al., 2023） | 任务 1 仿生视觉前端 |
+| EVNet（Piper et al., 2025） | 任务 1 仿生视觉前端 |
 | SDXL-Turbo（Stability AI） | 任务 2 图像生成 |
 | IP-Adapter（Ye et al., 2023） | 任务 2 图像条件控制 |
 | VisualEEGDecoding（Liu et al.） | 任务 1 多尺度模糊检索方案 |

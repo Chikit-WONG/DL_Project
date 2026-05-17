@@ -79,6 +79,16 @@ Then set `weights_root: <weights_root>` in `task2/configs/local.yaml` (see [Conf
 ```text
 DL_Project/
 ├── requirements.txt                # Shared dependencies for Task 1 and Task 2
+├── scripts/
+│   └── download_models.py          # One-click external model downloader
+├── sample_codes/                   # TA-provided sample notebooks (unmodified)
+│   ├── eeg_project_sample_code.ipynb
+│   └── eeg_project_sample_code_done.ipynb
+├── TA_Evaluation/                  # TA evaluation scripts (Task 1 / Task 2)
+│   ├── README.md                   # Evaluation usage guide
+│   ├── task1_eval.py               # Task 1 retrieval evaluation script
+│   ├── task2_eval.ipynb            # Task 2 reconstruction evaluation notebook
+│   └── result_task1/               # Pre-saved Task 1 similarity matrix results
 ├── task1/                          # Task 1: EEG-to-image retrieval (VED + EVNet)
 │   ├── main_eeg_course.py          # Training & evaluation entry point
 │   ├── preprocess/
@@ -94,6 +104,7 @@ DL_Project/
     ├── smoke_test.py               # 13-check validation script
     ├── configs/                    # YAML configs
     ├── src/cogcappro/              # Core package
+    ├── scripts/                    # Data preparation / evaluation helpers
     └── slurm_scripts/              # HPC job scripts
 ```
 
@@ -249,8 +260,8 @@ All experiments: 10 random seeds (seeds 21–30), 200 epochs, batch size 1024, l
 |---|---|---|---|---|---|---|
 | 8-blur + EVNet, 95/5 split | 0.8460 ± 0.0128 | 0.9870 ± 0.0056 | 0.8480 ± 0.0173 | 0.9890 ± 0.0030 | 0.8715 ± 0.0087 | 0.9860 ± 0.0077 |
 | 12-blur + EVNet, 95/5 split | 0.8400 ± 0.0176 | 0.9860 ± 0.0044 | 0.8520 ± 0.0150 | 0.9850 ± 0.0045 | 0.8715 ± 0.0105 | 0.9855 ± 0.0027 |
-| **8-blur + EVNet, full train (report-aligned run)** | N/A | N/A | **0.8630 ± 0.0200** | **0.9855 ± 0.0042** | **0.8935 ± 0.0095** | **0.9880 ± 0.0040** |
-| 8-blur + EVNet, full train, Hungarian Retrieval | N/A | N/A | 0.9695 ± 0.0079 | 0.9920 ± 0.0033 | 0.9860 ± 0.0070 | 0.9940 ± 0.0037 |
+| **8-blur + EVNet, full train (report-aligned run)** | N/A | N/A | **0.8660 ± 0.0180** | **0.9870 ± 0.0033** | **0.8960 ± 0.0077** | **0.9890 ± 0.0058** |
+| 8-blur + EVNet, full train, Hungarian Retrieval | N/A | N/A | 0.9635 ± 0.0103 | 0.9920 ± 0.0051 | 0.9875 ± 0.0046 | 0.9965 ± 0.0023 |
 | 12-blur + EVNet, full train (version7) | N/A | N/A | 0.8505 ± 0.0160 | 0.9845 ± 0.0035 | 0.8810 ± 0.0070 | 0.9850 ± 0.0039 |
 
 The primary reported Task 1 result, matching the report, is the **full-train 8-blur + EVNet final-epoch metric**: Top-1 `86.30% ± 2.00%`, Top-5 `98.55% ± 0.42%`.
@@ -506,7 +517,7 @@ The following pretrained models and open-source codebases are used:
 |----------|---------|
 | OpenCLIP RN50 (OpenAI) | Task 1 image feature extraction |
 | OpenCLIP ViT-H-14 (LAION-2B) | Task 2 multi-modal supervision |
-| EVNet (Ponce et al., 2023) | Task 1 biologically-inspired frontend |
+| EVNet (Piper et al., 2025) | Task 1 biologically-inspired frontend |
 | SDXL-Turbo (Stability AI) | Task 2 image generation |
 | IP-Adapter (Ye et al., 2023) | Task 2 image conditioning |
 | VisualEEGDecoding (Liu et al.) | Task 1 multi-blur retrieval approach |
